@@ -18,7 +18,12 @@ public abstract class Segment
     private String style;
     private String effect;
 
-    protected Segment() {}
+    protected Segment(Duration duration, String style, String effect)
+    {
+        this.duration = duration;
+        this.style = style;
+        this.effect = effect;
+    }
 
     public Duration getDuration()
     {
@@ -35,9 +40,19 @@ public abstract class Segment
         return effect;
     }
 
-    public void setDuration(Duration duration) {}
+    public void setDuration(Duration duration)
+    {
+        this.duration = duration;
+    }
 
-    public void setStyle(String style) {}
+    public void setStyle(String style)
+    {
+        this.style = style;
+    }
 
-    public void setEffect(String effect) {}
+    public void setEffect(String effect)
+    {
+        this.effect = effect;
+    }
+
 }
