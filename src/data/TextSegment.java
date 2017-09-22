@@ -1,3 +1,5 @@
+package data;
+
 import java.time.Duration;
 
 /**
@@ -10,8 +12,8 @@ import java.time.Duration;
  */
 public class TextSegment extends Segment
 {
-
     private String text;
+
     public TextSegment(Duration duration, String style, String effect, String text)
     {
         super(duration, style, effect);

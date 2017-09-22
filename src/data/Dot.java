@@ -1,3 +1,5 @@
+package data;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
