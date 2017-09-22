@@ -11,7 +11,11 @@ public class Dot
     private String color;
     private int intensity;
 
-    public Dot() {}
+    public Dot(String color, int intensity)
+    {
+        this.color = color;
+        this.intensity = intensity;
+    }
 
     public String getColor()
     {
