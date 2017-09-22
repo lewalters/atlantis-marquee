@@ -15,7 +15,17 @@ public class Message
     private String name;
     private LinkedList<Segment> contents;
     private int repeatFactor;
+    private int delay;
     private String comments;
+
+    public Message(String name, int repeatFactor, int delay, String comments )
+    {
+        this.name = name;
+        contents = new LinkedList<>();
+        this.repeatFactor = repeatFactor;
+        this.delay = delay;
+        this.comments = comments;
+    }
 
     public String getName()
     {
@@ -37,13 +47,32 @@ public class Message
         return comments;
     }
 
-    public void setName(String name) {}
+    public int getDelay(){return delay;}
 
-    public void setComments(String comments) {}
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-    public void addSegment(int pos, Segment segment) {}
+    public void setRepeatFactor(int repeatFactor)
+    {
+        this.repeatFactor = repeatFactor;
+    }
 
-    public void removeSegment(int pos) {}
+    public void setComments(String comments)
+    {
+        this.comments = comments;
+    }
+
+    public void setDelay(int delay)
+    {
+        this.delay = delay;
+    }
+    public void addSegment(int pos, Segment segment)
+    {}
+
+    public void removeSegment(int pos)
+    {}
 
     public void changeOrder() {}
 }
