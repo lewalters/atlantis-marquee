@@ -17,6 +17,7 @@ public abstract class Segment
     private Duration duration;
     private String style;
     private String effect;
+    private String source;
 
     protected Segment(Duration duration, String style, String effect)
     {
