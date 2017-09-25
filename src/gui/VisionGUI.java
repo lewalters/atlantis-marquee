@@ -20,7 +20,7 @@ public class VisionGUI extends Application
         WelcomePane welcomePane = new WelcomePane();
         SettingsPane settingsPane = new SettingsPane();
         AuthPane authPane = new AuthPane();
-        MarqueePane marqueePane = new MarqueePane(1000, 200);
+        MarqueePane marqueePane = new MarqueePane(1500, 250, 2);
 
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");

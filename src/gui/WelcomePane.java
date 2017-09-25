@@ -18,12 +18,14 @@ public class WelcomePane extends BorderPane
 {
     WelcomePane()
     {
+        // Welcome message in the middle of the screen
         Label welcomeLabel = new Label("Welcome to VISION");
         welcomeLabel.setFont(new Font("Onyx", 72));
         welcomeLabel.setMaxWidth(Double.MAX_VALUE);
         welcomeLabel.setAlignment(Pos.CENTER);
         this.setCenter(welcomeLabel);
 
+        // Start message at the bottom of the screen
         Label startLabel = new Label("Click anywhere to start...");
         startLabel.setFont(new Font("Onyx", 32));
         startLabel.setMaxWidth(Double.MAX_VALUE);
