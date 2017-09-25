@@ -74,4 +74,20 @@ public class MarqueePane extends StackPane
             }
         }
     }
+
+    public void scrollLeft()
+    {
+        for (int c = 0; c < NUM_COLS - 1; c++)
+        {
+            for (int r = 0; r < NUM_ROWS; r++)
+            {
+                ledMatrix[r][c].setFill(ledMatrix[r][c+1].getFill());
+            }
+        }
+
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+        }
+    }
 }
