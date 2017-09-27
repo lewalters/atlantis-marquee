@@ -13,8 +13,6 @@ import java.util.HashMap;
  */
 public abstract class Segment
 {
-    private static HashMap<Character, Dot[]> charDots;
-
     private Dot[] contents;
     private Duration duration;
     private String style;

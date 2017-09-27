@@ -1,12 +1,15 @@
 package gui;
 
-import javafx.geometry.Insets;
+import data.CharDot;
+import data.Dot;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
 
 /**
  * (Insert a brief comment that describes
@@ -75,19 +78,77 @@ public class MarqueePane extends StackPane
         }
     }
 
-    public void scrollLeft()
+    private ArrayList<Dot[]> test = CharDot.getChar('A', "B22222");
+    private ArrayList<Dot[]> space = CharDot.getChar(' ', "B22222");
+    private ArrayList<Dot[]> B = CharDot.getChar('B', "B22222");
+    private ArrayList<Dot[]> C = CharDot.getChar('C', "B22222");
+    private ArrayList<Dot[]> D = CharDot.getChar('D', "B22222");
+    private ArrayList<Dot[]> E = CharDot.getChar('E', "B22222");
+    private ArrayList<Dot[]> F = CharDot.getChar('F', "B22222");
+    private int segIndex = 0;
+
+    public void testing() {
+        test.addAll(space);
+        test.addAll(B);
+        test.addAll(space);
+        test.addAll(C);
+        test.addAll(space);
+        test.addAll(D);
+        test.addAll(space);
+        test.addAll(E);
+        test.addAll(space);
+        test.addAll(F);
+    }
+
+    public void scrollLeftText()
     {
-        for (int c = 0; c < NUM_COLS - 1; c++)
+        for (int c = 2; c < NUM_COLS - 3; c++)
         {
-            for (int r = 0; r < NUM_ROWS; r++)
+            for (int r = 2; r < NUM_ROWS - 2; r++)
             {
                 ledMatrix[r][c].setFill(ledMatrix[r][c+1].getFill());
             }
         }
 
-        for (int r = 0; r < NUM_ROWS; r++)
+        for (int r = 2; r < NUM_ROWS - 2; r++)
         {
-            ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+            if (segIndex < test.size())
+            {
+                Dot dot = test.get(segIndex)[r-2];
+                ledMatrix[r][NUM_COLS - 3].setFill(Color.web(dot.getColor(), dot.getIntensity()));
+            }
+            else
+            {
+                ledMatrix[r][NUM_COLS - 3].setFill(OFF_COLOR);
+            }
         }
+
+        segIndex++;
+    }
+
+    public void scrollLeftImage()
+    {
+        for (int c = 0; c < NUM_COLS - 1; c++)
+        {
+            for (int r = 2; r < NUM_ROWS - 2; r++)
+            {
+                ledMatrix[r][c].setFill(ledMatrix[r][c+1].getFill());
+            }
+        }
+
+        for (int r = 0; r < NUM_ROWS - 1; r++)
+        {
+            if (segIndex < test.size())
+            {
+                Dot dot = test.get(segIndex)[r];
+                ledMatrix[r][NUM_COLS - 1].setFill(Color.web(dot.getColor(), dot.getIntensity()));
+            }
+            else
+            {
+                ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+            }
+        }
+
+        segIndex++;
     }
 }
