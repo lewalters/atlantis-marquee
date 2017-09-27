@@ -7,11 +7,14 @@ import data.TextSegment;
 
 public class SegmentTest {
 
+	private Segment s;
+
 	@Test
 	public void test() {
 		
-		private Segment s;
+
 		fail("Not yet implemented");
+		///////////
 	}
 
 }
