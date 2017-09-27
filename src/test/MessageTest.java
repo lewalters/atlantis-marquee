@@ -42,7 +42,7 @@ public class MessageTest {
     @Test
     public void testAddSegment()
     {
-
+        //
     }
 
     @Test
