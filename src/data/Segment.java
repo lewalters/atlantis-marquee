@@ -1,7 +1,5 @@
 package data;
 
-import java.time.Duration;
-
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -15,6 +13,7 @@ public abstract class Segment implements Iterable<Dot[]>
     private int duration;
     private String style;
     private String effect;
+    private String type;
 
     protected Segment(int duration, String style, String effect)
     {
@@ -38,6 +37,11 @@ public abstract class Segment implements Iterable<Dot[]>
         return effect;
     }
 
+    public String getType()
+    {
+        return type;
+    }
+
     public void setDuration(int duration)
     {
         this.duration = duration;
@@ -51,6 +55,11 @@ public abstract class Segment implements Iterable<Dot[]>
     public void setEffect(String effect)
     {
         this.effect = effect;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
     }
 
 }

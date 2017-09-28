@@ -1,6 +1,5 @@
 package data;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -23,9 +22,11 @@ public class TextSegment extends Segment
         super(duration, style, effect);
         this.text = text;
 
+        String textUp = text.toUpperCase();
+
         for (int i = 0; i < text.length(); i++)
         {
-            contents.add(new CharDot(text.charAt(i), "B22222"));
+            contents.add(new CharDot(textUp.charAt(i), "B22222"));
 
             if (i < text.length() - 1)
             {
@@ -42,6 +43,11 @@ public class TextSegment extends Segment
     public String getText()
     {
         return this.text;
+    }
+
+    public int getLength()
+    {
+        return length;
     }
 
     public void setText(String text)

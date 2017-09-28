@@ -44,7 +44,7 @@ public class VisionGUI extends Application
         });
 
         CharDot.initMap();
-        Segment segment = new TextSegment(10, "plain", "plain", "J");
+        Segment segment = new TextSegment(10, "plain", "plain", "/");
         Iterator<Dot[]> iterator = segment.iterator();
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.scrollLeftText(iterator)));
         Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.blinkBorder()));

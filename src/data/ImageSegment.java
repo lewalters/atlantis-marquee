@@ -1,8 +1,8 @@
 package data;
 
-import jdk.internal.jline.internal.Nullable;
-
 import java.util.Iterator;
+
+import static util.Utility.convertImage;
 
 /**
  * (Insert a brief comment that describes
@@ -15,11 +15,13 @@ import java.util.Iterator;
 public class ImageSegment extends Segment
 {
     private String source;
+    private Dot[][] contents;
 
     public ImageSegment(int duration, String style, String effect, String source)
     {
         super(duration, style, effect);
         this.source = source;
+        contents = convertImage(source);
     }
     public String getSource() {
         return this.source;
@@ -30,18 +32,21 @@ public class ImageSegment extends Segment
         this.source = source;
     }
 
-    // TODO: Correct
     @Override
-    public Iterator<Dot[]> iterator() {
+    public Iterator<Dot[]> iterator()
+    {
         return new Iterator<>() {
+
+            int index = 0;
+
             @Override
             public boolean hasNext() {
-                return false;
+                return index < contents.length && contents[index] != null;
             }
 
             @Override
             public Dot[] next() {
-                return new Dot[0];
+                return contents[index++];
             }
         };
     }
