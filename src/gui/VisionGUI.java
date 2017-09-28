@@ -41,6 +41,7 @@ public class VisionGUI extends Application
         settingsPane.setOnMouseClicked(e -> {
             marqueeStage.show();
             marqueePane.setBorderColor("FFFFFF");
+            marqueePane.setPaddingColor("000000");
         });
 
         CharDot.initMap();

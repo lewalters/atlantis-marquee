@@ -1,7 +1,6 @@
 package gui;
 
 import data.Dot;
-import data.Segment;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -9,7 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * (Insert a brief comment that describes
@@ -26,6 +27,8 @@ public class MarqueePane extends StackPane
     private static Color OFF_COLOR = Color.DIMGREY;
 
     private Circle[][] ledMatrix;
+    private List<Circle> border;
+    private List<Circle> padding;
 
     MarqueePane(int width, int height, int ledGap)
     {
@@ -38,6 +41,8 @@ public class MarqueePane extends StackPane
         GridPane backGrid = new GridPane();
         GridPane ledGrid = new GridPane();
         ledMatrix = new Circle[NUM_ROWS][NUM_COLS];
+        border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
+        padding = new ArrayList<>((NUM_ROWS - 2) * (NUM_COLS - 2) - 4);
 
         // Determine the radius based on the provided width
         int ledRadius = ((width - NUM_COLS * ledGap) / (NUM_COLS)) / 2;
@@ -50,6 +55,19 @@ public class MarqueePane extends StackPane
                 backGrid.add(new Circle(ledRadius, OFF_COLOR), c, r);
                 ledMatrix[r][c] = new Circle(ledRadius, OFF_COLOR);
                 ledGrid.add(ledMatrix[r][c], c, r);
+
+                // Add the circles within the border to an ArrayList for easier referencing
+                if (r == 0 || r == NUM_ROWS - 1 || c == 0 || c == NUM_COLS - 1)
+                {
+                    border.add(ledMatrix[r][c]);
+                }
+
+                // Add the circles within the padding to an ArrayList for easier referencing
+                if (((r == 1 || r == NUM_ROWS - 2) && !(c == 0 || c == NUM_COLS - 1)) ||
+                     (c == 1 || c == NUM_COLS - 2) && !(r == 0 || r == NUM_ROWS - 1))
+                {
+                    padding.add(ledMatrix[r][c]);
+                }
             }
         }
 
@@ -68,40 +86,22 @@ public class MarqueePane extends StackPane
 
     public void setBorderColor(String color)
     {
-        // Top and bottom border
-        for (int c = 1; c < NUM_COLS - 1; c++)
-        {
-            ledMatrix[0][c].setFill(Color.web(color));
-            ledMatrix[NUM_ROWS - 1][c].setFill(Color.web(color));
-        }
-
-        // Left and right border
-        for (int r = 0; r < NUM_ROWS; r++)
-        {
-            ledMatrix[r][0].setFill(Color.web(color));
-            ledMatrix[r][NUM_COLS - 1].setFill(Color.web(color));
-        }
+        border.forEach(led -> led.setFill(Color.web(color)));
     }
 
     public void blinkBorder()
     {
-        // Top and bottom border
-        for (int c = 1; c < NUM_COLS - 1; c++)
-        {
-            Circle top = ledMatrix[0][c];
-            Circle bottom = ledMatrix[NUM_ROWS - 1][c];
-            top.setOpacity(top.getOpacity() == 1 ? 0 : 1);
-            bottom.setOpacity(bottom.getOpacity() == 1 ? 0 : 1);
-        }
+        border.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
+    }
 
-        // Left and right border
-        for (int r = 0; r < NUM_ROWS; r++)
-        {
-            Circle left = ledMatrix[r][0];
-            Circle right = ledMatrix[r][NUM_COLS - 1];
-            left.setOpacity(left.getOpacity() == 1 ? 0 : 1);
-            right.setOpacity(right.getOpacity() == 1 ? 0 : 1);
-        }
+    public void setPaddingColor(String color)
+    {
+        padding.forEach(led -> led.setFill(Color.web(color)));
+    }
+
+    public void togglePadding()
+    {
+        padding.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
     }
 
     public void scrollLeftText(Iterator<Dot[]> segment)
