@@ -1,11 +1,17 @@
 package gui;
 
+import data.CharDot;
+import data.Dot;
+import data.Segment;
+import data.TextSegment;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.Iterator;
 
 public class VisionGUI extends Application
 {
@@ -34,14 +40,23 @@ public class VisionGUI extends Application
 
         settingsPane.setOnMouseClicked(e -> {
             marqueeStage.show();
-            marqueePane.testing();
+            marqueePane.setBorderColor("FFFFFF");
         });
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.scrollLeftText()));
+        CharDot.initMap();
+        Segment segment = new TextSegment(10, "plain", "plain", "J");
+        Iterator<Dot[]> iterator = segment.iterator();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.scrollLeftText(iterator)));
+        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.blinkBorder()));
 
-        timeline.setCycleCount(92);
+        timeline.setCycleCount(20);
+        timeline2.setCycleCount(50);
 
-        marqueePane.setOnMouseClicked(e -> timeline.play());
+        marqueePane.setOnMouseClicked(e -> {
+
+            timeline.play();
+            timeline2.play();
+        });
 
         marqueePane.setOnKeyTyped(e -> timeline.stop());
     }

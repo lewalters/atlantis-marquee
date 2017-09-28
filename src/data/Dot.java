@@ -24,9 +24,9 @@ public class Dot
         return color;
     }
 
-    public double getIntensity()
+    public int getIntensity()
     {
-        return intensity / 100.0;
+        return intensity;
     }
 
     public void setColor(String color)

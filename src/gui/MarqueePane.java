@@ -1,7 +1,7 @@
 package gui;
 
-import data.CharDot;
 import data.Dot;
+import data.Segment;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * (Insert a brief comment that describes
@@ -64,44 +64,60 @@ public class MarqueePane extends StackPane
         backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
+    }
 
-        // Testing color changes
+    public void setBorderColor(String color)
+    {
+        // Top and bottom border
+        for (int c = 1; c < NUM_COLS - 1; c++)
+        {
+            ledMatrix[0][c].setFill(Color.web(color));
+            ledMatrix[NUM_ROWS - 1][c].setFill(Color.web(color));
+        }
+
+        // Left and right border
         for (int r = 0; r < NUM_ROWS; r++)
         {
-            for (int c = 0; c < NUM_COLS; c++)
-            {
-                double red = Math.random();
-                double green = Math.random();
-                double blue = Math.random();
-                ledMatrix[r][c].setFill(new Color(red, green, blue, 1.0));
-            }
+            ledMatrix[r][0].setFill(Color.web(color));
+            ledMatrix[r][NUM_COLS - 1].setFill(Color.web(color));
         }
     }
 
-    private ArrayList<Dot[]> test = CharDot.getChar('A', "B22222");
-    private ArrayList<Dot[]> space = CharDot.getChar(' ', "B22222");
-    private ArrayList<Dot[]> B = CharDot.getChar('B', "B22222");
-    private ArrayList<Dot[]> C = CharDot.getChar('C', "B22222");
-    private ArrayList<Dot[]> D = CharDot.getChar('D', "B22222");
-    private ArrayList<Dot[]> E = CharDot.getChar('E', "B22222");
-    private ArrayList<Dot[]> F = CharDot.getChar('F', "B22222");
-    private int segIndex = 0;
+    public void blinkBorder()
+    {
+        // Top and bottom border
+        for (int c = 1; c < NUM_COLS - 1; c++)
+        {
+            Circle top = ledMatrix[0][c];
+            Circle bottom = ledMatrix[NUM_ROWS - 1][c];
+            top.setOpacity(top.getOpacity() == 1 ? 0 : 1);
+            bottom.setOpacity(bottom.getOpacity() == 1 ? 0 : 1);
+        }
 
-    public void testing() {
-        test.addAll(space);
-        test.addAll(B);
-        test.addAll(space);
-        test.addAll(C);
-        test.addAll(space);
-        test.addAll(D);
-        test.addAll(space);
-        test.addAll(E);
-        test.addAll(space);
-        test.addAll(F);
+        // Left and right border
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            Circle left = ledMatrix[r][0];
+            Circle right = ledMatrix[r][NUM_COLS - 1];
+            left.setOpacity(left.getOpacity() == 1 ? 0 : 1);
+            right.setOpacity(right.getOpacity() == 1 ? 0 : 1);
+        }
     }
 
-    public void scrollLeftText()
+    public void scrollLeftText(Iterator<Dot[]> segment)
     {
+        Dot[] newCol;
+
+        if (segment.hasNext())
+        {
+            newCol = segment.next();
+        }
+        else
+        {
+            newCol = null;
+        }
+
+
         for (int c = 2; c < NUM_COLS - 3; c++)
         {
             for (int r = 2; r < NUM_ROWS - 2; r++)
@@ -112,21 +128,19 @@ public class MarqueePane extends StackPane
 
         for (int r = 2; r < NUM_ROWS - 2; r++)
         {
-            if (segIndex < test.size())
+            if (newCol != null)
             {
-                Dot dot = test.get(segIndex)[r-2];
-                ledMatrix[r][NUM_COLS - 3].setFill(Color.web(dot.getColor(), dot.getIntensity()));
+                Dot dot = newCol[r-2];
+                ledMatrix[r][NUM_COLS - 3].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
             }
             else
             {
                 ledMatrix[r][NUM_COLS - 3].setFill(OFF_COLOR);
             }
         }
-
-        segIndex++;
     }
 
-    public void scrollLeftImage()
+/*    public void scrollLeftImage()
     {
         for (int c = 0; c < NUM_COLS - 1; c++)
         {
@@ -150,5 +164,5 @@ public class MarqueePane extends StackPane
         }
 
         segIndex++;
-    }
+    }*/
 }

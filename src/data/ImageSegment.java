@@ -1,6 +1,8 @@
 package data;
 
-import java.time.Duration;
+import jdk.internal.jline.internal.Nullable;
+
+import java.util.Iterator;
 
 /**
  * (Insert a brief comment that describes
@@ -14,7 +16,7 @@ public class ImageSegment extends Segment
 {
     private String source;
 
-    public ImageSegment(Duration duration, String style, String effect, String source)
+    public ImageSegment(int duration, String style, String effect, String source)
     {
         super(duration, style, effect);
         this.source = source;
@@ -26,5 +28,21 @@ public class ImageSegment extends Segment
     public void setSource(String source)
     {
         this.source = source;
+    }
+
+    // TODO: Correct
+    @Override
+    public Iterator<Dot[]> iterator() {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Dot[] next() {
+                return new Dot[0];
+            }
+        };
     }
 }

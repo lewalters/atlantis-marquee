@@ -1,7 +1,6 @@
 package data;
 
 import java.time.Duration;
-import java.util.HashMap;
 
 /**
  * (Insert a brief comment that describes
@@ -11,22 +10,20 @@ import java.util.HashMap;
  *
  * @author Team Atlantis
  */
-public abstract class Segment
+public abstract class Segment implements Iterable<Dot[]>
 {
-    private Dot[] contents;
-    private Duration duration;
+    private int duration;
     private String style;
     private String effect;
-    private String source;
 
-    protected Segment(Duration duration, String style, String effect)
+    protected Segment(int duration, String style, String effect)
     {
         this.duration = duration;
         this.style = style;
         this.effect = effect;
     }
 
-    public Duration getDuration()
+    public int getDuration()
     {
         return duration;
     }
@@ -41,7 +38,7 @@ public abstract class Segment
         return effect;
     }
 
-    public void setDuration(Duration duration)
+    public void setDuration(int duration)
     {
         this.duration = duration;
     }
