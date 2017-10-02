@@ -1,6 +1,8 @@
 package data;
 
-import java.time.Duration;
+import java.util.Iterator;
+
+import static util.Utility.convertImage;
 
 /**
  * (Insert a brief comment that describes
@@ -13,12 +15,15 @@ import java.time.Duration;
 public class ImageSegment extends Segment
 {
     private String source;
+    private Dot[][] contents;
 
-    public ImageSegment(Duration duration, String style, String effect, String source)
+    public ImageSegment(int duration, String style, String effect, String source)
     {
         super(duration, style, effect);
         this.source = source;
+        contents = convertImage(source);
     }
+    
     public String getSource() {
         return this.source;
     }
@@ -26,5 +31,24 @@ public class ImageSegment extends Segment
     public void setSource(String source)
     {
         this.source = source;
+    }
+
+    @Override
+    public Iterator<Dot[]> iterator()
+    {
+        return new Iterator<>() {
+
+            int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < contents.length && contents[index] != null;
+            }
+
+            @Override
+            public Dot[] next() {
+                return contents[index++];
+            }
+        };
     }
 }
