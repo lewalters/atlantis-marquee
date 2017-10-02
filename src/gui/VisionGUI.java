@@ -1,18 +1,18 @@
 package gui;
 
+import data.CharDot;
+import data.Dot;
+import data.Segment;
+import data.TextSegment;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Iterator;
 
 public class VisionGUI extends Application
 {
@@ -39,13 +39,26 @@ public class VisionGUI extends Application
 
         welcomePane.setOnMouseClicked(e -> primaryStage.setScene(new Scene(settingsPane)));
 
-        settingsPane.setOnMouseClicked(e -> marqueeStage.show());
+        settingsPane.setOnMouseClicked(e -> {
+            marqueeStage.show();
+            marqueePane.setBorderColor("FFFFFF");
+            marqueePane.setPaddingColor("000000");
+        });
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollLeft()));
+        CharDot.initMap();
+        Segment segment = new TextSegment(10, "plain", "plain", "/");
+        Iterator<Dot[]> iterator = segment.iterator();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.scrollLeftText(iterator)));
+        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.blinkBorder()));
 
-        timeline.setCycleCount(96);
+        timeline.setCycleCount(20);
+        timeline2.setCycleCount(50);
 
-        marqueePane.setOnMouseClicked(e -> timeline.play());
+        marqueePane.setOnMouseClicked(e -> {
+
+            timeline.play();
+            timeline2.play();
+        });
 
         marqueePane.setOnKeyTyped(e -> timeline.stop());
     }

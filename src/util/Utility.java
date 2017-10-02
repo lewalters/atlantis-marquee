@@ -1,3 +1,7 @@
+package util;
+
+import data.Dot;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -14,7 +18,10 @@ public final class Utility
 
     public static void loadData(String fileName) {}
 
-    public static void convertImage(String source) {}
+    public static Dot[][] convertImage(String source)
+    {
+        return new Dot[0][0];
+    }
 
     public static void authenticate(String password) {}
 }
