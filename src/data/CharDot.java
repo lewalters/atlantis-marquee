@@ -79,7 +79,7 @@ public class CharDot implements Iterable<Dot[]>
     @Override
     public Iterator<Dot[]> iterator()
     {
-        return new Iterator<>() {
+        return new Iterator<Dot[]>() {
 
             int index = 0;
 

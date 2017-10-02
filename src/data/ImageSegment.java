@@ -36,7 +36,7 @@ public class ImageSegment extends Segment
     @Override
     public Iterator<Dot[]> iterator()
     {
-        return new Iterator<>() {
+        return new Iterator<Dot[]>() {
 
             int index = 0;
 
