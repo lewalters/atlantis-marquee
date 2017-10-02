@@ -34,5 +34,6 @@ public class DotTest {
 		
 		assertEquals("data.Dot test: setIntensity", 2, d.getIntensity());
 	}
+	////
 
 }
