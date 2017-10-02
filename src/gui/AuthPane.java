@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -54,7 +55,4 @@ public class AuthPane extends StackPane
         authGrid.add(cancelButton,7,3);
 
     }
-
-
-
 }

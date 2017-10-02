@@ -49,7 +49,7 @@ public class TextSegment extends Segment
     {
         return length;
     }
-
+    
     public void setText(String text)
     {
         this.text = text;
@@ -83,5 +83,4 @@ public class TextSegment extends Segment
             }
         };
     }
-
 }

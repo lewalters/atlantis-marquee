@@ -61,5 +61,4 @@ public abstract class Segment implements Iterable<Dot[]>
     {
         this.type = type;
     }
-
 }
