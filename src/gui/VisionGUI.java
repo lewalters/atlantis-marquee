@@ -35,6 +35,9 @@ public class VisionGUI extends Application
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
 
+        Stage authStage = new Stage();
+        authStage.setScene(new Scene(authPane));
+
         Stage marqueeStage = new Stage();
         marqueeStage.setScene(new Scene(marqueePane));
 
@@ -44,6 +47,17 @@ public class VisionGUI extends Application
             marqueeStage.show();
             marqueePane.setBorderColor("FFFFFF");
             marqueePane.setPaddingColor("000000");
+        });
+
+        settingsPane.getStartButton().setOnAction(e -> {
+            if (settingsPane.getAuthenticationCheckBox().isSelected())
+            {
+                authStage.show();
+            }
+            else
+            {
+                marqueeStage.show();
+            }
         });
 
         CharDot.initMap();
