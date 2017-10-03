@@ -58,7 +58,7 @@ public class TextSegment extends Segment
     @Override
     public Iterator<Dot[]> iterator()
     {
-        return new Iterator<>() {
+        return new Iterator<Dot[]>() {
 
             int index = 0;
             Iterator<Dot[]> charDot = contents.get(index).iterator();
