@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import util.ScrollDirection;
 
 import java.util.Iterator;
 
@@ -45,13 +46,13 @@ public class VisionGUI extends Application
         });
 
         CharDot.initMap();
-        Segment segment = new TextSegment(10, "plain", "plain", "/");
-        Iterator<Dot[]> iterator = segment.iterator();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.scrollLeftText(iterator)));
-        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.blinkBorder()));
+        Segment segment = new TextSegment(10, "plain", "plain", "abc");
+        Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), e -> marqueePane.scrollText(iterator, ScrollDirection.UP)));
+        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
 
-        timeline.setCycleCount(20);
-        timeline2.setCycleCount(50);
+        timeline.setCycleCount(100);
+        timeline2.setCycleCount(5);
 
         marqueePane.setOnMouseClicked(e -> {
 
