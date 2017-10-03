@@ -12,7 +12,7 @@ import java.util.Iterator;
  *
  * @author Team Atlantis
  */
-public abstract class Segment implements Iterable<Dot[]>
+public abstract class Segment
 {
     private int duration;
     private String style;
