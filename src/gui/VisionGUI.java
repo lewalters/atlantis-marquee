@@ -4,6 +4,7 @@ import data.CharDot;
 import data.Dot;
 import data.Segment;
 import data.TextSegment;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;

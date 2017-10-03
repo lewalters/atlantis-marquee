@@ -25,6 +25,7 @@ public abstract class ImageSegment extends Segment
         this.source = source;
         contents = convertImage(source);
     }
+    
     public String getSource() {
         return this.source;
     }
