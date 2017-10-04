@@ -1,5 +1,9 @@
 package data;
 
+import util.ScrollDirection;
+
+import java.util.Iterator;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -8,7 +12,7 @@ package data;
  *
  * @author Team Atlantis
  */
-public abstract class Segment implements Iterable<Dot[]>
+public abstract class Segment
 {
     private int duration;
     private String style;
@@ -61,4 +65,6 @@ public abstract class Segment implements Iterable<Dot[]>
     {
         this.type = type;
     }
+
+    public abstract Iterator<Dot[]> iterator(ScrollDirection direction);
 }

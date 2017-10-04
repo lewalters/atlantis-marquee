@@ -10,11 +10,11 @@ import java.time.LocalTime;
  *
  * @author Team Atlantis
  */
-public class Matrix
+public class Marquee
 {
     private Message message;
     private int width, height;
     private LocalTime startTime;
 
-    public Matrix() {}
+    public Marquee() {}
 }
