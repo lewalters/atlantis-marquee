@@ -1,3 +1,4 @@
+/*
 package test;
 
 import static org.junit.Assert.*;
@@ -30,3 +31,4 @@ public class ImageSegmentTest {
         assertEquals("data.ImageSegment test: setSource", "C:/Capstone/Messages/Flower.jpg", is.getSource());
     }
 }
+*/
