@@ -1,5 +1,7 @@
 package data;
 
+import util.ScrollDirection;
+
 import java.util.Iterator;
 
 import static util.Utility.convertImage;
@@ -12,7 +14,7 @@ import static util.Utility.convertImage;
  *
  * @author Team Atlantis
  */
-public class ImageSegment extends Segment
+public abstract class ImageSegment extends Segment
 {
     private String source;
     private Dot[][] contents;
@@ -34,7 +36,7 @@ public class ImageSegment extends Segment
     }
 
     @Override
-    public Iterator<Dot[]> iterator()
+    public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
         return new Iterator<Dot[]>() {
 

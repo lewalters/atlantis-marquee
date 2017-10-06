@@ -1,8 +1,10 @@
 package data;
 
+import util.ScrollDirection;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * (Insert a brief comment that describes
@@ -12,33 +14,34 @@ import java.util.Map;
  *
  * @author Team Atlantis
  */
-public class CharDot implements Iterable<Dot[]>
+public class CharDot
 {
     private static final HashMap<Character, int[][]> charMap = new HashMap<>(50);
 
     private String color;
-    private Dot[][] charDots;
-    private int length;
+    private CharDotMatrix charDots;
+    private int hLength, vLength;
 
     public CharDot(char ch, String color)
     {
         this.color = color;
         int[][] leds = charMap.get(ch);
-        System.out.println(ch);
-        charDots = new Dot[leds.length][12];
-        length = leds.length;
+        charDots = new CharDotMatrix(12, leds.length);
+        hLength = leds.length;
+        vLength = 12;
 
-        for (int r = 0; r < leds.length; r++)
+        for (int r = 0; r < vLength; r++)
         {
-            for (int c = 0; c < 12; c++)
+            for (int c = 0; c < hLength; c++)
             {
-                if (leds[r][c] == 1)
+                // Columns and rows are explicitly reversed in binary matrix representations below
+                if (leds[c][r] == 1)
                 {
-                    charDots[r][c] = new Dot(color, 100);
+                    charDots.set(new Dot(color, 100), r, c);
                 }
                 else
                 {
-                    charDots[r][c] = new Dot(color, 0);
+                    charDots.set(new Dot(color, 0), r, c);
                 }
             }
         }
@@ -46,13 +49,14 @@ public class CharDot implements Iterable<Dot[]>
 
     public CharDot()
     {
-        charDots = new Dot[1][12];
+        charDots = new CharDotMatrix(12, 1);
 
         for (int i = 0; i < 12; i++)
         {
             color = "696969";
-            length = 1;
-            charDots[0][i] = new Dot(color, 0);
+            hLength = 1;
+            vLength = 12;
+            charDots.set(new Dot(color, 0), i, 0);
         }
     }
 
@@ -61,14 +65,14 @@ public class CharDot implements Iterable<Dot[]>
         return color;
     }
 
-    public Dot[][] getCharDots()
+    public int getHLength()
     {
-        return charDots;
+        return hLength;
     }
 
-    public int getLength()
+    public int getVLength()
     {
-        return length;
+        return vLength;
     }
 
     public void setColor(String color)
@@ -76,23 +80,87 @@ public class CharDot implements Iterable<Dot[]>
         this.color = color;
     }
 
-    @Override
-    public Iterator<Dot[]> iterator()
+    public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
-        return new Iterator<Dot[]>() {
+        if (direction == ScrollDirection.LEFT)
+        {
+            return new Iterator<>()
+            {
+                int index = 0;
 
-            int index = 0;
+                @Override
+                public boolean hasNext()
+                {
+                    return index < hLength && charDots.getCol(index) != null;
+                }
 
-            @Override
-            public boolean hasNext() {
-                return index < length && charDots[index] != null;
-            }
+                @Override
+                public Dot[] next()
+                {
+                    return charDots.getCol(index++);
+                }
+            };
+        }
 
-            @Override
-            public Dot[] next() {
-                return charDots[index++];
-            }
-        };
+        else if (direction == ScrollDirection.RIGHT)
+        {
+            return new Iterator<>()
+            {
+                int index = hLength - 1;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index > 0 && charDots.getCol(index) != null;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return charDots.getCol(index--);
+                }
+            };
+        }
+
+        else if (direction == ScrollDirection.UP)
+        {
+            return new Iterator<>()
+            {
+                int index = 0;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index < vLength && charDots.getRow(index) != null;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return charDots.getRow(index++);
+                }
+            };
+        }
+
+        else // DOWN
+        {
+            return new Iterator<>()
+            {
+                int index = vLength - 1;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index > 0 && charDots.getRow(index) != null;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return charDots.getRow(index--);
+                }
+            };
+        }
     }
 
     public static void initMap()
@@ -596,3 +664,28 @@ public class CharDot implements Iterable<Dot[]>
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
     }
+
+class CharDotMatrix
+{
+    private Dot[][] matrix;
+
+    public CharDotMatrix(int rows, int cols)
+    {
+        matrix = new Dot[cols][rows];
+    }
+
+    public void set(Dot dot, int row, int col)
+    {
+        matrix[col][row] = dot;
+    }
+
+    public Dot[] getCol(int col)
+    {
+        return matrix[col];
+    }
+
+    public Dot[] getRow(int row)
+    {
+        return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
+    }
+}
