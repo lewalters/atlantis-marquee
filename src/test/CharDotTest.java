@@ -19,8 +19,9 @@ public class CharDotTest {
     @Test
     public void testCharDotGetters()
     {
-
         assertEquals("data.CharDot test: getColor", "EF0404", cd.getColor());
+        assertEquals("data.CharDot test: getHLength", 8, cd.getHLength());
+        assertEquals("data.CharDot test: getVLength", 12, cd.getVLength());
     }
 
     @Test
