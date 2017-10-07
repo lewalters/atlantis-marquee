@@ -3,17 +3,25 @@ package test;
 import static org.junit.Assert.*;
 
 import data.CharDot;
+import data.Dot;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import util.ScrollDirection;
+
+import java.util.Iterator;
 
 public class CharDotTest {
 
-    private CharDot cd;
+    private static CharDot cd;
+    private static String color;
 
     @BeforeClass
-    public void set()
+    public static void setup()
     {
-        cd = new CharDot('C', "EF0404");
+        CharDot.initMap();
+        color = "EF0404";
+        cd = new CharDot('C', color);
     }
 
     @Test
@@ -33,15 +41,63 @@ public class CharDotTest {
     }
 
     @Test
-    public void testIterator()
+    public void testIteratorLeft()
     {
+        Iterator<Dot[]> direction = cd.iterator(ScrollDirection.LEFT);
+        assertTrue("data.CharDot test:Left Iterator", direction.hasNext());
 
+        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 0), new Dot(color, 0)};
+
+        assertArrayEquals(d, direction.next());
     }
 
     @Test
+    public void testIteratorRight()
+    {
+        Iterator<Dot[]> direction = cd.iterator(ScrollDirection.RIGHT);
+        assertTrue("data.CharDot test:Right Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot(color, 0), new Dot(color, 100), new Dot(color, 100),
+                new Dot(color, 0), new Dot(color, 0), new Dot(color, 0),
+                new Dot(color, 0), new Dot(color, 0), new Dot(color, 0),
+                new Dot(color, 100), new Dot(color, 100), new Dot(color, 0)};
+
+        assertArrayEquals(d, direction.next());
+    }
+
+    @Test
+    public void testIteratorUp()
+    {
+        Iterator<Dot[]> direction = cd.iterator(ScrollDirection.UP);
+        assertTrue("data.CharDot test:Up Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 0)};
+
+        assertArrayEquals(d, direction.next());
+    }
+
+    @Test
+    public void testIteratorDown()
+    {
+        Iterator<Dot[]> direction = cd.iterator(ScrollDirection.DOWN);
+        assertTrue("data.CharDot test:Right Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
+                new Dot(color, 100), new Dot(color, 0)};
+
+        assertArrayEquals(d, direction.next());
+    }
+
+    /*@Test
     public void testInitMap()
     {
 
-    }
+    }*/
 
 }
