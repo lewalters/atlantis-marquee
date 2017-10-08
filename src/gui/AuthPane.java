@@ -51,7 +51,7 @@ public class AuthPane extends VBox
         buttons.setSpacing(5);
         buttons.setAlignment(Pos.CENTER);
 
-        // Global Pane Settings (VBOX)
+        // Global Pane Global (VBOX)
         this.setPrefSize(200, 150);
         this.setPadding(new Insets(10));
         this.setSpacing(5);
