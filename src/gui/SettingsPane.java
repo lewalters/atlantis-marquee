@@ -30,7 +30,7 @@ public class SettingsPane extends BorderPane
     SettingsPane()
     {
         // Top of pane
-        Label titleLabel = new Label("Marquee Global");
+        Label titleLabel = new Label("Marquee Settings");
         titleLabel.setFont(new Font("Onyx", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
@@ -148,7 +148,7 @@ public class SettingsPane extends BorderPane
         col.setHalignment(HPos.LEFT);
         settingsGrid.getColumnConstraints().add(col);
 
-        // Global Pane Global (BorderPane)
+        // Global Pane Settings (BorderPane)
         this.setPrefSize(640, 480);
         this.setPadding(new Insets(20));
 
