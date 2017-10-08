@@ -1,6 +1,7 @@
 package util;
 
 import data.Dot;
+import data.DotMatrix;
 
 /**
  * (Insert a brief comment that describes
@@ -18,9 +19,9 @@ public final class Utility
 
     public static void loadData(String fileName) {}
 
-    public static Dot[][] convertImage(String source)
+    public static DotMatrix convertImage(String source)
     {
-        return new Dot[0][0];
+        return new DotMatrix(0, 0);
     }
 
     public static void authenticate(String password) {}
