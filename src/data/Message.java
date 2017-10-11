@@ -68,11 +68,16 @@ public class Message
     {
         this.delay = delay;
     }
+
     public void addSegment(int pos, Segment segment)
-    {}
+    {
+        contents.add(pos, segment);
+    }
 
     public void removeSegment(int pos)
-    {}
+    {
+        contents.remove(pos);
+    }
 
     public void changeOrder() {}
 }
