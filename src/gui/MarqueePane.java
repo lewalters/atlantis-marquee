@@ -125,18 +125,18 @@ public class MarqueePane extends StackPane
             {
                 for (int c = TEXT_COL_START; c < TEXT_COL_END; c++)
                 {
-                    for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                    for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                     {
                         ledMatrix[r][c].setFill(ledMatrix[r][c + 1].getFill());
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                 {
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_END].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        ledMatrix[r][TEXT_COL_END].setFill(Color.web(dot.getColor(), dot.getOpacity()));
                     }
                     else
                     {
@@ -149,18 +149,18 @@ public class MarqueePane extends StackPane
             {
                 for (int c = TEXT_COL_END; c > TEXT_COL_START; c--)
                 {
-                    for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                    for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                     {
                         ledMatrix[r][c].setFill(ledMatrix[r][c - 1].getFill());
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                 {
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_START].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        ledMatrix[r][TEXT_COL_START].setFill(Color.web(dot.getColor(), dot.getOpacity()));
                     }
                     else
                     {
@@ -171,48 +171,66 @@ public class MarqueePane extends StackPane
             }
             case UP:
             {
-                for (int r = 2; r < NUM_ROWS - 3; r++)
+                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
                 {
-                    for (int c = 2; c < NUM_COLS - 2; c++)
+                    for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                     {
                         ledMatrix[r][c].setFill(ledMatrix[r + 1][c].getFill());
                     }
                 }
 
-                for (int c = 2; c < 28; c++)
+                for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                 {
                     if (newRay != null)
                     {
-                        Dot dot = newRay[c - 2];
-                        ledMatrix[NUM_ROWS - 3][c].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+                            ledMatrix[TEXT_ROW_END][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                        }
+                        else
+                        {
+                            ledMatrix[TEXT_ROW_END][c].setFill(OFF_COLOR);
+                        }
                     }
                     else
                     {
-                        ledMatrix[NUM_ROWS - 3][c].setFill(OFF_COLOR);
+                        ledMatrix[TEXT_ROW_END][c].setFill(OFF_COLOR);
                     }
                 }
                 break;
             }
             case DOWN:
             {
-                for (int r = NUM_ROWS - 3; r > 2; r--)
+                for (int r = TEXT_ROW_END; r > TEXT_ROW_START; r--)
                 {
-                    for (int c = 2; c < NUM_COLS - 2; c++)
+                    for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                     {
                         ledMatrix[r][c].setFill(ledMatrix[r - 1][c].getFill());
                     }
                 }
 
-                for (int c = 2; c < 28; c++)
+                for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                 {
                     if (newRay != null)
                     {
-                        Dot dot = newRay[c - 2];
-                        ledMatrix[2][c].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+                            ledMatrix[TEXT_ROW_START][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                        }
+                        else
+                        {
+                            ledMatrix[TEXT_ROW_START][c].setFill(OFF_COLOR);
+                        }
                     }
                     else
                     {
-                        ledMatrix[2][c].setFill(OFF_COLOR);
+                        ledMatrix[TEXT_ROW_START][c].setFill(OFF_COLOR);
                     }
                 }
                 break;
@@ -220,29 +238,135 @@ public class MarqueePane extends StackPane
         }
     }
 
-/*    public void scrollLeftImage()
+    public void scrollImage(Iterator<Dot[]> iterator, ScrollDirection direction)
     {
-        for (int c = 0; c < NUM_COLS - 1; c++)
+        Dot[] newRay;
+
+        if (iterator.hasNext())
         {
-            for (int r = 2; r < NUM_ROWS - 2; r++)
-            {
-                ledMatrix[r][c].setFill(ledMatrix[r][c+1].getFill());
-            }
+            newRay = iterator.next();
+        }
+        else
+        {
+            newRay = null;
         }
 
-        for (int r = 0; r < NUM_ROWS - 1; r++)
+        switch (direction)
         {
-            if (segIndex < test.size())
+            case LEFT:
             {
-                Dot dot = test.get(segIndex)[r];
-                ledMatrix[r][NUM_COLS - 1].setFill(Color.web(dot.getColor(), dot.getIntensity()));
+                for (int c = 0; c < NUM_COLS - 1; c++)
+                {
+                    for (int r = 0; r < NUM_ROWS; r++)
+                    {
+                        ledMatrix[r][c].setFill(ledMatrix[r][c + 1].getFill());
+                    }
+                }
+
+                for (int r = 0; r < NUM_ROWS; r++)
+                {
+                    if (newRay != null)
+                    {
+                        Dot dot = newRay[r - 2];
+                        ledMatrix[r][NUM_COLS - 1].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                    }
+                    else
+                    {
+                        ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+                    }
+                }
+                break;
             }
-            else
+            case RIGHT:
             {
-                ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+                for (int c = NUM_COLS - 1; c > 0; c--)
+                {
+                    for (int r = 0; r < NUM_ROWS; r++)
+                    {
+                        ledMatrix[r][c].setFill(ledMatrix[r][c - 1].getFill());
+                    }
+                }
+
+                for (int r = 0; r < NUM_ROWS; r++)
+                {
+                    if (newRay != null)
+                    {
+                        Dot dot = newRay[r - 2];
+                        ledMatrix[r][0].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                    }
+                    else
+                    {
+                        ledMatrix[r][0].setFill(OFF_COLOR);
+                    }
+                }
+                break;
+            }
+            case UP:
+            {
+                for (int r = 0; r < NUM_ROWS - 1; r++)
+                {
+                    for (int c = 0; c < NUM_COLS; c++)
+                    {
+                        ledMatrix[r][c].setFill(ledMatrix[r + 1][c].getFill());
+                    }
+                }
+
+                for (int c = 0; c < NUM_COLS; c++)
+                {
+                    if (newRay != null)
+                    {
+                        int start = (NUM_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+                            ledMatrix[NUM_ROWS - 1][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                        }
+                        else
+                        {
+                            ledMatrix[NUM_ROWS - 1][c].setFill(OFF_COLOR);
+                        }
+                    }
+                    else
+                    {
+                        ledMatrix[NUM_ROWS - 1][c].setFill(OFF_COLOR);
+                    }
+                }
+                break;
+            }
+            case DOWN:
+            {
+                for (int r = NUM_ROWS - 1; r > 0; r--)
+                {
+                    for (int c = 0; c < NUM_COLS; c++)
+                    {
+                        ledMatrix[r][c].setFill(ledMatrix[r - 1][c].getFill());
+                    }
+                }
+
+                for (int c = 0; c < NUM_COLS; c++)
+                {
+                    if (newRay != null)
+                    {
+                        int start = (NUM_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+                            ledMatrix[0][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+                        }
+                        else
+                        {
+                            ledMatrix[0][c].setFill(OFF_COLOR);
+                        }
+                    }
+                    else
+                    {
+                        ledMatrix[0][c].setFill(OFF_COLOR);
+                    }
+                }
+                break;
             }
         }
-
-        segIndex++;
-    }*/
+    }
 }

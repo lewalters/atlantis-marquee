@@ -29,6 +29,11 @@ public class Dot
         return intensity;
     }
 
+    public double getOpacity()
+    {
+        return intensity / 100.0;
+    }
+
     public void setColor(String color)
     {
         this.color = color;

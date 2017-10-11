@@ -12,8 +12,7 @@ import util.ScrollDirection;
 
 import java.util.Iterator;
 
-import static util.Global.TEXT_COLS;
-import static util.Global.TEXT_ROWS;
+import static util.Global.*;
 
 public class MarqueeController
 {
@@ -25,7 +24,7 @@ public class MarqueeController
         marqueePane.setBorderColor("FFFFFF");
         marqueePane.setPaddingColor("000000");
 
-        Segment segment = new TextSegment(10, "left", "abc");
+        Segment segment = new TextSegment(10, "left", "abcdef");
         Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
 
         timeline2.setCycleCount(5);
@@ -57,7 +56,11 @@ public class MarqueeController
         }
         else // ImageSegment
         {
-            timeline = new Timeline();
+            cycles = (direction == ScrollDirection.LEFT || direction == ScrollDirection.RIGHT) ?
+                      segment.getHlength() + NUM_COLS : segment.getVlength() + NUM_ROWS;
+
+            timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollImage(iterator, direction)));
+            timeline.setCycleCount(cycles);
         }
 
         timeline.play();
