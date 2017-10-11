@@ -1,6 +1,7 @@
 package util;
 
 import data.CharDot;
+import javafx.scene.paint.Color;
 
 public final class Global
 {
@@ -15,6 +16,7 @@ public final class Global
     public static int TEXT_ROW_START = BORDER_WIDTH + PADDING_WIDTH;
     public static int TEXT_ROW_END = NUM_ROWS - (BORDER_WIDTH + PADDING_WIDTH + 1);
 
+    public static Color OFF_COLOR = Color.DIMGREY;
     public static String APP_FONT = "Onyx";
     public static String TEXT_FONT = "Helvetica";
 

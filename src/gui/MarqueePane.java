@@ -26,11 +26,9 @@ import static util.Global.*;
  */
 public class MarqueePane extends StackPane
 {
-    private static Color OFF_COLOR = Color.DIMGREY;
-
-    private Circle[][] ledMatrix;
-    private List<Circle> border;
-    private List<Circle> padding;
+    private LED[][] ledMatrix;
+    private List<LED> border;
+    private List<LED> padding;
 
     MarqueePane(int width, int height, int ledGap)
     {
@@ -40,9 +38,9 @@ public class MarqueePane extends StackPane
         this.getChildren().add(marquee);
 
         // Initialize the grids
-        GridPane backGrid = new GridPane();
+        //GridPane backGrid = new GridPane();
         GridPane ledGrid = new GridPane();
-        ledMatrix = new Circle[NUM_ROWS][NUM_COLS];
+        ledMatrix = new LED[NUM_ROWS][NUM_COLS];
         border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
         padding = new ArrayList<>((NUM_ROWS - 2) * (NUM_COLS - 2) - 4);
 
@@ -54,8 +52,8 @@ public class MarqueePane extends StackPane
         {
             for (int c = 0; c < NUM_COLS; c++)
             {
-                backGrid.add(new Circle(ledRadius, OFF_COLOR), c, r);
-                ledMatrix[r][c] = new Circle(ledRadius, OFF_COLOR);
+                //backGrid.add(new Circle(ledRadius, OFF_COLOR), c, r);
+                ledMatrix[r][c] = new LED(ledRadius);
                 ledGrid.add(ledMatrix[r][c], c, r);
 
                 // Add the circles within the border to an ArrayList for easier referencing
@@ -74,36 +72,54 @@ public class MarqueePane extends StackPane
         }
 
         // Center the grids and add them to the pane
-        backGrid.setAlignment(Pos.CENTER);
+        //backGrid.setAlignment(Pos.CENTER);
         ledGrid.setAlignment(Pos.CENTER);
-        this.getChildren().add(backGrid);
+        //this.getChildren().add(backGrid);
         this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs
-        backGrid.setHgap(ledGap);
-        backGrid.setVgap(ledGap);
+        //backGrid.setHgap(ledGap);
+        //backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
     }
 
     public void setBorderColor(String color)
     {
-        border.forEach(led -> led.setFill(Color.web(color)));
+        border.forEach(led -> led.turnOn(Color.web(color)));
     }
 
     public void toggleBorder()
     {
-        border.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
+        border.forEach(led -> {
+            if (led.isOn())
+            {
+                led.turnOff();
+            }
+            else
+            {
+                led.turnOn();
+            }
+        });
     }
 
     public void setPaddingColor(String color)
     {
-        padding.forEach(led -> led.setFill(Color.web(color)));
+        padding.forEach(led -> led.turnOn(Color.web(color)));
     }
 
     public void togglePadding()
     {
-        padding.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
+        padding.forEach(led -> {
+            if (led.isOn())
+            {
+                led.turnOff();
+            }
+            else
+            {
+                led.turnOn();
+            }
+        });
     }
 
     public void scrollText(Iterator<Dot[]> iterator, ScrollDirection direction)
@@ -127,20 +143,40 @@ public class MarqueePane extends StackPane
                 {
                     for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c + 1].getFill());
+                        LED prevLED = ledMatrix[r][c + 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                 {
+                    LED currLED = ledMatrix[r][TEXT_COL_END];
+
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_END].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][TEXT_COL_END].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -151,20 +187,40 @@ public class MarqueePane extends StackPane
                 {
                     for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c - 1].getFill());
+                        LED prevLED = ledMatrix[r][c - 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
                 {
+                    LED currLED = ledMatrix[r][TEXT_COL_START];
+
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_START].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][TEXT_COL_START].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -175,12 +231,24 @@ public class MarqueePane extends StackPane
                 {
                     for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r + 1][c].getFill());
+                        LED prevLED = ledMatrix[r + 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                 {
+                    LED currLED = ledMatrix[TEXT_ROW_END][c];
+
                     if (newRay != null)
                     {
                         int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
@@ -188,16 +256,24 @@ public class MarqueePane extends StackPane
                         if (c > start && c <= start + newRay.length)
                         {
                             Dot dot = newRay[c - start - 1];
-                            ledMatrix[TEXT_ROW_END][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
                         }
                         else
                         {
-                            ledMatrix[TEXT_ROW_END][c].setFill(OFF_COLOR);
+                            currLED.turnOff();
                         }
                     }
                     else
                     {
-                        ledMatrix[TEXT_ROW_END][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -208,12 +284,24 @@ public class MarqueePane extends StackPane
                 {
                     for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r - 1][c].getFill());
+                        LED prevLED = ledMatrix[r - 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
                 {
+                    LED currLED = ledMatrix[TEXT_ROW_START][c];
+
                     if (newRay != null)
                     {
                         int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
@@ -221,16 +309,24 @@ public class MarqueePane extends StackPane
                         if (c > start && c <= start + newRay.length)
                         {
                             Dot dot = newRay[c - start - 1];
-                            ledMatrix[TEXT_ROW_START][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
                         }
                         else
                         {
-                            ledMatrix[TEXT_ROW_START][c].setFill(OFF_COLOR);
+                            currLED.turnOff();
                         }
                     }
                     else
                     {
-                        ledMatrix[TEXT_ROW_START][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -259,20 +355,40 @@ public class MarqueePane extends StackPane
                 {
                     for (int r = 0; r < NUM_ROWS; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c + 1].getFill());
+                        LED prevLED = ledMatrix[r][c + 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int r = 0; r < NUM_ROWS; r++)
                 {
+                    LED currLED = ledMatrix[r][NUM_COLS - 1];
+
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][NUM_COLS - 1].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -283,20 +399,40 @@ public class MarqueePane extends StackPane
                 {
                     for (int r = 0; r < NUM_ROWS; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c - 1].getFill());
+                        LED prevLED = ledMatrix[r][c - 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int r = 0; r < NUM_ROWS; r++)
                 {
+                    LED currLED = ledMatrix[r][0];
+
                     if (newRay != null)
                     {
                         Dot dot = newRay[r - 2];
-                        ledMatrix[r][0].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][0].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -307,12 +443,24 @@ public class MarqueePane extends StackPane
                 {
                     for (int c = 0; c < NUM_COLS; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r + 1][c].getFill());
+                        LED prevLED = ledMatrix[r + 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int c = 0; c < NUM_COLS; c++)
                 {
+                    LED currLED = ledMatrix[NUM_ROWS - 1][c];
+
                     if (newRay != null)
                     {
                         int start = (NUM_COLS - newRay.length) / 2;
@@ -320,16 +468,24 @@ public class MarqueePane extends StackPane
                         if (c > start && c <= start + newRay.length)
                         {
                             Dot dot = newRay[c - start - 1];
-                            ledMatrix[NUM_ROWS - 1][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
                         }
                         else
                         {
-                            ledMatrix[NUM_ROWS - 1][c].setFill(OFF_COLOR);
+                            currLED.turnOff();
                         }
                     }
                     else
                     {
-                        ledMatrix[NUM_ROWS - 1][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -340,12 +496,24 @@ public class MarqueePane extends StackPane
                 {
                     for (int c = 0; c < NUM_COLS; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r - 1][c].getFill());
+                        LED prevLED = ledMatrix[r - 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
                 for (int c = 0; c < NUM_COLS; c++)
                 {
+                    LED currLED = ledMatrix[0][c];
+
                     if (newRay != null)
                     {
                         int start = (NUM_COLS - newRay.length) / 2;
@@ -353,16 +521,24 @@ public class MarqueePane extends StackPane
                         if (c > start && c <= start + newRay.length)
                         {
                             Dot dot = newRay[c - start - 1];
-                            ledMatrix[0][c].setFill(Color.web(dot.getColor(), dot.getOpacity()));
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
                         }
                         else
                         {
-                            ledMatrix[0][c].setFill(OFF_COLOR);
+                            currLED.turnOff();
                         }
                     }
                     else
                     {
-                        ledMatrix[0][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;

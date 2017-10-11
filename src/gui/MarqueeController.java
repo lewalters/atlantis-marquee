@@ -25,19 +25,23 @@ public class MarqueeController
         marqueePane.setPaddingColor("000000");
 
         Segment segment = new TextSegment(10, "left", "abcdef");
-        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
-
-        timeline2.setCycleCount(5);
 
         marqueePane.setOnMouseClicked(e -> {
-            scroll(segment, ScrollDirection.UP);
-            timeline2.play();
+            scroll(segment, ScrollDirection.DOWN);
+            blinkBorder();
         });
     }
 
     public Pane getMarqueePane()
     {
         return marqueePane;
+    }
+
+    private void blinkBorder()
+    {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
+        timeline.setCycleCount(5);
+        timeline.play();
     }
 
     private void scroll(Segment segment, ScrollDirection direction)
