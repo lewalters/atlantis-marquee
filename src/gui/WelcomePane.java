@@ -26,6 +26,7 @@ public class WelcomePane extends BorderPane
         this.setCenter(welcomeLabel);
 
         // Start message at the bottom of the screen
+
         Label startLabel = new Label("Click anywhere to start...");
         startLabel.setFont(new Font("Onyx", 32));
         startLabel.setMaxWidth(Double.MAX_VALUE);
