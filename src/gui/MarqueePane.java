@@ -6,13 +6,10 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import util.ScrollDirection;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static util.Global.*;
 
@@ -27,6 +24,7 @@ import static util.Global.*;
 public class MarqueePane extends StackPane
 {
     private LED[][] ledMatrix;
+    private LED[][] textMatrix;
     private List<LED> border;
     private List<LED> padding;
 
@@ -38,48 +36,49 @@ public class MarqueePane extends StackPane
         this.getChildren().add(marquee);
 
         // Initialize the grids
-        //GridPane backGrid = new GridPane();
         GridPane ledGrid = new GridPane();
         ledMatrix = new LED[NUM_ROWS][NUM_COLS];
+        textMatrix = new LED[TEXT_ROWS][TEXT_COLS];
         border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
         padding = new ArrayList<>((NUM_ROWS - 2) * (NUM_COLS - 2) - 4);
 
         // Determine the radius based on the provided width
         int ledRadius = ((width - NUM_COLS * ledGap) / (NUM_COLS)) / 2;
 
-        // Set up the background and LED grids with circles (i.e. LEDs)
+        // Set up the LED grids with circles (i.e. LEDs)
         for (int r = 0; r < NUM_ROWS; r++)
         {
             for (int c = 0; c < NUM_COLS; c++)
             {
-                //backGrid.add(new Circle(ledRadius, OFF_COLOR), c, r);
                 ledMatrix[r][c] = new LED(ledRadius);
                 ledGrid.add(ledMatrix[r][c], c, r);
 
-                // Add the circles within the border to an ArrayList for easier referencing
+                // Add the LEDs within the border to an ArrayList for easier referencing
                 if (r == 0 || r == NUM_ROWS - 1 || c == 0 || c == NUM_COLS - 1)
                 {
                     border.add(ledMatrix[r][c]);
                 }
 
-                // Add the circles within the padding to an ArrayList for easier referencing
+                // Add the LEDs within the padding to an ArrayList for easier referencing
                 if (((r == 1 || r == NUM_ROWS - 2) && !(c == 0 || c == NUM_COLS - 1)) ||
                      (c == 1 || c == NUM_COLS - 2) && !(r == 0 || r == NUM_ROWS - 1))
                 {
                     padding.add(ledMatrix[r][c]);
                 }
+
+                // Add the LEDs within the text visible area to a matrix for easier referencing
+                if (r >= TEXT_ROW_START && r <= TEXT_ROW_END && c >= TEXT_COL_START && c <= TEXT_COL_END)
+                {
+                    textMatrix[r - TEXT_ROW_START][c - TEXT_COL_START] = ledMatrix[r][c];
+                }
             }
         }
 
         // Center the grids and add them to the pane
-        //backGrid.setAlignment(Pos.CENTER);
         ledGrid.setAlignment(Pos.CENTER);
-        //this.getChildren().add(backGrid);
         this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs
-        //backGrid.setHgap(ledGap);
-        //backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
     }
@@ -122,29 +121,18 @@ public class MarqueePane extends StackPane
         });
     }
 
-    public void scrollText(Iterator<Dot[]> iterator, ScrollDirection direction)
+    public void scrollText(Dot[] newRay, ScrollDirection direction)
     {
-        Dot[] newRay;
-
-        if (iterator.hasNext())
-        {
-            newRay = iterator.next();
-        }
-        else
-        {
-            newRay = null;
-        }
-
         switch (direction)
         {
             case LEFT:
             {
-                for (int c = TEXT_COL_START; c < TEXT_COL_END; c++)
+                for (int c = 0; c < TEXT_COLS - 1; c++)
                 {
-                    for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
+                    for (int r = 0; r < TEXT_ROWS; r++)
                     {
-                        LED prevLED = ledMatrix[r][c + 1];
-                        LED currLED = ledMatrix[r][c];
+                        LED prevLED = textMatrix[r][c + 1];
+                        LED currLED = textMatrix[r][c];
 
                         if (prevLED.isOn())
                         {
@@ -157,13 +145,13 @@ public class MarqueePane extends StackPane
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
+                for (int r = 0; r < TEXT_ROWS; r++)
                 {
-                    LED currLED = ledMatrix[r][TEXT_COL_END];
+                    LED currLED = textMatrix[r][TEXT_COLS - 1];
 
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
+                        Dot dot = newRay[r];
 
                         if (dot.getIntensity() > 0)
                         {
@@ -183,12 +171,12 @@ public class MarqueePane extends StackPane
             }
             case RIGHT:
             {
-                for (int c = TEXT_COL_END; c > TEXT_COL_START; c--)
+                for (int c = TEXT_COLS - 1; c > 0; c--)
                 {
-                    for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
+                    for (int r = 0; r < TEXT_ROWS; r++)
                     {
-                        LED prevLED = ledMatrix[r][c - 1];
-                        LED currLED = ledMatrix[r][c];
+                        LED prevLED = textMatrix[r][c - 1];
+                        LED currLED = textMatrix[r][c];
 
                         if (prevLED.isOn())
                         {
@@ -201,13 +189,13 @@ public class MarqueePane extends StackPane
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r <= TEXT_ROW_END; r++)
+                for (int r = 0; r < TEXT_ROWS; r++)
                 {
-                    LED currLED = ledMatrix[r][TEXT_COL_START];
+                    LED currLED = textMatrix[r][0];
 
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
+                        Dot dot = newRay[r];
 
                         if (dot.getIntensity() > 0)
                         {
@@ -227,12 +215,12 @@ public class MarqueePane extends StackPane
             }
             case UP:
             {
-                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                for (int r = 0; r < TEXT_ROWS - 1; r++)
                 {
-                    for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
+                    for (int c = 0; c < TEXT_COLS; c++)
                     {
-                        LED prevLED = ledMatrix[r + 1][c];
-                        LED currLED = ledMatrix[r][c];
+                        LED prevLED = textMatrix[r + 1][c];
+                        LED currLED = textMatrix[r][c];
 
                         if (prevLED.isOn())
                         {
@@ -245,13 +233,13 @@ public class MarqueePane extends StackPane
                     }
                 }
 
-                for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
+                for (int c = 0; c < TEXT_COLS; c++)
                 {
-                    LED currLED = ledMatrix[TEXT_ROW_END][c];
+                    LED currLED = textMatrix[TEXT_ROWS - 1][c];
 
                     if (newRay != null)
                     {
-                        int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
+                        int start = (TEXT_COLS - newRay.length) / 2;
 
                         if (c > start && c <= start + newRay.length)
                         {
@@ -280,12 +268,12 @@ public class MarqueePane extends StackPane
             }
             case DOWN:
             {
-                for (int r = TEXT_ROW_END; r > TEXT_ROW_START; r--)
+                for (int r = TEXT_ROWS - 1; r > 0; r--)
                 {
-                    for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
+                    for (int c = 0; c < TEXT_COLS; c++)
                     {
-                        LED prevLED = ledMatrix[r - 1][c];
-                        LED currLED = ledMatrix[r][c];
+                        LED prevLED = textMatrix[r - 1][c];
+                        LED currLED = textMatrix[r][c];
 
                         if (prevLED.isOn())
                         {
@@ -298,13 +286,13 @@ public class MarqueePane extends StackPane
                     }
                 }
 
-                for (int c = TEXT_COL_START; c <= TEXT_COL_END; c++)
+                for (int c = 0; c < TEXT_COLS; c++)
                 {
-                    LED currLED = ledMatrix[TEXT_ROW_START][c];
+                    LED currLED = textMatrix[0][c];
 
                     if (newRay != null)
                     {
-                        int start = (TEXT_COLS - newRay.length) / 2 + TEXT_COL_START - 1;
+                        int start = (TEXT_COLS - newRay.length) / 2;
 
                         if (c > start && c <= start + newRay.length)
                         {
@@ -334,19 +322,8 @@ public class MarqueePane extends StackPane
         }
     }
 
-    public void scrollImage(Iterator<Dot[]> iterator, ScrollDirection direction)
+    public void scrollImage(Dot[] newRay, ScrollDirection direction)
     {
-        Dot[] newRay;
-
-        if (iterator.hasNext())
-        {
-            newRay = iterator.next();
-        }
-        else
-        {
-            newRay = null;
-        }
-
         switch (direction)
         {
             case LEFT:
@@ -375,7 +352,7 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
+                        Dot dot = newRay[r];
 
                         if (dot.getIntensity() > 0)
                         {
@@ -419,7 +396,7 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
+                        Dot dot = newRay[r];
 
                         if (dot.getIntensity() > 0)
                         {
@@ -542,6 +519,59 @@ public class MarqueePane extends StackPane
                     }
                 }
                 break;
+            }
+        }
+    }
+
+    public void randomTextOff()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        if (!ledList.isEmpty())
+        {
+            ledList.get(new Random().nextInt(ledList.size())).turnOff();
+        }
+    }
+
+    public void randomImageOff()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        if (!ledList.isEmpty())
+        {
+            ledList.get(new Random().nextInt(ledList.size())).turnOff();
+        }
+    }
+
+    public void reset()
+    {
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                led.turnOff();
             }
         }
     }

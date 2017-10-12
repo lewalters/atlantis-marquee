@@ -20,7 +20,7 @@ public class CharDot
 
     private String color;
     private DotMatrix charDots;
-    private int hLength, vLength;
+    private int hLength, vLength, size;
 
     public CharDot(char ch, String color)
     {
@@ -29,6 +29,7 @@ public class CharDot
         charDots = new DotMatrix(12, leds.length);
         hLength = leds.length;
         vLength = 12;
+        size = 0;
 
         for (int r = 0; r < vLength; r++)
         {
@@ -38,6 +39,7 @@ public class CharDot
                 if (leds[c][r] == 1)
                 {
                     charDots.set(new Dot(color, 100), r, c);
+                    size++;
                 }
                 else
                 {
@@ -73,6 +75,11 @@ public class CharDot
     public int getVLength()
     {
         return vLength;
+    }
+
+    public int getSize()
+    {
+        return size;
     }
 
     public void setColor(String color)

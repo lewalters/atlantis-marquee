@@ -1,6 +1,8 @@
 package data;
 
+import util.MarqueeEffect;
 import util.ScrollDirection;
+import util.StaticEffect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +23,9 @@ public abstract class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    public ImageSegment(int duration, String scroll, String source)
+    public ImageSegment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
     {
-        super(scroll);
+        super(scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
         contents = convertImage(source);
     }

@@ -25,15 +25,13 @@ public class LED extends Circle
     public void turnOn(String color, int intensity)
     {
         paint = Color.web(color, intensity / 100.0);
-        this.setFill(paint);
-        on = true;
+        turnOn();
     }
 
     public void turnOn(Paint paint)
     {
         this.paint = paint;
-        this.setFill(paint);
-        on = true;
+        turnOn();
     }
 
     public void turnOn()
