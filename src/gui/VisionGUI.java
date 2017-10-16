@@ -1,19 +1,16 @@
 package gui;
 
-import data.CharDot;
-import data.Dot;
+import data.Marquee;
+import data.Message;
 import data.Segment;
 import data.TextSegment;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import util.Global;
 import util.ScrollDirection;
-
-import java.util.Iterator;
+import util.StaticEffect;
+import util.TransitionEffect;
 
 public class VisionGUI extends Application
 {
@@ -26,13 +23,11 @@ public class VisionGUI extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        Global.init();
+
         WelcomePane welcomePane = new WelcomePane();
         SettingsPane settingsPane = new SettingsPane();
         AuthPane authPane = new AuthPane();
-        SegmentPane segmentPane = new SegmentPane();
-        ImageSegmentPane imgSegPane = new ImageSegmentPane();
-        TextSegmentPane txtSegPane = new TextSegmentPane();
-        MarqueePane marqueePane = new MarqueePane(1500, 250, 2);
 
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
@@ -50,16 +45,20 @@ public class VisionGUI extends Application
         segPaneStage.setScene(new Scene(segmentPane));
         segPaneStage.setTitle("SegmentPane");
 
+        Marquee marquee = new Marquee(1200, 200, 2);
+        Message message = new Message("Test", 1, 0,"");
+        marquee.setMessage(message);
+        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", ScrollDirection.UP, StaticEffect.NONE, TransitionEffect.RANDOM, "5F9EA0", "Wake Tech");
+        Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
+        message.addSegment(0, segment);
+        message.addSegment(1, segment2);
+        MarqueeController marqueeController = new MarqueeController(marquee);
         Stage marqueeStage = new Stage();
-        marqueeStage.setScene(new Scene(marqueePane));
+        marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
 
         welcomePane.setOnMouseClicked(e -> primaryStage.setScene(new Scene(settingsPane)));
 
-        settingsPane.setOnMouseClicked(e -> {
-            marqueeStage.show();
-            marqueePane.setBorderColor("FFFFFF");
-            marqueePane.setPaddingColor("000000");
-        });
+        settingsPane.setOnMouseClicked(e -> marqueeStage.show());
 
         settingsPane.getStartButton().setOnAction(e -> {
             if (settingsPane.getAuthenticationCheckBox().isSelected())
@@ -78,11 +77,6 @@ public class VisionGUI extends Application
             txtSegStage.show();
         });
 
-        //Getting Style in dropdown list in ImgSegComboBox
-//        txtSegPane.getImgSegComboBox().setOnAction(event ->{
-//            txtSegPane.getImgSegComboBox().setValue("Style");
-//        });
-
         //Event Handler for ImageSegmentButton
         settingsPane.getImageSegmentButton().setOnAction(event -> {
             imgSegStage.show();
@@ -91,33 +85,5 @@ public class VisionGUI extends Application
         //Creating Event Handler for AuthPane Cancel Button
         authPane.getCancelButton().setOnAction(event -> {
             authStage.close();});
-
-        //Creating Event Handler for SegmentPane Cancel Button
-//        segmentPane.getCancelButton().setOnAction(event -> {
-//           if(imgSegPane.isVisible()){
-//               imgSegStage.close();
-//            }
-//            else if (txtSegPane.isVisible()) {
-//               txtSegStage.close();
-//            }
-//        });
-
-        CharDot.initMap();
-        //Segment segment = new TextSegment(10, "plain", "plain");
-        Segment segment = new TextSegment(10, "plain", "abc");
-        Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), e -> marqueePane.scrollText(iterator, ScrollDirection.UP)));
-        Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
-
-        timeline.setCycleCount(100);
-        timeline2.setCycleCount(5);
-
-        marqueePane.setOnMouseClicked(e -> {
-
-            timeline.play();
-            timeline2.play();
-        });
-
-        marqueePane.setOnKeyTyped(e -> timeline.stop());
     }
 }

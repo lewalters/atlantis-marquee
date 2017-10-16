@@ -1,7 +1,8 @@
 package data;
 
+import util.MarqueeEffect;
 import util.ScrollDirection;
-
+import util.StaticEffect;
 import java.util.Iterator;
 
 /**
@@ -16,14 +17,16 @@ public abstract class Segment
 {
     private int duration;
     private int speed;
-    private String scroll;
-    private String effectEn, effectEx;
-    private String type;
-    protected int hlength, vlength;
+    private ScrollDirection scrollDirection;
+    private MarqueeEffect effectEn, effectMi, effectEx;
+    protected int hLength, vLength, size;
 
-    protected Segment(String scroll)
+    protected Segment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx)
     {
-        this.scroll = scroll;
+        this.scrollDirection = scrollDirection;
+        this.effectEn = effectEn;
+        this.effectMi = effectMi;
+        this.effectEx = effectEx;
     }
 
     public int getDuration()
@@ -31,24 +34,44 @@ public abstract class Segment
         return duration;
     }
 
-    public String getScroll()
+    public int getSpeed()
     {
-        return scroll;
+        return speed;
     }
 
-    public String getEntranceEffect()
+    public ScrollDirection getScrollDirection()
+    {
+        return scrollDirection;
+    }
+
+    public MarqueeEffect getEntranceEffect()
     {
         return effectEn;
     }
 
-    public String getExitEffect()
+    public MarqueeEffect getMiddleEffect()
+    {
+        return effectMi;
+    }
+
+    public MarqueeEffect getExitEffect()
     {
         return effectEx;
     }
 
-    public String getType()
+    public int getHlength()
     {
-        return type;
+        return hLength;
+    }
+
+    public int getVlength()
+    {
+        return vLength;
+    }
+
+    public int getSize()
+    {
+        return size;
     }
 
     public int getHlength()
@@ -66,24 +89,29 @@ public abstract class Segment
         this.duration = duration;
     }
 
-    public void setScroll(String scroll)
+    public void setSpeed(int speed)
     {
-        this.scroll = scroll;
+        this.speed = speed;
     }
 
-    public void setEntranceEffect(String effect)
+    public void setScrollDirection(ScrollDirection scroll)
+    {
+        this.scrollDirection = scroll;
+    }
+
+    public void setEntranceEffect(MarqueeEffect effect)
     {
         effectEn = effect;
     }
 
-    public void setExitEffect(String effect)
+    public void setMiddleEffect(MarqueeEffect effect)
     {
-        effectEx = effect;
+        effectMi = effect;
     }
 
-    public void setType(String type)
+    public void setExitEffect(MarqueeEffect effect)
     {
-        this.type = type;
+        effectEx = effect;
     }
 
     public abstract Iterator<Dot[]> iterator(ScrollDirection direction);
