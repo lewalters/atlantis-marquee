@@ -11,7 +11,7 @@ public class DotTest {
 	private static Dot d;
 	
 	@BeforeClass
-	public static void setup()
+	public static void setUp()
 	{
 		d = new Dot("000000", 1);
 	}
@@ -34,6 +34,8 @@ public class DotTest {
 		
 		assertEquals("data.Dot test: setIntensity", 2, d.getIntensity());
 	}
+
+
 	////
 
 }

@@ -26,6 +26,11 @@ public class Marquee
         this.ledGap = ledGap;
     }
 
+    public Message getMessage()
+    {
+        return message;
+    }
+
     public int getWidth()
     {
         return width;
@@ -39,5 +44,10 @@ public class Marquee
     public int getLedGap()
     {
         return ledGap;
+    }
+
+    public void setMessage(Message message)
+    {
+        this.message = message;
     }
 }

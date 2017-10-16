@@ -6,13 +6,10 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import util.ScrollDirection;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static util.Global.*;
 
@@ -26,11 +23,10 @@ import static util.Global.*;
  */
 public class MarqueePane extends StackPane
 {
-    private static Color OFF_COLOR = Color.DIMGREY;
-
-    private Circle[][] ledMatrix;
-    private List<Circle> border;
-    private List<Circle> padding;
+    private LED[][] ledMatrix;
+    private LED[][] textMatrix;
+    private List<LED> border;
+    private List<LED> padding;
 
     MarqueePane(int width, int height, int ledGap)
     {
@@ -40,179 +36,285 @@ public class MarqueePane extends StackPane
         this.getChildren().add(marquee);
 
         // Initialize the grids
-        GridPane backGrid = new GridPane();
         GridPane ledGrid = new GridPane();
-        ledMatrix = new Circle[NUM_ROWS][NUM_COLS];
+        ledMatrix = new LED[NUM_ROWS][NUM_COLS];
+        textMatrix = new LED[TEXT_ROWS][TEXT_COLS];
         border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
         padding = new ArrayList<>((NUM_ROWS - 2) * (NUM_COLS - 2) - 4);
 
         // Determine the radius based on the provided width
         int ledRadius = ((width - NUM_COLS * ledGap) / (NUM_COLS)) / 2;
 
-        // Set up the background and LED grids with circles (i.e. LEDs)
+        // Set up the LED grids with circles (i.e. LEDs)
         for (int r = 0; r < NUM_ROWS; r++)
         {
             for (int c = 0; c < NUM_COLS; c++)
             {
-                backGrid.add(new Circle(ledRadius, OFF_COLOR), c, r);
-                ledMatrix[r][c] = new Circle(ledRadius, OFF_COLOR);
+                ledMatrix[r][c] = new LED(ledRadius);
                 ledGrid.add(ledMatrix[r][c], c, r);
 
-                // Add the circles within the border to an ArrayList for easier referencing
+                // Add the LEDs within the border to an ArrayList for easier referencing
                 if (r == 0 || r == NUM_ROWS - 1 || c == 0 || c == NUM_COLS - 1)
                 {
                     border.add(ledMatrix[r][c]);
                 }
 
-                // Add the circles within the padding to an ArrayList for easier referencing
+                // Add the LEDs within the padding to an ArrayList for easier referencing
                 if (((r == 1 || r == NUM_ROWS - 2) && !(c == 0 || c == NUM_COLS - 1)) ||
                      (c == 1 || c == NUM_COLS - 2) && !(r == 0 || r == NUM_ROWS - 1))
                 {
                     padding.add(ledMatrix[r][c]);
                 }
+
+                // Add the LEDs within the text visible area to a matrix for easier referencing
+                if (r >= TEXT_ROW_START && r <= TEXT_ROW_END && c >= TEXT_COL_START && c <= TEXT_COL_END)
+                {
+                    textMatrix[r - TEXT_ROW_START][c - TEXT_COL_START] = ledMatrix[r][c];
+                }
             }
         }
 
         // Center the grids and add them to the pane
-        backGrid.setAlignment(Pos.CENTER);
         ledGrid.setAlignment(Pos.CENTER);
-        this.getChildren().add(backGrid);
         this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs
-        backGrid.setHgap(ledGap);
-        backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
     }
 
     public void setBorderColor(String color)
     {
-        border.forEach(led -> led.setFill(Color.web(color)));
+        border.forEach(led -> led.turnOn(Color.web(color)));
     }
 
     public void toggleBorder()
     {
-        border.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
+        border.forEach(led -> {
+            if (led.isOn())
+            {
+                led.turnOff();
+            }
+            else
+            {
+                led.turnOn();
+            }
+        });
     }
 
     public void setPaddingColor(String color)
     {
-        padding.forEach(led -> led.setFill(Color.web(color)));
+        padding.forEach(led -> led.turnOn(Color.web(color)));
     }
 
     public void togglePadding()
     {
-        padding.forEach(led -> led.setOpacity(led.getOpacity() == 1 ? 0 : 1));
+        padding.forEach(led -> {
+            if (led.isOn())
+            {
+                led.turnOff();
+            }
+            else
+            {
+                led.turnOn();
+            }
+        });
     }
 
-    public void scrollText(Iterator<Dot[]> iterator, ScrollDirection direction)
+    public void scrollText(Dot[] newRay, ScrollDirection direction)
     {
-        Dot[] newRay;
-
-        if (iterator.hasNext())
-        {
-            newRay = iterator.next();
-        }
-        else
-        {
-            newRay = null;
-        }
-
         switch (direction)
         {
             case LEFT:
             {
-                for (int c = TEXT_COL_START; c < TEXT_COL_END; c++)
+                for (int c = 0; c < TEXT_COLS - 1; c++)
                 {
-                    for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                    for (int r = 0; r < TEXT_ROWS; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c + 1].getFill());
+                        LED prevLED = textMatrix[r][c + 1];
+                        LED currLED = textMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                for (int r = 0; r < TEXT_ROWS; r++)
                 {
+                    LED currLED = textMatrix[r][TEXT_COLS - 1];
+
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_END].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        Dot dot = newRay[r];
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][TEXT_COL_END].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
             }
             case RIGHT:
             {
-                for (int c = TEXT_COL_END; c > TEXT_COL_START; c--)
+                for (int c = TEXT_COLS - 1; c > 0; c--)
                 {
-                    for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                    for (int r = 0; r < TEXT_ROWS; r++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r][c - 1].getFill());
+                        LED prevLED = textMatrix[r][c - 1];
+                        LED currLED = textMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
-                for (int r = TEXT_ROW_START; r < TEXT_ROW_END; r++)
+                for (int r = 0; r < TEXT_ROWS; r++)
                 {
+                    LED currLED = textMatrix[r][0];
+
                     if (newRay != null)
                     {
-                        Dot dot = newRay[r - 2];
-                        ledMatrix[r][TEXT_COL_START].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        Dot dot = newRay[r];
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[r][TEXT_COL_START].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
             }
             case UP:
             {
-                for (int r = 2; r < NUM_ROWS - 3; r++)
+                for (int r = 0; r < TEXT_ROWS - 1; r++)
                 {
-                    for (int c = 2; c < NUM_COLS - 2; c++)
+                    for (int c = 0; c < TEXT_COLS; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r + 1][c].getFill());
+                        LED prevLED = textMatrix[r + 1][c];
+                        LED currLED = textMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
-                for (int c = 2; c < 28; c++)
+                for (int c = 0; c < TEXT_COLS; c++)
                 {
+                    LED currLED = textMatrix[TEXT_ROWS - 1][c];
+
                     if (newRay != null)
                     {
-                        Dot dot = newRay[c - 2];
-                        ledMatrix[NUM_ROWS - 3][c].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        int start = (TEXT_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[NUM_ROWS - 3][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
             }
             case DOWN:
             {
-                for (int r = NUM_ROWS - 3; r > 2; r--)
+                for (int r = TEXT_ROWS - 1; r > 0; r--)
                 {
-                    for (int c = 2; c < NUM_COLS - 2; c++)
+                    for (int c = 0; c < TEXT_COLS; c++)
                     {
-                        ledMatrix[r][c].setFill(ledMatrix[r - 1][c].getFill());
+                        LED prevLED = textMatrix[r - 1][c];
+                        LED currLED = textMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                 }
 
-                for (int c = 2; c < 28; c++)
+                for (int c = 0; c < TEXT_COLS; c++)
                 {
+                    LED currLED = textMatrix[0][c];
+
                     if (newRay != null)
                     {
-                        Dot dot = newRay[c - 2];
-                        ledMatrix[2][c].setFill(Color.web(dot.getColor(), dot.getIntensity() / 100.0));
+                        int start = (TEXT_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
                     }
                     else
                     {
-                        ledMatrix[2][c].setFill(OFF_COLOR);
+                        currLED.turnOff();
                     }
                 }
                 break;
@@ -220,29 +322,257 @@ public class MarqueePane extends StackPane
         }
     }
 
-/*    public void scrollLeftImage()
+    public void scrollImage(Dot[] newRay, ScrollDirection direction)
     {
-        for (int c = 0; c < NUM_COLS - 1; c++)
+        switch (direction)
         {
-            for (int r = 2; r < NUM_ROWS - 2; r++)
+            case LEFT:
             {
-                ledMatrix[r][c].setFill(ledMatrix[r][c+1].getFill());
+                for (int c = 0; c < NUM_COLS - 1; c++)
+                {
+                    for (int r = 0; r < NUM_ROWS; r++)
+                    {
+                        LED prevLED = ledMatrix[r][c + 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                }
+
+                for (int r = 0; r < NUM_ROWS; r++)
+                {
+                    LED currLED = ledMatrix[r][NUM_COLS - 1];
+
+                    if (newRay != null)
+                    {
+                        Dot dot = newRay[r];
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                    else
+                    {
+                        currLED.turnOff();
+                    }
+                }
+                break;
+            }
+            case RIGHT:
+            {
+                for (int c = NUM_COLS - 1; c > 0; c--)
+                {
+                    for (int r = 0; r < NUM_ROWS; r++)
+                    {
+                        LED prevLED = ledMatrix[r][c - 1];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                }
+
+                for (int r = 0; r < NUM_ROWS; r++)
+                {
+                    LED currLED = ledMatrix[r][0];
+
+                    if (newRay != null)
+                    {
+                        Dot dot = newRay[r];
+
+                        if (dot.getIntensity() > 0)
+                        {
+                            currLED.turnOn(dot.getColor(), dot.getIntensity());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                    else
+                    {
+                        currLED.turnOff();
+                    }
+                }
+                break;
+            }
+            case UP:
+            {
+                for (int r = 0; r < NUM_ROWS - 1; r++)
+                {
+                    for (int c = 0; c < NUM_COLS; c++)
+                    {
+                        LED prevLED = ledMatrix[r + 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                }
+
+                for (int c = 0; c < NUM_COLS; c++)
+                {
+                    LED currLED = ledMatrix[NUM_ROWS - 1][c];
+
+                    if (newRay != null)
+                    {
+                        int start = (NUM_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                    else
+                    {
+                        currLED.turnOff();
+                    }
+                }
+                break;
+            }
+            case DOWN:
+            {
+                for (int r = NUM_ROWS - 1; r > 0; r--)
+                {
+                    for (int c = 0; c < NUM_COLS; c++)
+                    {
+                        LED prevLED = ledMatrix[r - 1][c];
+                        LED currLED = ledMatrix[r][c];
+
+                        if (prevLED.isOn())
+                        {
+                            currLED.turnOn(prevLED.getFill());
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                }
+
+                for (int c = 0; c < NUM_COLS; c++)
+                {
+                    LED currLED = ledMatrix[0][c];
+
+                    if (newRay != null)
+                    {
+                        int start = (NUM_COLS - newRay.length) / 2;
+
+                        if (c > start && c <= start + newRay.length)
+                        {
+                            Dot dot = newRay[c - start - 1];
+
+                            if (dot.getIntensity() > 0)
+                            {
+                                currLED.turnOn(dot.getColor(), dot.getIntensity());
+                            }
+                            else
+                            {
+                                currLED.turnOff();
+                            }
+                        }
+                        else
+                        {
+                            currLED.turnOff();
+                        }
+                    }
+                    else
+                    {
+                        currLED.turnOff();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    public void randomTextOff()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
             }
         }
 
-        for (int r = 0; r < NUM_ROWS - 1; r++)
+        if (!ledList.isEmpty())
         {
-            if (segIndex < test.size())
+            ledList.get(new Random().nextInt(ledList.size())).turnOff();
+        }
+    }
+
+    public void randomImageOff()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
             {
-                Dot dot = test.get(segIndex)[r];
-                ledMatrix[r][NUM_COLS - 1].setFill(Color.web(dot.getColor(), dot.getIntensity()));
-            }
-            else
-            {
-                ledMatrix[r][NUM_COLS - 1].setFill(OFF_COLOR);
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
             }
         }
 
-        segIndex++;
-    }*/
+        if (!ledList.isEmpty())
+        {
+            ledList.get(new Random().nextInt(ledList.size())).turnOff();
+        }
+    }
+
+    public void reset()
+    {
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                led.turnOff();
+            }
+        }
+    }
 }

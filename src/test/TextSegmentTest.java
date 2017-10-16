@@ -1,6 +1,9 @@
 package test;
 
 import static org.junit.Assert.*;
+
+import data.Message;
+import  org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

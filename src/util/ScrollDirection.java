@@ -1,6 +1,6 @@
 package util;
 
-public enum ScrollDirection
+public enum ScrollDirection implements MarqueeEffect
 {
-    UP, DOWN, LEFT, RIGHT
+    UP, DOWN, LEFT, RIGHT, STATIC
 }

@@ -1,6 +1,7 @@
 /*
 package test;
 
+
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,7 +13,7 @@ public class ImageSegmentTest {
     private ImageSegment is;
 
     @BeforeClass
-    public void setup()
+    public static void setUp()
     {
         is = new ImageSegment(60, "static", "fade", "C:/Capstone/Messages/WTCC Logo.jpg");
     }

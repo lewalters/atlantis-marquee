@@ -1,11 +1,12 @@
 package data;
 
+import util.MarqueeEffect;
 import util.ScrollDirection;
+import util.StaticEffect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 import static util.Global.TEXT_ROWS;
 
@@ -21,21 +22,31 @@ public class TextSegment extends Segment
 {
     private String text;
     private ArrayList<CharDot> contents = new ArrayList<>();
+    private boolean border, padding;
     private String borderColor;
-    private String borderEffect;
+    private StaticEffect borderEffect;
     private String paddingColor;
+    private String textColor;
 
-    public TextSegment(int duration, String scroll, String text)
+    public TextSegment(ScrollDirection scrollDirection, String borderColor, StaticEffect borderEffect, String paddingColor,
+                       MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String textColor, String text)
     {
-        super(scroll);
+        super(scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
-        vlength = TEXT_ROWS;
+        this.borderColor = borderColor;
+        this.borderEffect = borderEffect;
+        this.paddingColor = paddingColor;
+        this.textColor = textColor;
+        vLength = TEXT_ROWS;
+
+        border = !borderColor.isEmpty();
+        padding = !paddingColor.isEmpty();
 
         String textUp = text.toUpperCase();
 
         for (int i = 0; i < text.length(); i++)
         {
-            contents.add(new CharDot(textUp.charAt(i), "B22222"));
+            contents.add(new CharDot(textUp.charAt(i), textColor));
 
             if (i < text.length() - 1)
             {
@@ -45,8 +56,19 @@ public class TextSegment extends Segment
 
         for (CharDot cd : contents)
         {
-            hlength += cd.getHLength();
+            hLength += cd.getHLength();
+            size += cd.getSize();
         }
+    }
+
+    public boolean hasBorder()
+    {
+        return border;
+    }
+
+    public boolean hasPadding()
+    {
+        return padding;
     }
 
     public String getText()
@@ -59,7 +81,7 @@ public class TextSegment extends Segment
         return borderColor;
     }
 
-    public String getBorderEffect()
+    public StaticEffect getBorderEffect()
     {
         return borderEffect;
     }
@@ -67,6 +89,11 @@ public class TextSegment extends Segment
     public String getPaddingColor()
     {
         return paddingColor;
+    }
+
+    public String getTextColor()
+    {
+        return textColor;
     }
 
     public void setText(String text)
@@ -79,7 +106,7 @@ public class TextSegment extends Segment
         this.borderColor = borderColor;
     }
 
-    public void setBorderEffect(String borderEffect)
+    public void setBorderEffect(StaticEffect borderEffect)
     {
         this.borderEffect = borderEffect;
     }
@@ -87,6 +114,11 @@ public class TextSegment extends Segment
     public void setPaddingColor(String paddingColor)
     {
         this.paddingColor = paddingColor;
+    }
+
+    public void setTextColor(String textColor)
+    {
+        this.textColor = textColor;
     }
 
     @Override
