@@ -6,6 +6,9 @@ import data.DotMatrix;
 import data.Dot;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import util.ScrollDirection;
+
+import java.util.Iterator;
 
 public class DotMatrixTest {
 
@@ -23,27 +26,40 @@ public class DotMatrixTest {
         matrix = new Dot[row][col];
     }
 
-    @Test
+    /*@Test
     public void testSet()
     {
-        Dot d = matrix[row][col];
+        Dot d;
+        matrix[row][col] = d;
 
-        //assertArrayEquals(d, dm.set(d, row, col));
+        //assertArrayEquals(d, );
     }
 
     @Test
-    public void testDotMatrixGetCol()
+    public void testIteratorLeft()
     {
-        Dot[] c = matrix[col];
-
-        assertArrayEquals(c, dm.getCol(col));
+        Iterator<Dot[]> direction = dm.iterator(ScrollDirection.LEFT);
+        assertTrue("data.DotMatrix test:Left Iterator", direction.hasNext());
     }
 
     @Test
-    public void testDotMatrixGetRow()
+    public void testIteratorRight()
     {
-        Dot[] r = matrix[row];
-
-        assertArrayEquals(r, dm.getRow(row));
+        Iterator<Dot[]> direction = dm.iterator(ScrollDirection.RIGHT);
+        assertTrue("data.DotMatrix test:Right Iterator", direction.hasNext());
     }
+
+    @Test
+    public void testIteratorUp()
+    {
+        Iterator<Dot[]> direction = dm.iterator(ScrollDirection.UP);
+        assertTrue("data.DotMatrix test:Up Iterator", direction.hasNext());
+    }
+
+    @Test
+    public void testIteratorDown()
+    {
+        Iterator<Dot[]> direction = dm.iterator(ScrollDirection.DOWN);
+        assertTrue("data.DotMatrix test:Down Iterator", direction.hasNext());
+    }*/
 }
