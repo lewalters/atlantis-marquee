@@ -3,7 +3,6 @@ package data;
 import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
-
 import java.util.Iterator;
 
 /**
@@ -73,6 +72,16 @@ public abstract class Segment
     public int getSize()
     {
         return size;
+    }
+
+    public int getHlength()
+    {
+        return hlength;
+    }
+
+    public int getVlength()
+    {
+        return vlength;
     }
 
     public void setDuration(int duration)
