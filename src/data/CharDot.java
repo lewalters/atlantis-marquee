@@ -20,7 +20,7 @@ public class CharDot
 
     private String color;
     private DotMatrix charDots;
-    private int hLength, vLength;
+    private int hLength, vLength, size;
 
     public CharDot(char ch, String color)
     {
@@ -29,6 +29,7 @@ public class CharDot
         charDots = new DotMatrix(12, leds.length);
         hLength = leds.length;
         vLength = 12;
+        size = 0;
 
         for (int r = 0; r < vLength; r++)
         {
@@ -38,6 +39,7 @@ public class CharDot
                 if (leds[c][r] == 1)
                 {
                     charDots.set(new Dot(color, 100), r, c);
+                    size++;
                 }
                 else
                 {
@@ -75,6 +77,11 @@ public class CharDot
         return vLength;
     }
 
+    public int getSize()
+    {
+        return size;
+    }
+
     public void setColor(String color)
     {
         this.color = color;
@@ -82,85 +89,7 @@ public class CharDot
 
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
-        if (direction == ScrollDirection.LEFT)
-        {
-            return new Iterator<>()
-            {
-                int index = 0;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index < hLength && charDots.getCol(index) != null;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return charDots.getCol(index++);
-                }
-            };
-        }
-
-        else if (direction == ScrollDirection.RIGHT)
-        {
-            return new Iterator<>()
-            {
-                int index = hLength - 1;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index >= 0 && charDots.getCol(index) != null;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return charDots.getCol(index--);
-                }
-            };
-        }
-
-        else if (direction == ScrollDirection.UP)
-        {
-            return new Iterator<>()
-            {
-                int index = 0;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index < vLength && charDots.getRow(index) != null;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return charDots.getRow(index++);
-                }
-            };
-        }
-
-        else // DOWN
-        {
-            return new Iterator<>()
-            {
-                int index = vLength - 1;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index >= 0 && charDots.getRow(index) != null;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return charDots.getRow(index--);
-                }
-            };
-        }
+        return charDots.iterator(direction);
     }
 
     public static void initMap()
