@@ -11,12 +11,14 @@ public class DotMatrixTest {
 
     private static DotMatrix dm;
     private static Dot[][] matrix;
-    private static int row = 2;
-    private static int col = 3;
+    private static int row;
+    private static int col;
 
     @BeforeClass
     public static void setup()
     {
+        row = 2;
+        col = 3;
         dm = new DotMatrix(row,col);
         matrix = new Dot[row][col];
     }
