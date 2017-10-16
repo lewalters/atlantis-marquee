@@ -2,6 +2,8 @@ package data;
 
 import util.ScrollDirection;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Utility.convertImage;
@@ -17,11 +19,11 @@ import static util.Utility.convertImage;
 public abstract class ImageSegment extends Segment
 {
     private String source;
-    private Dot[][] contents;
+    private DotMatrix contents;
 
-    public ImageSegment(int duration, String style, String effect, String source)
+    public ImageSegment(int duration, String scroll, String source)
     {
-        super(duration, style, effect);
+        super(scroll);
         this.source = source;
         contents = convertImage(source);
     }
@@ -38,19 +40,84 @@ public abstract class ImageSegment extends Segment
     @Override
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
-        return new Iterator<Dot[]>() {
+        if (direction == ScrollDirection.LEFT)
+        {
+            return new Iterator<>()
+            {
+                int index = 0;
 
-            int index = 0;
+                @Override
+                public boolean hasNext()
+                {
+                    return index < hlength;
+                }
 
-            @Override
-            public boolean hasNext() {
-                return index < contents.length && contents[index] != null;
-            }
+                @Override
+                public Dot[] next()
+                {
+                    return contents.getCol(index++);
+                }
+            };
+        }
 
-            @Override
-            public Dot[] next() {
-                return contents[index++];
-            }
-        };
+        else if (direction == ScrollDirection.RIGHT)
+        {
+            return new Iterator<>()
+            {
+                int index = hlength - 1;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index >= 0;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return contents.getCol(index--);
+                }
+            };
+        }
+
+        else if (direction == ScrollDirection.UP)
+        {
+            return new Iterator<>()
+            {
+                int index = 0;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index < vlength;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return contents.getRow(index++);
+                }
+            };
+        }
+
+        else // DOWN
+        {
+            return new Iterator<>()
+            {
+                int index = vlength - 1;
+
+                @Override
+                public boolean hasNext()
+                {
+                    return index >= 0;
+                }
+
+                @Override
+                public Dot[] next()
+                {
+                    return contents.getRow(index--);
+                }
+            };
+        }
     }
 }
