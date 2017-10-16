@@ -69,10 +69,15 @@ public class Message
         this.delay = delay;
     }
     public void addSegment(int pos, Segment segment)
-    {}
+    {
+
+    }
 
     public void removeSegment(int pos)
     {}
 
     public void changeOrder() {}
+
+    public void getComments(String welcome) {
+    }
 }
