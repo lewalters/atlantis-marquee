@@ -1,6 +1,8 @@
 package data;
 
+import util.MarqueeEffect;
 import util.ScrollDirection;
+import util.StaticEffect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +23,9 @@ public abstract class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    public ImageSegment(int duration, String scroll, String source)
+    public ImageSegment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
     {
-        super(scroll);
+        super(scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
         contents = convertImage(source);
     }
@@ -40,84 +42,6 @@ public abstract class ImageSegment extends Segment
     @Override
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
-        if (direction == ScrollDirection.LEFT)
-        {
-            return new Iterator<>()
-            {
-                int index = 0;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index < hlength;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return contents.getCol(index++);
-                }
-            };
-        }
-
-        else if (direction == ScrollDirection.RIGHT)
-        {
-            return new Iterator<>()
-            {
-                int index = hlength - 1;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index >= 0;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return contents.getCol(index--);
-                }
-            };
-        }
-
-        else if (direction == ScrollDirection.UP)
-        {
-            return new Iterator<>()
-            {
-                int index = 0;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index < vlength;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return contents.getRow(index++);
-                }
-            };
-        }
-
-        else // DOWN
-        {
-            return new Iterator<>()
-            {
-                int index = vlength - 1;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return index >= 0;
-                }
-
-                @Override
-                public Dot[] next()
-                {
-                    return contents.getRow(index--);
-                }
-            };
-        }
+        return contents.iterator(direction);
     }
 }
