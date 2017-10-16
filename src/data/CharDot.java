@@ -19,14 +19,14 @@ public class CharDot
     private static final HashMap<Character, int[][]> charMap = new HashMap<>(50);
 
     private String color;
-    private CharDotMatrix charDots;
+    private DotMatrix charDots;
     private int hLength, vLength;
 
     public CharDot(char ch, String color)
     {
         this.color = color;
         int[][] leds = charMap.get(ch);
-        charDots = new CharDotMatrix(12, leds.length);
+        charDots = new DotMatrix(12, leds.length);
         hLength = leds.length;
         vLength = 12;
 
@@ -49,7 +49,7 @@ public class CharDot
 
     public CharDot()
     {
-        charDots = new CharDotMatrix(12, 1);
+        charDots = new DotMatrix(12, 1);
 
         for (int i = 0; i < 12; i++)
         {
@@ -111,7 +111,7 @@ public class CharDot
                 @Override
                 public boolean hasNext()
                 {
-                    return index > 0 && charDots.getCol(index) != null;
+                    return index >= 0 && charDots.getCol(index) != null;
                 }
 
                 @Override
@@ -151,7 +151,7 @@ public class CharDot
                 @Override
                 public boolean hasNext()
                 {
-                    return index > 0 && charDots.getRow(index) != null;
+                    return index >= 0 && charDots.getRow(index) != null;
                 }
 
                 @Override
@@ -662,30 +662,5 @@ public class CharDot
     private static final int[][] SPACE = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-
-    }
-
-class CharDotMatrix
-{
-    private Dot[][] matrix;
-
-    public CharDotMatrix(int rows, int cols)
-    {
-        matrix = new Dot[cols][rows];
-    }
-
-    public void set(Dot dot, int row, int col)
-    {
-        matrix[col][row] = dot;
-    }
-
-    public Dot[] getCol(int col)
-    {
-        return matrix[col];
-    }
-
-    public Dot[] getRow(int row)
-    {
-        return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
-    }
+  
 }

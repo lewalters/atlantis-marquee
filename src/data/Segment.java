@@ -15,15 +15,15 @@ import java.util.Iterator;
 public abstract class Segment
 {
     private int duration;
-    private String style;
-    private String effect;
+    private int speed;
+    private String scroll;
+    private String effectEn, effectEx;
     private String type;
+    protected int hlength, vlength;
 
-    protected Segment(int duration, String style, String effect)
+    protected Segment(String scroll)
     {
-        this.duration = duration;
-        this.style = style;
-        this.effect = effect;
+        this.scroll = scroll;
     }
 
     public int getDuration()
@@ -31,14 +31,19 @@ public abstract class Segment
         return duration;
     }
 
-    public String getStyle()
+    public String getScroll()
     {
-        return style;
+        return scroll;
     }
 
-    public String getEffect()
+    public String getEntranceEffect()
     {
-        return effect;
+        return effectEn;
+    }
+
+    public String getExitEffect()
+    {
+        return effectEx;
     }
 
     public String getType()
@@ -46,19 +51,34 @@ public abstract class Segment
         return type;
     }
 
+    public int getHlength()
+    {
+        return hlength;
+    }
+
+    public int getVlength()
+    {
+        return vlength;
+    }
+
     public void setDuration(int duration)
     {
         this.duration = duration;
     }
 
-    public void setStyle(String style)
+    public void setScroll(String scroll)
     {
-        this.style = style;
+        this.scroll = scroll;
     }
 
-    public void setEffect(String effect)
+    public void setEntranceEffect(String effect)
     {
-        this.effect = effect;
+        effectEn = effect;
+    }
+
+    public void setExitEffect(String effect)
+    {
+        effectEx = effect;
     }
 
     public void setType(String type)

@@ -3,7 +3,11 @@ package data;
 import util.ScrollDirection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.stream.Stream;
+
+import static util.Global.TEXT_ROWS;
 
 /**
  * (Insert a brief comment that describes
@@ -20,12 +24,12 @@ public class TextSegment extends Segment
     private String borderColor;
     private String borderEffect;
     private String paddingColor;
-    private int length;
 
-    public TextSegment(int duration, String style, String effect, String text)
+    public TextSegment(int duration, String scroll, String text)
     {
-        super(duration, style, effect);
+        super(scroll);
         this.text = text;
+        vlength = TEXT_ROWS;
 
         String textUp = text.toUpperCase();
 
@@ -41,7 +45,7 @@ public class TextSegment extends Segment
 
         for (CharDot cd : contents)
         {
-            length += cd.getHLength();
+            hlength += cd.getHLength();
         }
     }
 
@@ -63,11 +67,6 @@ public class TextSegment extends Segment
     public String getPaddingColor()
     {
         return paddingColor;
-    }
-
-    public int getLength()
-    {
-        return length;
     }
 
     public void setText(String text)
@@ -97,7 +96,6 @@ public class TextSegment extends Segment
         {
             return new Iterator<>()
             {
-
                 int index = 0;
                 Iterator<Dot[]> charDot = contents.get(index).iterator(direction);
 
@@ -128,7 +126,6 @@ public class TextSegment extends Segment
         {
             return new Iterator<>()
             {
-
                 int index = contents.size() - 1;
                 Iterator<Dot[]> charDot = contents.get(index).iterator(direction);
 
@@ -174,19 +171,7 @@ public class TextSegment extends Segment
                 public Dot[] next()
                 {
                     index++;
-                    int i = 0;
-                    Dot[] test = new Dot[length];
-                    for (Iterator<Dot[]> charDot : charDots)
-                    {
-                        Dot[] dots = charDot.next();
-                        for (Dot dot : dots)
-                        {
-                            test[i] = dot;
-                            i++;
-                        }
-                    }
-                    return test;
-                    //return charDots.stream().map(Iterator::next).toArray(Dot[]::new);
+                    return charDots.stream().map(Iterator::next).flatMap(Arrays::stream).toArray(Dot[]::new);
                 }
             };
         }
@@ -210,19 +195,7 @@ public class TextSegment extends Segment
                 public Dot[] next()
                 {
                     index++;
-                    int i = 0;
-                    Dot[] test = new Dot[length];
-                    for (Iterator<Dot[]> charDot : charDots)
-                    {
-                        Dot[] dots = charDot.next();
-                        for (Dot dot : dots)
-                        {
-                            test[i] = dot;
-                            i++;
-                        }
-                    }
-                    return test;
-                    //return charDots.stream().map(Iterator::next).toArray(Dot[]::new);
+                    return charDots.stream().map(Iterator::next).flatMap(Arrays::stream).toArray(Dot[]::new);
                 }
             };
         }

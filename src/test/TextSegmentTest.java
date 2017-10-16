@@ -13,7 +13,7 @@ public class TextSegmentTest {
     @BeforeClass
     public void setup()
     {
-        ts = new TextSegment(60, "left-scroll-continuous", "fade", "Welcome to VISION");
+        ts = new TextSegment(60, "left-scroll-continuous", "fade");
     }
 
     @Test
