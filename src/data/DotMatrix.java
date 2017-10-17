@@ -32,6 +32,16 @@ public class DotMatrix
         return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
     }
 
+    public int getRows()
+    {
+        return rows;
+    }
+
+    public int getCols()
+    {
+        return cols;
+    }
+
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
         if (direction == ScrollDirection.LEFT)

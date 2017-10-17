@@ -4,6 +4,7 @@ import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import static util.Utility.convertImage;
  *
  * @author Team Atlantis
  */
-public abstract class ImageSegment extends Segment
+public class ImageSegment extends Segment
 {
     private String source;
     private DotMatrix contents;
@@ -27,7 +28,19 @@ public abstract class ImageSegment extends Segment
     {
         super(scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
-        contents = convertImage(source);
+
+        try
+        {
+            contents = convertImage(source);
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        hLength = contents.getCols();
+        vLength = contents.getRows();
+        size = hLength * vLength;
     }
     
     public String getSource() {
