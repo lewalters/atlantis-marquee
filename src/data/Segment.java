@@ -74,16 +74,6 @@ public abstract class Segment
         return size;
     }
 
-    public int getHlength()
-    {
-        return hlength;
-    }
-
-    public int getVlength()
-    {
-        return vlength;
-    }
-
     public void setDuration(int duration)
     {
         this.duration = duration;

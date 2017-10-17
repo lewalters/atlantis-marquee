@@ -41,13 +41,58 @@ public class Marquee
         return height;
     }
 
+    public String getScreenPos()
+    {
+        return screenPos;
+    }
+
+    public boolean isFullscreen()
+    {
+        return fullscreen;
+    }
+
     public int getLedGap()
     {
         return ledGap;
     }
 
+    public LocalTime getStartTime()
+    {
+        return startTime;
+    }
+
     public void setMessage(Message message)
     {
         this.message = message;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+    public void setScreenPosition(String screenPos)
+    {
+        this.screenPos = screenPos;
+    }
+
+    public void setFullscreen(boolean fullscreen)
+    {
+        this.fullscreen = fullscreen;
+    }
+
+    public void setLedGap(int ledGap)
+    {
+        this.ledGap = ledGap;
+    }
+
+    public void setStartTime(LocalTime startTime)
+    {
+        this.startTime = startTime;
     }
 }
