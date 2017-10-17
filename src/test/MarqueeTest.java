@@ -25,10 +25,11 @@ public class MarqueeTest {
 
     }
 
-/*@Test
+@Test
 public  void testLocalTime(){
     LocalTime t = new LocalTime(1,2,3);
     t.compareTo();
     }
-}*/
+}
+
 }
