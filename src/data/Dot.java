@@ -38,4 +38,16 @@ public class Dot
     {
         this.intensity = intensity;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Dot)
+        {
+            Dot dot = (Dot) obj;
+            return this.color.equals(dot.color) && this.intensity == dot.intensity;
+        }
+
+        return false;
+    }
 }

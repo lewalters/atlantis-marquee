@@ -1,9 +1,6 @@
 package gui;
 
-import data.Marquee;
-import data.Message;
-import data.Segment;
-import data.TextSegment;
+import data.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,23 +32,16 @@ public class VisionGUI extends Application
 
         Stage authStage = new Stage();
         authStage.setScene(new Scene(authPane));
-        Stage txtSegStage = new Stage();
-        txtSegStage.setScene(new Scene(txtSegPane));
-        Stage imgSegStage = new Stage();
-        imgSegStage.setScene(new Scene(imgSegPane));
-        imgSegStage.setTitle("Image Segment Settings");
-        txtSegStage.setTitle("Text Segment Settings");
-        Stage segPaneStage = new Stage();
-        segPaneStage.setScene(new Scene(segmentPane));
-        segPaneStage.setTitle("SegmentPane");
 
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
         marquee.setMessage(message);
         Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", ScrollDirection.UP, StaticEffect.NONE, TransitionEffect.RANDOM, "5F9EA0", "Wake Tech");
         Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
-        message.addSegment(0, segment);
-        message.addSegment(1, segment2);
+        Segment segment3 = new ImageSegment(ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "test.gif");
+        //message.addSegment(0, segment);
+        //message.addSegment(1, segment2);
+        message.addSegment(0, segment3);
         MarqueeController marqueeController = new MarqueeController(marquee);
         Stage marqueeStage = new Stage();
         marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
@@ -71,19 +61,7 @@ public class VisionGUI extends Application
             }
         });
 
-        //Event Handler for TextSegmentButton
-        settingsPane.getTextSegmentButton().setOnAction(e ->{
-
-            txtSegStage.show();
-        });
-
-        //Event Handler for ImageSegmentButton
-        settingsPane.getImageSegmentButton().setOnAction(event -> {
-            imgSegStage.show();
-        });
-
         //Creating Event Handler for AuthPane Cancel Button
-        authPane.getCancelButton().setOnAction(event -> {
-            authStage.close();});
+        authPane.getCancelButton().setOnAction(event -> authStage.close());
     }
 }
