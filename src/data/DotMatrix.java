@@ -1,5 +1,7 @@
 package data;
+
 import util.ScrollDirection;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -7,6 +9,7 @@ public class DotMatrix
 {
     private int rows, cols;
     private Dot[][] matrix;
+
     public DotMatrix(int rows, int cols)
     {
         this.rows = rows;
@@ -23,9 +26,20 @@ public class DotMatrix
     {
         return matrix[col];
     }
+
     private Dot[] getRow(int row)
     {
         return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
+    }
+
+    public int getRows()
+    {
+        return rows;
+    }
+
+    public int getCols()
+    {
+        return cols;
     }
 
     public Iterator<Dot[]> iterator(ScrollDirection direction)
