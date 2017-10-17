@@ -80,4 +80,7 @@ public class Message
     }
 
     public void changeOrder() {}
+
+    public void getComments(String welcome) {
+    }
 }

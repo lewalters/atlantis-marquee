@@ -24,15 +24,15 @@ public class AuthPane extends VBox
     AuthPane()
     {
         //Creating Authentication Header
-        Label titleLabel = new Label("Authentication");
-        titleLabel.setFont(new Font("Onyx", 32));
+        Label titleLabel = new Label("Set Authentication");
+        titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
         this.getChildren().add(titleLabel);
 
         //Creating Password Label
         Label passwordLabel = new Label("Enter Password:");
-        passwordLabel.setFont(new Font("Onyx", 20));
+        passwordLabel.setFont(new Font("Helvetica", 20));
 
         //Creating Password Text Field Label
         TextField passwordTextField = new TextField();
@@ -40,11 +40,11 @@ public class AuthPane extends VBox
 
         //Creating Continue Button
         continueButton = new Button("Continue");
-        continueButton.setFont(new Font("Onyx", 20));
+        continueButton.setFont(new Font("Helvetica", 20));
 
         //Creating Cancel Button
         cancelButton = new Button("Cancel");
-        cancelButton.setFont(new Font("Onyx", 20));
+        cancelButton.setFont(new Font("Helvetica", 20));
 
         //Creating Horizontal Box
         HBox buttons = new HBox(continueButton, cancelButton);
@@ -52,11 +52,14 @@ public class AuthPane extends VBox
         buttons.setAlignment(Pos.CENTER);
 
         // Global Pane Settings (VBOX)
-        this.setPrefSize(200, 150);
+        this.setPrefSize(400, 150);
         this.setPadding(new Insets(10));
         this.setSpacing(5);
         this.getChildren().addAll(passwordLabel, passwordTextField, buttons);
         this.setAlignment(Pos.CENTER);
+
+        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
+                +"-fx-font-weight: bold;");
     }
 
     public Button getContinueButton()
