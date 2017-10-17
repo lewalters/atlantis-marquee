@@ -3,12 +3,11 @@ package data;
 import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
-import static util.Global.TEXT_ROWS;
 import static util.Global.TEXT_ROWS;
 
 /**
