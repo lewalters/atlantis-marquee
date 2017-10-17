@@ -61,5 +61,8 @@ public class VisionGUI extends Application
                 marqueeStage.show();
             }
         });
+
+        //Creating Event Handler for AuthPane Cancel Button
+        authPane.getCancelButton().setOnAction(event -> authStage.close());
     }
 }
