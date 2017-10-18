@@ -9,6 +9,7 @@ import util.ScrollDirection;
 import util.EffectTime;
 import util.TransitionEffect;
 
+import java.sql.Time;
 import java.util.Iterator;
 
 import static util.Global.*;
@@ -16,6 +17,7 @@ import static util.EffectTime.CONTINUOUS;
 import static util.EffectTime.IN;
 import static util.EffectTime.OUT;
 import static util.StaticEffect.NONE;
+import static util.TransitionEffect.FADE;
 
 public class MarqueeController
 {
@@ -53,9 +55,9 @@ public class MarqueeController
 
         Timeline startTimeline = new Timeline();
         Timeline borderTimeline = new Timeline();
-        Timeline entranceTimeline = new Timeline();
+        SequentialTransition entrance = new SequentialTransition();
         Timeline middleTimeline = new Timeline();
-        Timeline exitTimeline = new Timeline();
+        SequentialTransition exit = new SequentialTransition();
         Timeline resetTimeline = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.reset()));
 
         // Create the border and padding iff colors are set in the segment
@@ -86,29 +88,39 @@ public class MarqueeController
         // Display with effects
         if (segment.getScrollDirection() == ScrollDirection.STATIC)
         {
-            entranceEffect(entranceTimeline, segment);
+            entranceEffect(entrance, segment);
             middleEffect(middleTimeline, segment);
-            exitEffect(exitTimeline, segment);
+            exitEffect(exit, segment);
         }
         else // Continuous scroll
         {
-            scroll(entranceTimeline, segment, EffectTime.CONTINUOUS);
+            scroll(entrance, segment, EffectTime.CONTINUOUS);
         }
 
-        bodyTransition.getChildren().addAll(entranceTimeline, middleTimeline, exitTimeline);
+        bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
         borderTimeline.setCycleCount((int)bodyTransition.getTotalDuration().toMillis() / 500);
         borderedTransition.getChildren().addAll(borderTimeline, bodyTransition);
         segmentTransition.getChildren().addAll(startTimeline, borderedTransition, resetTimeline);
         transition.getChildren().add(segmentTransition);
     }
 
-    private void entranceEffect(Timeline timeline, Segment segment)
+    private void entranceEffect(SequentialTransition transition, Segment segment)
     {
         MarqueeEffect effect = segment.getEntranceEffect();
 
         if (effect instanceof ScrollDirection)
         {
-            scroll(timeline, segment, IN);
+            scroll(transition, segment, IN);
+        }
+        else if (effect == FADE)
+        {
+            set(transition, segment);
+            preFade(transition, segment);
+            fade(transition, segment, IN);
+        }
+        else if (effect == NONE)
+        {
+            set(transition, segment);
         }
     }
 
@@ -122,17 +134,21 @@ public class MarqueeController
         }
     }
 
-    private void exitEffect(Timeline timeline, Segment segment)
+    private void exitEffect(SequentialTransition transition, Segment segment)
     {
         MarqueeEffect effect = segment.getExitEffect();
 
         if (effect instanceof ScrollDirection)
         {
-            scroll(timeline, segment, OUT);
+            scroll(transition, segment, OUT);
         }
         else if (effect == TransitionEffect.RANDOM)
         {
-            randomOff(timeline, segment);
+            randomOff(transition, segment);
+        }
+        else if (effect == FADE)
+        {
+            fade(transition, segment, OUT);
         }
     }
 
@@ -141,8 +157,9 @@ public class MarqueeController
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
     }
 
-    private void scroll(Timeline timeline, Segment segment, EffectTime time)
+    private void scroll(SequentialTransition transition, Segment segment, EffectTime time)
     {
+        Timeline timeline = new Timeline();
         ScrollDirection direction;
         int cycles;
 
@@ -208,10 +225,13 @@ public class MarqueeController
         }
 
         timeline.setCycleCount(cycles);
+        transition.getChildren().add(timeline);
     }
 
-    private void randomOff(Timeline timeline, Segment segment)
+    private void randomOff(SequentialTransition transition, Segment segment)
     {
+        Timeline timeline = new Timeline();
+
         if (segment instanceof TextSegment)
         {
             timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOff()));
@@ -222,5 +242,68 @@ public class MarqueeController
         }
 
         timeline.setCycleCount(segment.getSize());
+        transition.getChildren().add(timeline);
+    }
+
+    private void fade(SequentialTransition transition, Segment segment, EffectTime time)
+    {
+        Timeline timeline = new Timeline();
+
+        switch(time)
+        {
+            case IN:
+                if (segment instanceof TextSegment)
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInText()));
+                } else // ImageSegment
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInImage()));
+                }
+                break;
+            case OUT:
+                if (segment instanceof TextSegment)
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutText()));
+                } else // ImageSegment
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutImage()));
+                }
+                break;
+        }
+
+        timeline.setCycleCount(100);
+        transition.getChildren().add(timeline);
+    }
+
+    private void preFade(SequentialTransition transition, Segment segment)
+    {
+        Timeline timeline = new Timeline();
+
+        if (segment instanceof TextSegment)
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.preFadeText()));
+        }
+        else // ImageSegment
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.preFadeImage()));
+        }
+
+        transition.getChildren().add(timeline);
+    }
+
+    private void set(SequentialTransition transition, Segment segment)
+    {
+        Timeline timeline = new Timeline();
+
+        if (segment instanceof TextSegment)
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setText(segment)));
+        }
+        else // ImageSegment
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setImage(segment)));
+        }
+
+        transition.getChildren().add(timeline);
     }
 }

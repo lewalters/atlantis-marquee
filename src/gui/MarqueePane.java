@@ -1,7 +1,7 @@
 package gui;
 
 import data.Dot;
-
+import data.Segment;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -11,7 +11,6 @@ import util.ScrollDirection;
 
 import java.util.*;
 
-import static util.Global.*;
 import static util.Global.*;
 
 /**
@@ -38,6 +37,7 @@ public class MarqueePane extends StackPane
 
         // Initialize the grids
         GridPane ledGrid = new GridPane();
+        GridPane backGrid = new GridPane();
         ledMatrix = new LED[NUM_ROWS][NUM_COLS];
         textMatrix = new LED[TEXT_ROWS][TEXT_COLS];
         border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
@@ -53,6 +53,7 @@ public class MarqueePane extends StackPane
             {
                 ledMatrix[r][c] = new LED(ledRadius);
                 ledGrid.add(ledMatrix[r][c], c, r);
+                backGrid.add(new LED(ledRadius), c, r);
 
                 // Add the LEDs within the border to an ArrayList for easier referencing
                 if (r == 0 || r == NUM_ROWS - 1 || c == 0 || c == NUM_COLS - 1)
@@ -75,11 +76,14 @@ public class MarqueePane extends StackPane
             }
         }
 
-        // Center the grids and add them to the pane
+        // Center the grid and add it to the pane
+        backGrid.setAlignment(Pos.CENTER);
         ledGrid.setAlignment(Pos.CENTER);
-        this.getChildren().add(ledGrid);
+        this.getChildren().addAll(backGrid, ledGrid);
 
         // Add gaps between all of the LEDs
+        backGrid.setHgap(ledGap);
+        backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
     }
@@ -563,6 +567,166 @@ public class MarqueePane extends StackPane
         if (!ledList.isEmpty())
         {
             ledList.get(new Random().nextInt(ledList.size())).turnOff();
+        }
+    }
+
+    public void fadeInText()
+    {
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    double newOpacity = led.getOpacity() + 0.01;
+
+                    if (newOpacity <= 1)
+                    {
+                        led.setOpacity(newOpacity);
+                    }
+                }
+            }
+        }
+    }
+
+    public void fadeInImage()
+    {
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    double newOpacity = led.getOpacity() - 0.01;
+
+                    if (newOpacity <= 0)
+                    {
+                        led.turnOff();
+                    }
+                    else
+                    {
+                        led.setOpacity(newOpacity);
+                    }
+                }
+            }
+        }
+    }
+
+    public void fadeOutText()
+    {
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    double newOpacity = led.getOpacity() - 0.01;
+
+                    if (newOpacity <= 0)
+                    {
+                        led.turnOff();
+                    }
+                    else
+                    {
+                        led.setOpacity(newOpacity);
+                    }
+                }
+            }
+        }
+    }
+
+    public void fadeOutImage()
+    {
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    double newOpacity = led.getOpacity() - 0.01;
+
+                    if (newOpacity <= 0)
+                    {
+                        led.turnOff();
+                    }
+                    else
+                    {
+                        led.setOpacity(newOpacity);
+                    }
+                }
+            }
+        }
+    }
+
+    public void preFadeText()
+    {
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    led.setOpacity(0);
+                }
+            }
+        }
+    }
+
+    public void preFadeImage()
+    {
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    led.setOpacity(0);
+                }
+            }
+        }
+    }
+
+    public void setText(Segment segment)
+    {
+        int start = (TEXT_COLS - segment.getHlength()) / 2;
+        Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
+
+        for (int r = 0; r < TEXT_ROWS; r++)
+        {
+            Dot[] newRay = iterator.next();
+
+            for (int c = start + 1; c < start + newRay.length; c++)
+            {
+                Dot dot = newRay[c - start - 1];
+                LED currLED = textMatrix[r][c];
+
+                if (dot.getIntensity() > 0)
+                {
+                    currLED.turnOn(dot.getColor(), dot.getIntensity());
+                }
+            }
+        }
+    }
+
+    public void setImage(Segment segment)
+    {
+        int start = (NUM_COLS - segment.getHlength()) / 2;
+        Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
+
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            Dot[] newRay = iterator.next();
+
+            for (int c = start + 1; c < start + newRay.length; c++)
+            {
+                Dot dot = newRay[c - start - 1];
+                LED currLED = ledMatrix[r][c];
+
+                if (dot.getIntensity() > 0)
+                {
+                    currLED.turnOn(dot.getColor(), dot.getIntensity());
+                }
+            }
         }
     }
 

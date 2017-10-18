@@ -36,7 +36,7 @@ public class VisionGUI extends Application
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
         marquee.setMessage(message);
-        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", ScrollDirection.UP, StaticEffect.NONE, TransitionEffect.RANDOM, "5F9EA0", "Wake Tech");
+        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", TransitionEffect.FADE, StaticEffect.NONE, TransitionEffect.FADE, "5F9EA0", "Wake Tech");
         Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
         Segment segment3 = new ImageSegment(ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "gbf.png");
         message.addSegment(0, segment);
