@@ -45,6 +45,8 @@ public class MarqueeController
         message.getContents().forEach(segment -> addSegment(segment, messageAnimation));
 
         messageAnimation.play();
+        SequentialTransition test = new SequentialTransition();
+        test.play();
     }
 
     private void addSegment(Segment segment, SequentialTransition transition)
@@ -91,15 +93,17 @@ public class MarqueeController
             entranceEffect(entrance, segment);
             middleEffect(middleTimeline, segment);
             exitEffect(exit, segment);
+            bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
+            borderTimeline.setCycleCount((int)bodyTransition.getTotalDuration().toMillis() / 500);
+            borderedTransition.getChildren().addAll(borderTimeline, bodyTransition);
         }
         else // Continuous scroll
         {
             scroll(entrance, segment, EffectTime.CONTINUOUS);
+            borderTimeline.setCycleCount((int)entrance.getTotalDuration().toMillis() / 500);
+            borderedTransition.getChildren().addAll(borderTimeline, entrance);
         }
 
-        bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
-        borderTimeline.setCycleCount((int)bodyTransition.getTotalDuration().toMillis() / 500);
-        borderedTransition.getChildren().addAll(borderTimeline, bodyTransition);
         segmentTransition.getChildren().addAll(startTimeline, borderedTransition, resetTimeline);
         transition.getChildren().add(segmentTransition);
     }

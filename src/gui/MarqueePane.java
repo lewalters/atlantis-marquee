@@ -244,11 +244,11 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        int start = (TEXT_COLS - newRay.length) / 2;
+                        int start = (TEXT_COLS - newRay.length) / 2 + 1;
 
-                        if (c > start && c <= start + newRay.length)
+                        if (c >= start && c < start + newRay.length)
                         {
-                            Dot dot = newRay[c - start - 1];
+                            Dot dot = newRay[c - start];
 
                             if (dot.getIntensity() > 0)
                             {
@@ -297,11 +297,11 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        int start = (TEXT_COLS - newRay.length) / 2;
+                        int start = (TEXT_COLS - newRay.length) / 2 + 1;
 
-                        if (c > start && c <= start + newRay.length)
+                        if (c >= start && c < start + newRay.length)
                         {
-                            Dot dot = newRay[c - start - 1];
+                            Dot dot = newRay[c - start];
 
                             if (dot.getIntensity() > 0)
                             {
@@ -445,11 +445,11 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        int start = (NUM_COLS - newRay.length) / 2;
+                        int start = (NUM_COLS - newRay.length) / 2 + 1;
 
-                        if (c > start && c <= start + newRay.length)
+                        if (c >= start && c < start + newRay.length)
                         {
-                            Dot dot = newRay[c - start - 1];
+                            Dot dot = newRay[c - start];
 
                             if (dot.getIntensity() > 0)
                             {
@@ -498,11 +498,11 @@ public class MarqueePane extends StackPane
 
                     if (newRay != null)
                     {
-                        int start = (NUM_COLS - newRay.length) / 2;
+                        int start = (NUM_COLS - newRay.length) / 2 + 1;
 
-                        if (c > start && c <= start + newRay.length)
+                        if (c >= start && c < start + newRay.length)
                         {
-                            Dot dot = newRay[c - start - 1];
+                            Dot dot = newRay[c - start];
 
                             if (dot.getIntensity() > 0)
                             {
@@ -688,16 +688,16 @@ public class MarqueePane extends StackPane
 
     public void setText(Segment segment)
     {
-        int start = (TEXT_COLS - segment.getHlength()) / 2;
+        int start = (TEXT_COLS - segment.getHlength()) / 2 + 1;
         Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
 
         for (int r = 0; r < TEXT_ROWS; r++)
         {
             Dot[] newRay = iterator.next();
 
-            for (int c = start + 1; c < start + newRay.length; c++)
+            for (int c = start; c < start + newRay.length; c++)
             {
-                Dot dot = newRay[c - start - 1];
+                Dot dot = newRay[c - start];
                 LED currLED = textMatrix[r][c];
 
                 if (dot.getIntensity() > 0)
@@ -710,16 +710,16 @@ public class MarqueePane extends StackPane
 
     public void setImage(Segment segment)
     {
-        int start = (NUM_COLS - segment.getHlength()) / 2;
+        int start = (NUM_COLS - segment.getHlength()) / 2 + 1;
         Iterator<Dot[]> iterator = segment.iterator(ScrollDirection.UP);
 
         for (int r = 0; r < NUM_ROWS; r++)
         {
             Dot[] newRay = iterator.next();
 
-            for (int c = start + 1; c < start + newRay.length; c++)
+            for (int c = start; c < start + newRay.length; c++)
             {
-                Dot dot = newRay[c - start - 1];
+                Dot dot = newRay[c - start];
                 LED currLED = ledMatrix[r][c];
 
                 if (dot.getIntensity() > 0)
