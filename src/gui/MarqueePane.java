@@ -700,6 +700,43 @@ public class MarqueePane extends StackPane
         }
     }
 
+    public void randomColorText()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        ledList.get(new Random().nextInt(ledList.size())).setFill(Color.color(Math.random(), Math.random(), Math.random()));
+    }
+
+    // Does this make sense??
+    public void randomColorImage()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        ledList.get(new Random().nextInt(ledList.size())).setOpacity(1);
+    }
+
     public void zeroText()
     {
         for (LED[] leds : textMatrix)

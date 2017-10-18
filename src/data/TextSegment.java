@@ -28,10 +28,10 @@ public class TextSegment extends Segment
     private String paddingColor;
     private String textColor;
 
-    public TextSegment(ScrollDirection scrollDirection, String borderColor, StaticEffect borderEffect, String paddingColor,
+    public TextSegment(int duration, int speed, ScrollDirection scrollDirection, String borderColor, StaticEffect borderEffect, String paddingColor,
                        MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String textColor, String text)
     {
-        super(scrollDirection, effectEn, effectMi, effectEx);
+        super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
         this.borderColor = borderColor;
         this.borderEffect = borderEffect;

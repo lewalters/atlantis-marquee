@@ -24,9 +24,9 @@ public class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    public ImageSegment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
+    public ImageSegment(int duration, int speed, ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
     {
-        super(scrollDirection, effectEn, effectMi, effectEx);
+        super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
 
         try

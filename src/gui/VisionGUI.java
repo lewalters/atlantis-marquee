@@ -1,6 +1,7 @@
 package gui;
 
 import data.*;
+import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -10,7 +11,7 @@ import util.StaticEffect;
 import util.TransitionEffect;
 
 import static util.TransitionEffect.FADE;
-import static util.TransitionEffect.RANDOM;
+import static util.TransitionEffect.RANDOM_LIGHT;
 
 public class VisionGUI extends Application
 {
@@ -39,9 +40,9 @@ public class VisionGUI extends Application
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
         marquee.setMessage(message);
-        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", RANDOM, StaticEffect.NONE, RANDOM, "5F9EA0", "Wake Tech");
-        Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
-        Segment segment3 = new ImageSegment(ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "gbf.png");
+        Segment segment = new TextSegment(10, 10, ScrollDirection.STATIC, "C0C0C0", StaticEffect.NONE, "", StaticEffect.NONE, StaticEffect.RANDOM_COLOR, StaticEffect.NONE, "5F9EA0", "Wake Tech");
+        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
+        Segment segment3 = new ImageSegment(5, 10, ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "gbf.png");
         message.addSegment(0, segment);
         //message.addSegment(1, segment2);
         //message.addSegment(0, segment3);

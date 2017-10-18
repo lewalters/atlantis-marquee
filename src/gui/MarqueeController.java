@@ -17,8 +17,9 @@ import static util.EffectTime.CONTINUOUS;
 import static util.EffectTime.IN;
 import static util.EffectTime.OUT;
 import static util.StaticEffect.NONE;
+import static util.StaticEffect.RANDOM_COLOR;
 import static util.TransitionEffect.FADE;
-import static util.TransitionEffect.RANDOM;
+import static util.TransitionEffect.RANDOM_LIGHT;
 
 public class MarqueeController
 {
@@ -117,11 +118,11 @@ public class MarqueeController
         {
             scroll(transition, segment, IN);
         }
-        else if (effect == RANDOM)
+        else if (effect == RANDOM_LIGHT)
         {
             set(transition, segment);
             zero(transition, segment);
-            random(transition, segment, IN);
+            randomLight(transition, segment, IN);
         }
         else if (effect == FADE)
         {
@@ -141,7 +142,11 @@ public class MarqueeController
 
         if (effect == NONE)
         {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000)));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(segment.getDuration())));
+        }
+        else if (effect == RANDOM_COLOR)
+        {
+            randomDotColor(timeline, segment);
         }
     }
 
@@ -153,13 +158,17 @@ public class MarqueeController
         {
             scroll(transition, segment, OUT);
         }
-        else if (effect == RANDOM)
+        else if (effect == RANDOM_LIGHT)
         {
-            random(transition, segment, OUT);
+            randomLight(transition, segment, OUT);
         }
         else if (effect == FADE)
         {
             fade(transition, segment, OUT);
+        }
+        else if (effect == NONE)
+        {
+            zero(transition, segment);
         }
     }
 
@@ -173,6 +182,7 @@ public class MarqueeController
         Timeline timeline = new Timeline();
         ScrollDirection direction;
         int cycles;
+        int speed = 1000 / segment.getSpeed();
 
         switch (time)
         {
@@ -216,22 +226,22 @@ public class MarqueeController
 
             if (segment instanceof TextSegment)
             {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollText(iterator.hasNext() ? iterator.next() : null, direction)));
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollText(iterator.hasNext() ? iterator.next() : null, direction)));
             }
             else // ImageSegment
             {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollImage(iterator.hasNext() ? iterator.next() : null, direction)));
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollImage(iterator.hasNext() ? iterator.next() : null, direction)));
             }
         }
         else if (time == OUT)
         {
             if (segment instanceof TextSegment)
             {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollText(null, direction)));
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollText(null, direction)));
             }
             else // ImageSegment
             {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), e -> marqueePane.scrollImage(null, direction)));
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollImage(null, direction)));
             }
         }
 
@@ -239,7 +249,7 @@ public class MarqueeController
         transition.getChildren().add(timeline);
     }
 
-    private void random(SequentialTransition transition, Segment segment, EffectTime time)
+    private void randomLight(SequentialTransition transition, Segment segment, EffectTime time)
     {
         Timeline timeline = new Timeline();
 
@@ -268,7 +278,6 @@ public class MarqueeController
         }
 
         timeline.setCycleCount(segment.getSize());
-        System.out.println(timeline.getCycleCount());
         transition.getChildren().add(timeline);
     }
 
@@ -302,6 +311,20 @@ public class MarqueeController
 
         timeline.setCycleCount(100);
         transition.getChildren().add(timeline);
+    }
+
+    private void randomDotColor(Timeline timeline, Segment segment)
+    {
+        if (segment instanceof TextSegment)
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomColorText()));
+        }
+        else // ImageSegment
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomColorImage()));
+        }
+
+        timeline.setCycleCount(segment.getDuration() * 100);
     }
 
     private void zero(SequentialTransition transition, Segment segment)

@@ -2,5 +2,5 @@ package util;
 
 public enum TransitionEffect implements MarqueeEffect
 {
-    RANDOM, FADE
+    RANDOM_LIGHT, FADE
 }

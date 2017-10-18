@@ -22,8 +22,10 @@ public abstract class Segment
     private MarqueeEffect effectEn, effectMi, effectEx;
     protected int hLength, vLength, size;
 
-    protected Segment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx)
+    protected Segment(int duration, int speed, ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx)
     {
+        this.duration = duration;
+        this.speed = speed;
         this.scrollDirection = scrollDirection;
         this.effectEn = effectEn;
         this.effectMi = effectMi;
