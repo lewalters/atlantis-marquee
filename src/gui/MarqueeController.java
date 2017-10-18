@@ -18,6 +18,7 @@ import static util.EffectTime.IN;
 import static util.EffectTime.OUT;
 import static util.StaticEffect.NONE;
 import static util.TransitionEffect.FADE;
+import static util.TransitionEffect.RANDOM;
 
 public class MarqueeController
 {
@@ -116,10 +117,16 @@ public class MarqueeController
         {
             scroll(transition, segment, IN);
         }
+        else if (effect == RANDOM)
+        {
+            set(transition, segment);
+            zero(transition, segment);
+            random(transition, segment, IN);
+        }
         else if (effect == FADE)
         {
             set(transition, segment);
-            preFade(transition, segment);
+            zero(transition, segment);
             fade(transition, segment, IN);
         }
         else if (effect == NONE)
@@ -146,9 +153,9 @@ public class MarqueeController
         {
             scroll(transition, segment, OUT);
         }
-        else if (effect == TransitionEffect.RANDOM)
+        else if (effect == RANDOM)
         {
-            randomOff(transition, segment);
+            random(transition, segment, OUT);
         }
         else if (effect == FADE)
         {
@@ -232,20 +239,36 @@ public class MarqueeController
         transition.getChildren().add(timeline);
     }
 
-    private void randomOff(SequentialTransition transition, Segment segment)
+    private void random(SequentialTransition transition, Segment segment, EffectTime time)
     {
         Timeline timeline = new Timeline();
 
-        if (segment instanceof TextSegment)
+        switch(time)
         {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOff()));
-        }
-        else // ImageSegment
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomImageOff()));
+            case IN:
+                if (segment instanceof TextSegment)
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOn()));
+                }
+                else // ImageSegment
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomImageOn()));
+                }
+                break;
+            case OUT:
+                if (segment instanceof TextSegment)
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOff()));
+                }
+                else // ImageSegment
+                {
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomImageOff()));
+                }
+                break;
         }
 
         timeline.setCycleCount(segment.getSize());
+        System.out.println(timeline.getCycleCount());
         transition.getChildren().add(timeline);
     }
 
@@ -259,7 +282,8 @@ public class MarqueeController
                 if (segment instanceof TextSegment)
                 {
                     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInText()));
-                } else // ImageSegment
+                }
+                else // ImageSegment
                 {
                     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInImage()));
                 }
@@ -268,7 +292,8 @@ public class MarqueeController
                 if (segment instanceof TextSegment)
                 {
                     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutText()));
-                } else // ImageSegment
+                }
+                else // ImageSegment
                 {
                     timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutImage()));
                 }
@@ -279,17 +304,17 @@ public class MarqueeController
         transition.getChildren().add(timeline);
     }
 
-    private void preFade(SequentialTransition transition, Segment segment)
+    private void zero(SequentialTransition transition, Segment segment)
     {
         Timeline timeline = new Timeline();
 
         if (segment instanceof TextSegment)
         {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.preFadeText()));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.zeroText()));
         }
         else // ImageSegment
         {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.preFadeImage()));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.zeroImage()));
         }
 
         transition.getChildren().add(timeline);

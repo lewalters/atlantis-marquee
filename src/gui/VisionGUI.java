@@ -10,6 +10,7 @@ import util.StaticEffect;
 import util.TransitionEffect;
 
 import static util.TransitionEffect.FADE;
+import static util.TransitionEffect.RANDOM;
 
 public class VisionGUI extends Application
 {
@@ -38,7 +39,7 @@ public class VisionGUI extends Application
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
         marquee.setMessage(message);
-        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", FADE, StaticEffect.NONE, FADE, "5F9EA0", "Wake Tech");
+        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", RANDOM, StaticEffect.NONE, RANDOM, "5F9EA0", "Wake Tech");
         Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
         Segment segment3 = new ImageSegment(ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "gbf.png");
         message.addSegment(0, segment);

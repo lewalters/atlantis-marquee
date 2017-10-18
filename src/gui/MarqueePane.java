@@ -528,6 +528,48 @@ public class MarqueePane extends StackPane
         }
     }
 
+    public void randomTextOn()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn() && led.getOpacity() == 0)
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        if (!ledList.isEmpty())
+        {
+            ledList.get(new Random().nextInt(ledList.size())).setOpacity(1);
+        }
+    }
+
+    public void randomImageOn()
+    {
+        List<LED> ledList = new ArrayList<>();
+
+        for (LED[] leds : ledMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn() && led.getOpacity() == 0)
+                {
+                    ledList.add(led);
+                }
+            }
+        }
+
+        if (!ledList.isEmpty())
+        {
+            ledList.get(new Random().nextInt(ledList.size())).setOpacity(1);
+        }
+    }
+
     public void randomTextOff()
     {
         List<LED> ledList = new ArrayList<>();
@@ -658,7 +700,7 @@ public class MarqueePane extends StackPane
         }
     }
 
-    public void preFadeText()
+    public void zeroText()
     {
         for (LED[] leds : textMatrix)
         {
@@ -672,7 +714,7 @@ public class MarqueePane extends StackPane
         }
     }
 
-    public void preFadeImage()
+    public void zeroImage()
     {
         for (LED[] leds : ledMatrix)
         {
