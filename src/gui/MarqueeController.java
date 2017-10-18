@@ -10,6 +10,7 @@ import util.EffectTime;
 import util.TransitionEffect;
 
 import java.sql.Time;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Global.*;
@@ -18,8 +19,7 @@ import static util.EffectTime.IN;
 import static util.EffectTime.OUT;
 import static util.StaticEffect.NONE;
 import static util.StaticEffect.RANDOM_COLOR;
-import static util.TransitionEffect.FADE;
-import static util.TransitionEffect.RANDOM_LIGHT;
+import static util.TransitionEffect.*;
 
 public class MarqueeController
 {
@@ -130,6 +130,12 @@ public class MarqueeController
             zero(transition, segment);
             fade(transition, segment, IN);
         }
+        else if (effect == HALF_SCROLL_TOP_LEFT || effect == HALF_SCROLL_TOP_RIGHT ||
+                 effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN ||
+                 effect == SPLIT_SCROLL_HORIZONTAL || effect == SPLIT_SCROLL_VERTICAL)
+        {
+            partialScroll(transition, segment, effect, IN);
+        }
         else if (effect == NONE)
         {
             set(transition, segment);
@@ -165,6 +171,12 @@ public class MarqueeController
         else if (effect == FADE)
         {
             fade(transition, segment, OUT);
+        }
+        else if (effect == HALF_SCROLL_TOP_LEFT || effect == HALF_SCROLL_TOP_RIGHT ||
+                effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN ||
+                effect == SPLIT_SCROLL_HORIZONTAL || effect == SPLIT_SCROLL_VERTICAL)
+        {
+            partialScroll(transition, segment, effect, OUT);
         }
         else if (effect == NONE)
         {
@@ -247,6 +259,109 @@ public class MarqueeController
 
         timeline.setCycleCount(cycles);
         transition.getChildren().add(timeline);
+    }
+
+    private void partialScroll(SequentialTransition transition, Segment segment, MarqueeEffect effect, EffectTime time)
+    {
+        Timeline timeline1 = new Timeline();
+        Timeline timeline2 = new Timeline();
+        int cycles;
+        int speed = 1000 / segment.getSpeed();
+
+        if (segment instanceof TextSegment)
+        {
+            cycles = (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT) ?
+                    segment.getHlength() + TEXT_COLS : segment.getVlength() + TEXT_ROWS;
+        }
+        else // ImageSegment
+        {
+            cycles = (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT) ?
+                    segment.getHlength() + NUM_COLS : segment.getVlength() + NUM_ROWS;
+        }
+
+        if (time == IN || time == OUT)
+        {
+            cycles /= 2;
+
+            if (time == OUT)
+            {
+                cycles += 1;
+            }
+        }
+
+        switch (time)
+        {
+            case IN:
+                Iterator<Dot[]> topIterator, bottomIterator, leftIterator, rightIterator;
+
+                switch ((TransitionEffect) effect)
+                {
+                    case HALF_SCROLL_TOP_LEFT:
+                        topIterator = segment.iterator(ScrollDirection.LEFT);
+                        bottomIterator = segment.iterator(ScrollDirection.RIGHT);
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.LEFT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.RIGHT)));
+                        break;
+                    case HALF_SCROLL_TOP_RIGHT:
+                        topIterator = segment.iterator(ScrollDirection.RIGHT);
+                        bottomIterator = segment.iterator(ScrollDirection.LEFT);
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.RIGHT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.LEFT)));
+                        break;
+                    case HALF_SCROLL_LEFT_UP:
+                        break;
+                    case HALF_SCROLL_LEFT_DOWN:
+                        break;
+                    case SPLIT_SCROLL_HORIZONTAL:
+                        break;
+                    case SPLIT_SCROLL_VERTICAL:
+                        // TODO: how to reconcile iterator starting position with split scroll effect
+/*                        topIterator = segment.iterator(ScrollDirection.DOWN);
+                        bottomIterator = segment.iterator(ScrollDirection.UP);
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? topIterator.next() : null, ScrollDirection.DOWN)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? bottomIterator.next() : null, ScrollDirection.UP)));*/
+                        break;
+                }
+                break;
+            case OUT:
+                switch ((TransitionEffect) effect)
+                {
+                    case HALF_SCROLL_TOP_LEFT:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(null, ScrollDirection.LEFT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.RIGHT)));
+                        break;
+                    case HALF_SCROLL_TOP_RIGHT:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(null, ScrollDirection.RIGHT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.LEFT)));
+                        break;
+                    case HALF_SCROLL_LEFT_UP:
+                        break;
+                    case HALF_SCROLL_LEFT_DOWN:
+                        break;
+                    case SPLIT_SCROLL_HORIZONTAL:
+                        break;
+                    case SPLIT_SCROLL_VERTICAL:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextTop(null, ScrollDirection.UP)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.DOWN)));
+                        break;
+                }
+        }
+
+        timeline1.setCycleCount(cycles);
+        timeline2.setCycleCount(segment.getHlength() % 2 == 0 ? cycles : cycles + 1);
+        transition.getChildren().add(new ParallelTransition(timeline1, timeline2));
     }
 
     private void randomLight(SequentialTransition transition, Segment segment, EffectTime time)
