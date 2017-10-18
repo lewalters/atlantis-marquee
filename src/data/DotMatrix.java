@@ -22,16 +22,6 @@ public class DotMatrix
         matrix[col][row] = dot;
     }
 
-    private Dot[] getCol(int col)
-    {
-        return matrix[col];
-    }
-
-    private Dot[] getRow(int row)
-    {
-        return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
-    }
-
     public int getRows()
     {
         return rows;
@@ -123,5 +113,15 @@ public class DotMatrix
                 }
             };
         }
+    }
+
+    private Dot[] getCol(int col)
+    {
+        return matrix[col];
+    }
+
+    private Dot[] getRow(int row)
+    {
+        return Arrays.stream(matrix).map(rows -> rows[row]).toArray(Dot[]::new);
     }
 }

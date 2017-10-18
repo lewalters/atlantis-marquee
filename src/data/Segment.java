@@ -95,7 +95,7 @@ public abstract class Segment
         effectEn = effect;
     }
 
-    public void setMiddleEffect(MarqueeEffect effect)
+    public void setMiddleEffect(StaticEffect effect)
     {
         effectMi = effect;
     }

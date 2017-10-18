@@ -170,7 +170,6 @@ public class MarqueeController
         {
             cycles = (direction == ScrollDirection.LEFT || direction == ScrollDirection.RIGHT) ?
                     segment.getHlength() + NUM_COLS : segment.getVlength() + NUM_ROWS;
-            System.out.println(segment.getHlength());
         }
 
         if (time == IN || time == OUT)
