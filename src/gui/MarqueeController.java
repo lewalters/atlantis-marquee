@@ -9,7 +9,6 @@ import util.ScrollDirection;
 import util.EffectTime;
 import util.TransitionEffect;
 
-import java.sql.Time;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -235,26 +234,11 @@ public class MarqueeController
         if (time == CONTINUOUS || time == IN)
         {
             Iterator<Dot[]> iterator = segment.iterator(direction);
-
-            if (segment instanceof TextSegment)
-            {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollText(iterator.hasNext() ? iterator.next() : null, direction)));
-            }
-            else // ImageSegment
-            {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollImage(iterator.hasNext() ? iterator.next() : null, direction)));
-            }
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scroll(segment, iterator.hasNext() ? iterator.next() : null, direction)));
         }
         else if (time == OUT)
         {
-            if (segment instanceof TextSegment)
-            {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollText(null, direction)));
-            }
-            else // ImageSegment
-            {
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scrollImage(null, direction)));
-            }
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(speed), e -> marqueePane.scroll(segment, null, direction)));
         }
 
         timeline.setCycleCount(cycles);
@@ -270,23 +254,46 @@ public class MarqueeController
 
         if (segment instanceof TextSegment)
         {
-            cycles = (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT) ?
-                    segment.getHlength() + TEXT_COLS : segment.getVlength() + TEXT_ROWS;
+            if (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT)
+            {
+                cycles = (segment.getHlength() + TEXT_COLS) / 2;
+            }
+            else if (effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN)
+            {
+                cycles = (segment.getVlength() + TEXT_ROWS) / 2;
+            }
+            else if (effect == SPLIT_SCROLL_HORIZONTAL)
+            {
+                cycles = TEXT_COLS / 2;
+            }
+            else // SPLIT_SCROLL_VERTICAL
+            {
+                cycles = TEXT_ROWS / 2;
+            }
         }
         else // ImageSegment
         {
-            cycles = (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT) ?
-                    segment.getHlength() + NUM_COLS : segment.getVlength() + NUM_ROWS;
+            if (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT)
+            {
+                cycles = (segment.getHlength() + NUM_COLS) / 2;
+            }
+            else if (effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN)
+            {
+                cycles = (segment.getVlength() + NUM_ROWS) / 2;
+            }
+            else if (effect == SPLIT_SCROLL_HORIZONTAL)
+            {
+                cycles = NUM_COLS / 2;
+            }
+            else // SPLIT_SCROLL_VERTICAL
+            {
+                cycles = NUM_ROWS / 2;
+            }
         }
 
-        if (time == IN || time == OUT)
+        if (time == OUT)
         {
-            cycles /= 2;
-
-            if (time == OUT)
-            {
-                cycles += 1;
-            }
+            cycles += 1;
         }
 
         switch (time)
@@ -300,32 +307,63 @@ public class MarqueeController
                         topIterator = segment.iterator(ScrollDirection.LEFT);
                         bottomIterator = segment.iterator(ScrollDirection.RIGHT);
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.LEFT)));
+                                e -> marqueePane.partialScrollTop(segment, topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.LEFT)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.RIGHT)));
+                                e -> marqueePane.partialScrollBottom(segment, bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.RIGHT)));
                         break;
                     case HALF_SCROLL_TOP_RIGHT:
                         topIterator = segment.iterator(ScrollDirection.RIGHT);
                         bottomIterator = segment.iterator(ScrollDirection.LEFT);
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.RIGHT)));
+                                e -> marqueePane.partialScrollTop(segment, topIterator.hasNext() ? Arrays.copyOfRange(topIterator.next(), 0, segment.getVlength() / 2) : null, ScrollDirection.RIGHT)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.LEFT)));
+                                e -> marqueePane.partialScrollBottom(segment, bottomIterator.hasNext() ? Arrays.copyOfRange(bottomIterator.next(), segment.getVlength() / 2, segment.getVlength()) : null, ScrollDirection.LEFT)));
                         break;
                     case HALF_SCROLL_LEFT_UP:
+                        leftIterator = segment.iterator(ScrollDirection.UP);
+                        rightIterator = segment.iterator(ScrollDirection.DOWN);
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, leftIterator.hasNext() ? Arrays.copyOfRange(leftIterator.next(), 0, segment.getHlength() / 2 + 1) : null, ScrollDirection.UP)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, rightIterator.hasNext() ? Arrays.copyOfRange(rightIterator.next(), segment.getHlength() / 2, segment.getHlength()) : null, ScrollDirection.DOWN)));
                         break;
                     case HALF_SCROLL_LEFT_DOWN:
+                        leftIterator = segment.iterator(ScrollDirection.DOWN);
+                        rightIterator = segment.iterator(ScrollDirection.UP);
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, leftIterator.hasNext() ? Arrays.copyOfRange(leftIterator.next(), 0, segment.getHlength() / 2 + 1) : null, ScrollDirection.DOWN)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, rightIterator.hasNext() ? Arrays.copyOfRange(rightIterator.next(), segment.getHlength() / 2, segment.getHlength()) : null, ScrollDirection.UP)));
                         break;
                     case SPLIT_SCROLL_HORIZONTAL:
+                        leftIterator = segment.iterator(ScrollDirection.RIGHT);
+                        rightIterator = segment.iterator(ScrollDirection.LEFT);
+                        for (int i = 0; i < segment.getHlength() / 2; i++)
+                        {
+                            leftIterator.next();
+                            rightIterator.next();
+                        }
+                        if (segment.getHlength() % 2 == 1)
+                        {
+                            rightIterator.next();
+                        }
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, leftIterator.hasNext() ? leftIterator.next() : null, ScrollDirection.RIGHT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, rightIterator.hasNext() ? rightIterator.next() : null, ScrollDirection.LEFT)));
                         break;
                     case SPLIT_SCROLL_VERTICAL:
-                        // TODO: how to reconcile iterator starting position with split scroll effect
-/*                        topIterator = segment.iterator(ScrollDirection.DOWN);
+                        topIterator = segment.iterator(ScrollDirection.DOWN);
                         bottomIterator = segment.iterator(ScrollDirection.UP);
+                        for (int i = 0; i < segment.getVlength() / 2; i++)
+                        {
+                            topIterator.next();
+                            bottomIterator.next();
+                        }
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(topIterator.hasNext() ? topIterator.next() : null, ScrollDirection.DOWN)));
+                                e -> marqueePane.partialScrollTop(segment, topIterator.hasNext() ? topIterator.next() : null, ScrollDirection.DOWN)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(bottomIterator.hasNext() ? bottomIterator.next() : null, ScrollDirection.UP)));*/
+                                e -> marqueePane.partialScrollBottom(segment, bottomIterator.hasNext() ? bottomIterator.next() : null, ScrollDirection.UP)));
                         break;
                 }
                 break;
@@ -334,33 +372,46 @@ public class MarqueeController
                 {
                     case HALF_SCROLL_TOP_LEFT:
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(null, ScrollDirection.LEFT)));
+                                e -> marqueePane.partialScrollTop(segment, null, ScrollDirection.LEFT)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.RIGHT)));
+                                e -> marqueePane.partialScrollBottom(segment, null, ScrollDirection.RIGHT)));
                         break;
                     case HALF_SCROLL_TOP_RIGHT:
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(null, ScrollDirection.RIGHT)));
+                                e -> marqueePane.partialScrollTop(segment, null, ScrollDirection.RIGHT)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.LEFT)));
+                                e -> marqueePane.partialScrollBottom(segment, null, ScrollDirection.LEFT)));
                         break;
                     case HALF_SCROLL_LEFT_UP:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, null, ScrollDirection.UP)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, null, ScrollDirection.DOWN)));
                         break;
                     case HALF_SCROLL_LEFT_DOWN:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, null, ScrollDirection.DOWN)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, null, ScrollDirection.UP)));
                         break;
                     case SPLIT_SCROLL_HORIZONTAL:
+                        timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollLeft(segment, null, ScrollDirection.LEFT)));
+                        timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
+                                e -> marqueePane.partialScrollRight(segment, null, ScrollDirection.RIGHT)));
                         break;
                     case SPLIT_SCROLL_VERTICAL:
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextTop(null, ScrollDirection.UP)));
+                                e -> marqueePane.partialScrollTop(segment, null, ScrollDirection.UP)));
                         timeline2.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
-                                e -> marqueePane.scrollTextBottom(null, ScrollDirection.DOWN)));
+                                e -> marqueePane.partialScrollBottom(segment, null, ScrollDirection.DOWN)));
                         break;
                 }
         }
 
-        timeline1.setCycleCount(cycles);
-        timeline2.setCycleCount(segment.getHlength() % 2 == 0 ? cycles : cycles + 1);
+        // Set the cycle counts with an offset for half scrolls that are split horizontally and have an odd length
+        timeline1.setCycleCount(effect == HALF_SCROLL_TOP_LEFT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
+        timeline2.setCycleCount(effect == HALF_SCROLL_TOP_RIGHT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
         transition.getChildren().add(new ParallelTransition(timeline1, timeline2));
     }
 
@@ -368,28 +419,13 @@ public class MarqueeController
     {
         Timeline timeline = new Timeline();
 
-        switch(time)
+        if (time == IN)
         {
-            case IN:
-                if (segment instanceof TextSegment)
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOn()));
-                }
-                else // ImageSegment
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomImageOn()));
-                }
-                break;
-            case OUT:
-                if (segment instanceof TextSegment)
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomTextOff()));
-                }
-                else // ImageSegment
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomImageOff()));
-                }
-                break;
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomOn(segment)));
+        }
+        else // OUT
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomOff(segment)));
         }
 
         timeline.setCycleCount(segment.getSize());
@@ -400,28 +436,13 @@ public class MarqueeController
     {
         Timeline timeline = new Timeline();
 
-        switch(time)
+        if (time == IN)
         {
-            case IN:
-                if (segment instanceof TextSegment)
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInText()));
-                }
-                else // ImageSegment
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeInImage()));
-                }
-                break;
-            case OUT:
-                if (segment instanceof TextSegment)
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutText()));
-                }
-                else // ImageSegment
-                {
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOutImage()));
-                }
-                break;
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeIn(segment)));
+        }
+        else // OUT
+        {
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50), e -> marqueePane.fadeOut(segment)));
         }
 
         timeline.setCycleCount(100);
@@ -444,33 +465,11 @@ public class MarqueeController
 
     private void zero(SequentialTransition transition, Segment segment)
     {
-        Timeline timeline = new Timeline();
-
-        if (segment instanceof TextSegment)
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.zeroText()));
-        }
-        else // ImageSegment
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.zeroImage()));
-        }
-
-        transition.getChildren().add(timeline);
+        transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.zeroOpacity(segment))));
     }
 
     private void set(SequentialTransition transition, Segment segment)
     {
-        Timeline timeline = new Timeline();
-
-        if (segment instanceof TextSegment)
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setText(segment)));
-        }
-        else // ImageSegment
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setImage(segment)));
-        }
-
-        transition.getChildren().add(timeline);
+        transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.setText(segment))));
     }
 }
