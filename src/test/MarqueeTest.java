@@ -1,11 +1,8 @@
 package test;
 
 import data.Marquee;
-import jdk.vm.ci.meta.Local;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.LocalTime;
 
 import static org.junit.Assert.assertEquals;
 

@@ -32,18 +32,13 @@ public class VisionGUI extends Application
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
+        primaryStage.setResizable(false); // Disabling Stage resizing
+
+        //Creating the settingsController to handle all events on the settingsPane by passing the settingsPane to it
+        SettingsController settingsController = new SettingsController(settingsPane);
 
         Stage authStage = new Stage();
         authStage.setScene(new Scene(authPane));
-        Stage txtSegStage = new Stage();
-        txtSegStage.setScene(new Scene(txtSegPane));
-        Stage imgSegStage = new Stage();
-        imgSegStage.setScene(new Scene(imgSegPane));
-        imgSegStage.setTitle("Image Segment Settings");
-        txtSegStage.setTitle("Text Segment Settings");
-        Stage segPaneStage = new Stage();
-        segPaneStage.setScene(new Scene(segmentPane));
-        segPaneStage.setTitle("SegmentPane");
 
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
@@ -71,19 +66,9 @@ public class VisionGUI extends Application
             }
         });
 
-        //Event Handler for TextSegmentButton
-        settingsPane.getTextSegmentButton().setOnAction(e ->{
-
-            txtSegStage.show();
-        });
-
-        //Event Handler for ImageSegmentButton
-        settingsPane.getImageSegmentButton().setOnAction(event -> {
-            imgSegStage.show();
-        });
-
         //Creating Event Handler for AuthPane Cancel Button
-        authPane.getCancelButton().setOnAction(event -> {
+        authPane.getCancelButton().setOnAction(e -> {
             authStage.close();});
+
     }
 }
