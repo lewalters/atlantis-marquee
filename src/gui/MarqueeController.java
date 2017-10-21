@@ -37,7 +37,7 @@ public class MarqueeController
         return marqueePane;
     }
 
-    // Set up an animation for each segment and play them in order
+    // Set up an animation for each segment and play them in order, accounting for message delay and repeat
     private void play()
     {
         Message message = marquee.getMessage();
@@ -45,9 +45,14 @@ public class MarqueeController
 
         message.getContents().forEach(segment -> addSegment(segment, messageAnimation));
 
+        int delay = message.getDelay();
+        if (delay > 0)
+        {
+            messageAnimation.getChildren().add(new Timeline(new KeyFrame(Duration.seconds(delay))));
+        }
+
+        messageAnimation.setCycleCount(message.getRepeatFactor());
         messageAnimation.play();
-        SequentialTransition test = new SequentialTransition();
-        test.play();
     }
 
     // Add an animation that encompasses the given segment to the full animation
