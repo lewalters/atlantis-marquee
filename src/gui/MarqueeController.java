@@ -13,9 +13,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Global.*;
-import static util.EffectTime.CONTINUOUS;
-import static util.EffectTime.IN;
-import static util.EffectTime.OUT;
+import static util.EffectTime.*;
+import static util.StaticEffect.BLINK;
 import static util.StaticEffect.NONE;
 import static util.StaticEffect.RANDOM_COLOR;
 import static util.TransitionEffect.*;
@@ -38,6 +37,7 @@ public class MarqueeController
         return marqueePane;
     }
 
+    // Set up an animation for each segment and play them in order
     private void play()
     {
         Message message = marquee.getMessage();
@@ -50,63 +50,72 @@ public class MarqueeController
         test.play();
     }
 
+    // Add an animation that encompasses the given segment to the full animation
     private void addSegment(Segment segment, SequentialTransition transition)
     {
         SequentialTransition segmentTransition = new SequentialTransition();
         ParallelTransition borderedTransition = new ParallelTransition();
+        SequentialTransition borderTransition = new SequentialTransition();
         SequentialTransition bodyTransition = new SequentialTransition();
-
-        Timeline startTimeline = new Timeline();
-        Timeline borderTimeline = new Timeline();
         SequentialTransition entrance = new SequentialTransition();
         Timeline middleTimeline = new Timeline();
         SequentialTransition exit = new SequentialTransition();
-        Timeline resetTimeline = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.reset()));
+        Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
 
-        // Create the border and padding iff colors are set in the segment
-        // Do NOT create effect if no border color set
-        if (segment instanceof TextSegment)
-        {
-            TextSegment ts = (TextSegment) segment;
-
-            if (ts.hasBorder())
-            {
-                startTimeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setBorderColor(ts.getBorderColor())));
-
-                if (ts.getBorderEffect() != null)
-                {
-                    switch (ts.getBorderEffect())
-                    {
-                        case BLINK:
-                            blinkBorder(borderTimeline);
-                    }
-                }
-            }
-            if (ts.hasPadding())
-            {
-                startTimeline.getKeyFrames().add(new KeyFrame(Duration.ONE, e -> marqueePane.setPaddingColor(ts.getPaddingColor())));
-            }
-        }
-
-        // Display with effects
+        // Set up body animations based on scroll choice
         if (segment.getScrollDirection() == ScrollDirection.STATIC)
         {
             entranceEffect(entrance, segment);
             middleEffect(middleTimeline, segment);
             exitEffect(exit, segment);
             bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
-            borderTimeline.setCycleCount((int)bodyTransition.getTotalDuration().toMillis() / 500);
-            borderedTransition.getChildren().addAll(borderTimeline, bodyTransition);
         }
-        else // Continuous scroll
+        else // CONTINUOUS SCROLL
         {
-            scroll(entrance, segment, EffectTime.CONTINUOUS);
-            borderTimeline.setCycleCount((int)entrance.getTotalDuration().toMillis() / 500);
-            borderedTransition.getChildren().addAll(borderTimeline, entrance);
+            scroll(bodyTransition, segment, EffectTime.CONTINUOUS);
         }
 
-        segmentTransition.getChildren().addAll(startTimeline, borderedTransition, resetTimeline);
+        // Set up an animation that accounts for border and padding if the segment has either
+        if (segment instanceof TextSegment)
+        {
+            TextSegment textSegment = (TextSegment) segment;
+
+            if (textSegment.hasBorder() || textSegment.hasPadding())
+            {
+                borderEffect(borderTransition, textSegment);
+                borderedTransition.getChildren().addAll(borderTransition, bodyTransition);
+            }
+        }
+
+        // Add either the borderedTransition or the bodyTransition to the animation set
+        segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition, resetTimeline);
         transition.getChildren().add(segmentTransition);
+    }
+
+    // Create the border and padding iff colors are set in the segment
+    // Do NOT create effect if no border color set
+    private void borderEffect(SequentialTransition transition, TextSegment segment)
+    {
+        ParallelTransition borderpadding = new ParallelTransition();
+        transition.getChildren().add(borderpadding);
+
+        if (segment.hasBorder())
+        {
+            borderpadding.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.setBorderColor(segment.getBorderColor()))));
+
+            if (segment.getBorderEffect() != null)
+            {
+                switch (segment.getBorderEffect())
+                {
+                    case BLINK:
+                        blinkBorder(transition);
+                }
+            }
+        }
+        if (segment.hasPadding())
+        {
+            borderpadding.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.setPaddingColor(segment.getPaddingColor()))));
+        }
     }
 
     private void entranceEffect(SequentialTransition transition, Segment segment)
@@ -119,14 +128,12 @@ public class MarqueeController
         }
         else if (effect == RANDOM_LIGHT)
         {
-            set(transition, segment);
-            zero(transition, segment);
+            set(transition, segment, false);
             randomLight(transition, segment, IN);
         }
         else if (effect == FADE)
         {
-            set(transition, segment);
-            zero(transition, segment);
+            set(transition, segment, false);
             fade(transition, segment, IN);
         }
         else if (effect == HALF_SCROLL_TOP_LEFT || effect == HALF_SCROLL_TOP_RIGHT ||
@@ -137,7 +144,7 @@ public class MarqueeController
         }
         else if (effect == NONE)
         {
-            set(transition, segment);
+            set(transition, segment, true);
         }
     }
 
@@ -149,9 +156,13 @@ public class MarqueeController
         {
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(segment.getDuration())));
         }
-        else if (effect == RANDOM_COLOR)
+        else if (effect == BLINK)
         {
-            randomDotColor(timeline, segment);
+            blink(timeline, segment);
+        }
+        else if (effect == RANDOM_COLOR && segment instanceof TextSegment)
+        {
+            randomColorText(timeline, (TextSegment) segment);
         }
     }
 
@@ -179,13 +190,13 @@ public class MarqueeController
         }
         else if (effect == NONE)
         {
-            zero(transition, segment);
+            transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE)));
         }
     }
 
-    private void blinkBorder(Timeline timeline)
+    private void blinkBorder(SequentialTransition transition)
     {
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder()));
+        transition.getChildren().add(new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.toggleBorder())));
     }
 
     private void scroll(SequentialTransition transition, Segment segment, EffectTime time)
@@ -449,27 +460,20 @@ public class MarqueeController
         transition.getChildren().add(timeline);
     }
 
-    private void randomDotColor(Timeline timeline, Segment segment)
+    private void blink(Timeline timeline, Segment segment)
     {
-        if (segment instanceof TextSegment)
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomColorText()));
-        }
-        else // ImageSegment
-        {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(10), e -> marqueePane.randomColorImage()));
-        }
-
-        timeline.setCycleCount(segment.getDuration() * 100);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.toggle(segment)));
+        timeline.setCycleCount(segment.getDuration() * 5);
     }
 
-    private void zero(SequentialTransition transition, Segment segment)
+    private void randomColorText(Timeline timeline, TextSegment segment)
     {
-        transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.zeroOpacity(segment))));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.randomColorText()));
+        timeline.setCycleCount(segment.getDuration() * 5);
     }
 
-    private void set(SequentialTransition transition, Segment segment)
+    private void set(SequentialTransition transition, Segment segment, boolean opaque)
     {
-        transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.setText(segment))));
+        transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.set(segment, opaque))));
     }
 }

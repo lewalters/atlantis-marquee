@@ -1298,44 +1298,8 @@ public class MarqueePane extends StackPane
         }
     }
 
-    public void randomColorText()
-    {
-        List<LED> ledList = new ArrayList<>();
-
-        for (LED[] leds : textMatrix)
-        {
-            for (LED led : leds)
-            {
-                if (led.isOn())
-                {
-                    ledList.add(led);
-                }
-            }
-        }
-
-        ledList.get(new Random().nextInt(ledList.size())).setFill(Color.color(Math.random(), Math.random(), Math.random()));
-    }
-
-    // Does this make sense?? -- Probably not...
-    public void randomColorImage()
-    {
-        List<LED> ledList = new ArrayList<>();
-
-        for (LED[] leds : ledMatrix)
-        {
-            for (LED led : leds)
-            {
-                if (led.isOn())
-                {
-                    ledList.add(led);
-                }
-            }
-        }
-
-        ledList.get(new Random().nextInt(ledList.size())).setOpacity(1);
-    }
-
-    public void zeroOpacity(Segment segment)
+    // Toggles the opacity on all LEDs displaying the current segment
+    public void toggle(Segment segment)
     {
         LED[][] matrix = segment instanceof TextSegment ? textMatrix : ledMatrix;
 
@@ -1345,13 +1309,31 @@ public class MarqueePane extends StackPane
             {
                 if (led.isOn())
                 {
-                    led.setOpacity(0);
+                    led.setOpacity(led.getOpacity() == 0 ? 1 : 0);
                 }
             }
         }
     }
 
-    public void setText(Segment segment)
+    // Changes all of the text on the display to a random color
+    public void randomColorText()
+    {
+        Color color = Color.color(Math.random(), Math.random(), Math.random());
+
+        for (LED[] leds : textMatrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    led.turnOn(color);
+                }
+            }
+        }
+    }
+
+    // Displays the provided segment centered on the marquee, either opaque or translucent
+    public void set(Segment segment, boolean opaque)
     {
         int cols, rows;
         LED[][] matrix;
@@ -1384,6 +1366,11 @@ public class MarqueePane extends StackPane
                 if (dot.getIntensity() > 0)
                 {
                     currLED.turnOn(dot.getColor(), dot.getIntensity());
+
+                    if (!opaque)
+                    {
+                        currLED.setOpacity(0);
+                    }
                 }
             }
         }
