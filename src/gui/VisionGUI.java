@@ -1,13 +1,11 @@
 package gui;
 
-import data.*;
+import data.Marquee;
+import data.Message;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import util.Global;
-import util.ScrollDirection;
-import util.StaticEffect;
-import util.TransitionEffect;
 
 public class VisionGUI extends Application
 {
@@ -40,12 +38,12 @@ public class VisionGUI extends Application
         Marquee marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 1, 0,"");
         marquee.setMessage(message);
-        Segment segment = new TextSegment(ScrollDirection.STATIC, "C0C0C0", StaticEffect.BLINK, "", ScrollDirection.UP, StaticEffect.NONE, TransitionEffect.RANDOM, "5F9EA0", "Wake Tech");
-        Segment segment2 = new TextSegment(ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM, "DA70D6", "abcdef");
-        //Segment segment3 = new ImageSegment(ScrollDirection.LEFT, StaticEffect.NONE, StaticEffect.NONE, StaticEffect.NONE, "test.gif");
+        //Segment segment = new TextSegment(5, 12, ScrollDirection.STATIC, "C0C0C0", StaticEffect.NONE, "", TransitionEffect.SPLIT_SCROLL_HORIZONTAL, StaticEffect.NONE, TransitionEffect.SPLIT_SCROLL_HORIZONTAL, "5F9EA0", "Wake Tech");
+        //Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
+        //Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect., StaticEffect.NONE, TransitionEffect.HALF_SCROLL_LEFT_DOWN, "wt.png");
         //message.addSegment(0, segment);
         //message.addSegment(1, segment2);
-        //message.addSegment(0, segment3);
+        //message.addSegment(1, segment3);
         MarqueeController marqueeController = new MarqueeController(marquee);
         Stage marqueeStage = new Stage();
         marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
