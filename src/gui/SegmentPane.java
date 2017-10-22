@@ -36,8 +36,8 @@ public abstract class SegmentPane extends BorderPane
         cancelButton = new Button("Cancel");
 
         //Setting Font
-        continueButton.setFont(new Font("Helvetica", 15));
-        cancelButton.setFont(new Font("Helvetica", 15));
+        continueButton.setFont(new Font("TEXT_FONT", 15));
+        cancelButton.setFont(new Font("TEXT_FONT", 15));
 
         //Setting Height
         cancelButton.setPrefHeight(40);
@@ -119,36 +119,27 @@ public abstract class SegmentPane extends BorderPane
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);
 
-
         //Creating Multiple ComboBoxes
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
         /*CSS*/
         continueButton.setStyle("-fx-font-weight: bold;"
-                +"-fx-padding: 10 20 10 20;");
+                                +"-fx-padding: 10 20 10 20;");
         cancelButton.setStyle("-fx-background-insets: 0,1,2,3,0;"
-                +"-fx-font-weight: bold;"
-                +"-fx-padding: 10 20 10 20;");
-
+                              +"-fx-font-weight: bold;"
+                              +"-fx-padding: 10 20 10 20;");
     }
-    /*Getting Getters and Setters */
-    public Button getContinueButton()
-    {
+    //Getting Getters and Setters //
+    public Button getContinueButton(){
         return continueButton;
     }
-
-    public void setContinueButton(Button continueButton)
-    {
+    public void setContinueButton(Button continueButton){
         this.continueButton = continueButton;
     }
-    public Button getCancelButton()
-    {
+    public Button getCancelButton(){
         return cancelButton;
     }
-
-    public void setCancelButton(Button cancelButton)
-    {
+    public void setCancelButton(Button cancelButton){
      this.cancelButton = cancelButton;
     }
-
 }
