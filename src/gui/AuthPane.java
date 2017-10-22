@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -22,6 +23,7 @@ public class AuthPane extends VBox
 {
     private Button continueButton;
     private Button cancelButton;
+    private TextField passwordTextField;
 
     AuthPane()
     {
@@ -37,7 +39,7 @@ public class AuthPane extends VBox
         passwordLabel.setFont(new Font("Helvetica", 20));
 
         //Creating Password Text Field Label
-        TextField passwordTextField = new TextField();
+        passwordTextField = new TextField();
         passwordTextField.setMaxWidth(150);
 
         //Creating password TextField Prompter
@@ -57,10 +59,12 @@ public class AuthPane extends VBox
         //Creating Continue Button
         continueButton = new Button("Continue");
         continueButton.setFont(new Font("Helvetica", 20));
+        continueButton.setTooltip(new Tooltip("This Saves Entered Password"));
 
         //Creating Cancel Button
         cancelButton = new Button("Cancel");
         cancelButton.setFont(new Font("Helvetica", 20));
+        cancelButton.setTooltip(new Tooltip("This cancels and returns control to the Settings Pane"));
 
         //Creating Horizontal Box
         HBox buttons = new HBox(continueButton, cancelButton);
@@ -77,13 +81,15 @@ public class AuthPane extends VBox
         titleLabel.setStyle("-fx-border-color: grey;"+ "-fx-border-style: solid;"+"-fx-font-weight: bold;");
     }
 
-    public Button getContinueButton()
-    {
+    public Button getContinueButton(){
         return continueButton;
     }
 
-    public Button getCancelButton()
-    {
+    public Button getCancelButton(){
         return cancelButton;
+    }
+
+    public TextField getPasswordTextField() {
+        return passwordTextField;
     }
 }

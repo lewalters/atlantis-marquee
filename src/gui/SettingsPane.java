@@ -78,10 +78,12 @@ public class SettingsPane extends BorderPane
         TextField heightTextField = new TextField();
         leftLabelTextFieldGrid.add(heightTextField,1,1);
         TextField nameTextField = new TextField();
+        nameTextField.setPromptText("Only 23 Characters Allowed");
         leftLabelTextFieldGrid.add(nameTextField,1,2);
         TextField delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,3);
         TextArea commentsTextArea = new TextArea();
+        commentsTextArea.setPromptText("100 Characters Allowed");
 
 
 
@@ -149,7 +151,7 @@ public class SettingsPane extends BorderPane
         heightTextField.setMaxWidth(40);
         nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
-        commentsTextArea.setMaxWidth(120);
+        commentsTextArea.setMaxWidth(160);
 
         //Setting Buttons Width
         startButton.setPrefWidth(230);
@@ -157,7 +159,7 @@ public class SettingsPane extends BorderPane
         imageSegmentButton.setPrefWidth(175);
         //Setting Height Properties
         startButton.setPrefHeight(80);
-        commentsTextArea.setPrefHeight(100);
+        commentsTextArea.setPrefHeight(150);
 
         /*Setting TextField Character Limit*/
         //Setting widthTextField Character Length
@@ -189,8 +191,8 @@ public class SettingsPane extends BorderPane
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if(newValue.intValue() > oldValue.intValue()){
-                    if(nameTextField.getText().length() > 26){
-                        nameTextField.setText(nameTextField.getText().substring(0,26));
+                    if(nameTextField.getText().length() > 23){
+                        nameTextField.setText(nameTextField.getText().substring(0,23));
                     }
                 }
             }
@@ -213,8 +215,8 @@ public class SettingsPane extends BorderPane
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if(newValue.intValue() > oldValue.intValue()){
-                    if(commentsTextArea.getText().length() > 68){
-                        commentsTextArea.setText(commentsTextArea.getText().substring(0,68));
+                    if(commentsTextArea.getText().length() > 100){
+                        commentsTextArea.setText(commentsTextArea.getText().substring(0,100));
                     }
                 }
             }
