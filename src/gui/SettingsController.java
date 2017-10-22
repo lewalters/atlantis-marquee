@@ -25,7 +25,7 @@ public class SettingsController
         imgSegStage.setScene(new Scene(imageSegmentPane));
         imgSegStage.setTitle("Image Segment Settings");
 
-        imgSegStage.setResizable(false);// Disabling Stage resizing
+        imgSegStage.setResizable(false);
 
 //        //Event Handler for ImageSegmentButton
         pane.getImageSegmentButton().setOnAction(e -> imgSegStage.show());
