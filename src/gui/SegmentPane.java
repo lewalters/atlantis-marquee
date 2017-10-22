@@ -150,5 +150,4 @@ public abstract class SegmentPane extends BorderPane
     {
      this.cancelButton = cancelButton;
     }
-
 }
