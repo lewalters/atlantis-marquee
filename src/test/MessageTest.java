@@ -1,3 +1,4 @@
+/*
 package test;
 
 import data.CharDot;
@@ -84,3 +85,4 @@ public class MessageTest {
     }
 }
 
+*/
