@@ -113,7 +113,7 @@ public class MarqueePane extends StackPane
                 led.turnOn(Color.color(red, green, blue));
             });
         }
-        else
+        else if (colors.length > 1 || colors[0] != OFF_COLOR)
         {
             int i = 0;
             while (i < BORDER_SIZE)
@@ -167,7 +167,10 @@ public class MarqueePane extends StackPane
 
     public void setPaddingColor(Color color)
     {
-        padding.forEach(led -> led.turnOn(color));
+        if (color != OFF_COLOR)
+        {
+            padding.forEach(led -> led.turnOn(color));
+        }
     }
 
     public void scroll(Segment segment, Dot[] newRay, ScrollDirection direction)

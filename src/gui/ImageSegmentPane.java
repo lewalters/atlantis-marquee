@@ -20,17 +20,7 @@ public class ImageSegmentPane extends SegmentPane
 
     ImageSegmentPane()
     {
-        /*Setting TextSegmentPane Header Label*/
-        Label titleLabel = new Label("Image Segment Settings");
-        titleLabel.setFont(new Font("Helvetica", 32));
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
-        titleLabel.setAlignment(Pos.CENTER);
-        this.setTop(titleLabel);
-
-        /*Setting TextSegmentPane Size and Padding*/
-        //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 300);
-        this.setPadding(new Insets(30));
+        titleLabel.setText("Image Segment Settings");
 
         //Creating GridPane for textFields and labels
         GridPane imgSegleftElementsGrid = new GridPane();
