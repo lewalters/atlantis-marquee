@@ -1,10 +1,12 @@
 package gui;
 
 import data.*;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import util.Global;
+import util.*;
 
 public class VisionGUI extends Application
 {
@@ -35,14 +37,15 @@ public class VisionGUI extends Application
         authStage.setScene(new Scene(authPane));
 
         Marquee marquee = new Marquee(1200, 200, 2);
-        Message message = new Message("Test", 1, 0,"");
+        Message message = new Message("Test", 2, 10,"");
         marquee.setMessage(message);
-        //Segment segment = new TextSegment(5, 12, ScrollDirection.STATIC, "C0C0C0", StaticEffect.NONE, "", TransitionEffect.SPLIT_SCROLL_HORIZONTAL, StaticEffect.NONE, TransitionEffect.SPLIT_SCROLL_HORIZONTAL, "5F9EA0", "Wake Tech");
-        //Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, "FF69B4", StaticEffect.NONE, "", ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
-        //Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect., StaticEffect.NONE, TransitionEffect.HALF_SCROLL_LEFT_DOWN, "wt.png");
-        //message.addSegment(0, segment);
+        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        Segment segment = new TextSegment(10, 10, ScrollDirection.STATIC, colorList, BorderEffect.COUNTERCLOCKWISE, Color.WHITE, TransitionEffect.FADE, StaticEffect.RANDOM_COLOR, TransitionEffect.RANDOM_LIGHT, "5F9EA0", "Wake Tech");
+        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
+        Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
+        message.addSegment(0, segment);
         //message.addSegment(1, segment2);
-        //message.addSegment(1, segment3);
+        message.addSegment(1, segment3);
         MarqueeController marqueeController = new MarqueeController(marquee);
         Stage marqueeStage = new Stage();
         marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
