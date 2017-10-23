@@ -11,19 +11,4 @@ public class RGB
         b = 0;
         o = 0;
     }
-
-//    public void addRed(int red)
-//    {
-//        this.red += red;
-//    }
-//
-//    public void addGreen(int green)
-//    {
-//        this.green += green;
-//    }
-//
-//    public void addBlue(int blue)
-//    {
-//        this.blue += blue;
-//    }
 }

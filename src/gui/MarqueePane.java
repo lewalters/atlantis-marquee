@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import util.ScrollDirection;
 
@@ -29,23 +30,26 @@ public class MarqueePane extends StackPane
     private List<LED> border;
     private List<LED> padding;
 
-    MarqueePane(int width, int height, int ledGap)
+    MarqueePane(int width, int ledGap)
     {
-        // Black background for all elements
-        Rectangle marquee = new Rectangle(width, height);
-        marquee.setFill(Color.BLACK);
+        // Determine the radius based on the provided width
+        int ledRadius = ((width - (NUM_COLS - 1) * ledGap) / (NUM_COLS)) / 2;
+
+        // Recalculate width and height to tighten display
+        int trueWidth = NUM_COLS * ledGap + NUM_COLS * ledRadius * 2;
+        int trueHeight = NUM_ROWS * ledGap + NUM_ROWS * ledRadius * 2;
+
+        // Set the background for all elements
+        Rectangle marquee = new Rectangle(trueWidth, trueHeight);
+        marquee.setFill(OFF_COLOR);
         this.getChildren().add(marquee);
 
         // Initialize the grids
         GridPane ledGrid = new GridPane();
-        GridPane backGrid = new GridPane();
         ledMatrix = new LED[NUM_ROWS][NUM_COLS];
         textMatrix = new LED[TEXT_ROWS][TEXT_COLS];
-        border = new ArrayList<>(NUM_ROWS * NUM_COLS - 4);
-        padding = new ArrayList<>((NUM_ROWS - 2) * (NUM_COLS - 2) - 4);
-
-        // Determine the radius based on the provided width
-        int ledRadius = ((width - NUM_COLS * ledGap) / (NUM_COLS)) / 2;
+        border = new ArrayList<>(BORDER_SIZE);
+        padding = new ArrayList<>(PADDING_SIZE);
 
         // Set up the LED grids with circles (i.e. LEDs)
         for (int r = 0; r < NUM_ROWS; r++)
@@ -54,13 +58,6 @@ public class MarqueePane extends StackPane
             {
                 ledMatrix[r][c] = new LED(ledRadius);
                 ledGrid.add(ledMatrix[r][c], c, r);
-                backGrid.add(new LED(ledRadius), c, r);
-
-                // Add the LEDs within the border to an ArrayList for easier referencing
-                if (r == 0 || r == NUM_ROWS - 1 || c == 0 || c == NUM_COLS - 1)
-                {
-                    border.add(ledMatrix[r][c]);
-                }
 
                 // Add the LEDs within the padding to an ArrayList for easier referencing
                 if (((r == 1 || r == NUM_ROWS - 2) && !(c == 0 || c == NUM_COLS - 1)) ||
@@ -77,23 +74,57 @@ public class MarqueePane extends StackPane
             }
         }
 
+        // Add the LEDs within the border to an ArrayList for easier referencing
+        for (int c = 0; c < NUM_COLS; c++)
+        {
+            border.add(ledMatrix[0][c]);
+        }
+        for (int r = 1; r < NUM_ROWS; r++)
+        {
+            border.add(ledMatrix[r][NUM_COLS - 1]);
+        }
+        for (int c = NUM_COLS - 2; c > 0; c--)
+        {
+            border.add(ledMatrix[NUM_ROWS - 1][c]);
+        }
+        for (int r = NUM_ROWS - 1; r > 0; r--)
+        {
+            border.add(ledMatrix[r][0]);
+        }
+
         // Center the grid and add it to the pane
-        backGrid.setAlignment(Pos.CENTER);
         ledGrid.setAlignment(Pos.CENTER);
-        this.getChildren().addAll(backGrid, ledGrid);
+        this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs
-        backGrid.setHgap(ledGap);
-        backGrid.setVgap(ledGap);
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
     }
 
-    public void setBorderColor(String color)
+    // Set the border to the provided colors or randomly
+    public void setBorderColor(Color[] colors)
     {
-        border.forEach(led -> led.turnOn(Color.web(color)));
+        if (colors[0] == Color.TRANSPARENT)
+        {
+            border.forEach(led -> {
+                double red = Math.random() * 0.8 + 0.2;
+                double green = Math.random() * 0.8 + 0.2;
+                double blue = Math.random() * 0.8 + 0.2;
+                led.turnOn(Color.color(red, green, blue));
+            });
+        }
+        else
+        {
+            int i = 0;
+            while (i < BORDER_SIZE)
+            {
+                border.get(i).turnOn(colors[i % colors.length]);
+                i++;
+            }
+        }
     }
 
+    // Turn the border off if it is on, or vice versa
     public void toggleBorder()
     {
         border.forEach(led -> {
@@ -108,23 +139,35 @@ public class MarqueePane extends StackPane
         });
     }
 
-    public void setPaddingColor(String color)
+    // Rotate all dots in the border by one dot clockwise
+    public void rotateBorderCW()
     {
-        padding.forEach(led -> led.turnOn(Color.web(color)));
+        Paint last = border.get(BORDER_SIZE - 1).getFill();
+
+        for (int i = BORDER_SIZE - 1; i > 0; i--)
+        {
+            border.get(i).turnOn(border.get(i - 1).getFill());
+        }
+
+        border.get(0).turnOn(last);
     }
 
-    public void togglePadding()
+    // Rotate all dots in the border by one dot counterclockwise
+    public void rotateBorderCCW()
     {
-        padding.forEach(led -> {
-            if (led.isOn())
-            {
-                led.turnOff();
-            }
-            else
-            {
-                led.turnOn();
-            }
-        });
+        Paint first = border.get(0).getFill();
+
+        for (int i = 0; i < BORDER_SIZE - 1; i++)
+        {
+            border.get(i).turnOn(border.get(i + 1).getFill());
+        }
+
+        border.get(BORDER_SIZE - 1).turnOn(first);
+    }
+
+    public void setPaddingColor(Color color)
+    {
+        padding.forEach(led -> led.turnOn(color));
     }
 
     public void scroll(Segment segment, Dot[] newRay, ScrollDirection direction)
@@ -1315,10 +1358,10 @@ public class MarqueePane extends StackPane
         }
     }
 
-    // Changes all of the text on the display to a random color
+    // Changes a random "on" LED to a random color
     public void randomColorText()
     {
-        Color color = Color.color(Math.random(), Math.random(), Math.random());
+        List<LED> ledList = new ArrayList<>();
 
         for (LED[] leds : textMatrix)
         {
@@ -1326,9 +1369,17 @@ public class MarqueePane extends StackPane
             {
                 if (led.isOn())
                 {
-                    led.turnOn(color);
+                    ledList.add(led);
                 }
             }
+        }
+
+        if (!ledList.isEmpty())
+        {
+            double red = Math.random() * 0.8 + 0.2;
+            double green = Math.random() * 0.8 + 0.2;
+            double blue = Math.random() * 0.8 + 0.2;
+            ledList.get(new Random().nextInt(ledList.size())).setFill(Color.color(red, green, blue));
         }
     }
 
