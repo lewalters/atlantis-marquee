@@ -1,6 +1,5 @@
 package util;
 
-import data.Dot;
 import data.DotMatrix;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -56,7 +55,7 @@ public final class Utility
             dotHeight = (int) (1.0 * height / width);
         }
 
-        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
+/*        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
         matrix = new DotMatrix(dotHeight, dotWidth);
 
         for (int r = 0; r < height; r++)
@@ -95,9 +94,9 @@ public final class Utility
                 int opacity = (int)(color.getOpacity() * 100);
                 matrix.set(new Dot(color.toString(), opacity > 90 ? opacity : 0), r, c);
             }
-        }
+        }*/
 
-        return matrix;
+        return new DotMatrix(0, 0);
     }
 
     public static void authenticate(String password) {}

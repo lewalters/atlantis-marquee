@@ -12,15 +12,11 @@ import javafx.scene.text.Font;
 
 public class TextSegmentPane extends SegmentPane
 {
-    private TextField durationTextField;
-    private TextField enterTextField;
-    private TextField  borderColorTextField;
-    private TextField paddingColorTextField;
-    private ComboBox <String> textSegComboBox;
+    private TextField durationTextField, enterTextField,borderColorTextField, paddingColorTextField ;
+    private ComboBox borderEffectComboBox;
 
     TextSegmentPane()
     {
-        /*Setting TextSegmentPane Header Label*/
         Label titleLabel = new Label("Text Segment Settings");
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
@@ -38,37 +34,47 @@ public class TextSegmentPane extends SegmentPane
         //Creating GridPane for buttons
         GridPane buttonElementsGrid = new GridPane();
 
-        //Creating GridPane ComboBox
-        GridPane comboBoxGrid = new GridPane();
-
-        /*Adding Labels*/
-         Label durationLabel = new Label("Duration:");
+           /*Adding Labels*/
+        Label durationLabel = new Label("Duration:");
         textLabelElementsGrid.add(durationLabel, 0, 1);
 
         Label enterText = new Label("Enter Text:");
         textLabelElementsGrid.add(enterText, 0, 2);
 
-         Label borderColor = new Label("Border Color:");
+        Label borderColor = new Label("Border Color:");
         textLabelElementsGrid.add(borderColor, 0, 3);
 
-         Label paddingColor = new Label("Padding Color:");
+        Label paddingColor = new Label("Padding Color:");
         textLabelElementsGrid.add(paddingColor, 0, 4);
+
+        Label borderEffect = new Label("Border Effect:");
+        textLabelElementsGrid.add(borderEffect, 0, 5);
 
         //Setting text Label Font
         durationLabel.setFont(new Font("Helvetica", 15));
         enterText.setFont(new Font("Helvetica", 15));
         borderColor.setFont(new Font("Helvetica", 15));
         paddingColor.setFont(new Font("Helvetica", 15));
+        borderEffect.setFont(new Font("Helvetica", 15));
 
         /*Adding TextFields*/
-         durationTextField = new TextField();
+        durationTextField = new TextField();
         textLabelElementsGrid.add(durationTextField, 1, 1);
-         enterTextField = new TextField();
+        enterTextField = new TextField();
         textLabelElementsGrid.add(enterTextField, 1, 2);
-         borderColorTextField = new TextField();
+        borderColorTextField = new TextField();
         textLabelElementsGrid.add(borderColorTextField, 1, 3);
-         paddingColorTextField = new TextField();
+        paddingColorTextField = new TextField();
         textLabelElementsGrid.add(paddingColorTextField, 1, 4);
+
+        //Creating BorderEffect ComboBox
+        borderEffectComboBox = new ComboBox<>();
+        //Adding ComboBox contents
+        borderEffectComboBox.getItems().addAll("None","Blinking");
+        borderEffectComboBox.setEditable(false);
+        borderEffectComboBox.setPromptText("Options");
+        textLabelElementsGrid.add(borderEffectComboBox, 1, 5);
+
         //Setting text Field Font
         durationTextField.setFont(new Font("Helvetica", 15));
         enterTextField.setFont(new Font("Helvetica", 15));
@@ -81,8 +87,8 @@ public class TextSegmentPane extends SegmentPane
         paddingColorTextField.setMaxWidth(106);
         //Setting TextField Prompters
         enterTextField.setPromptText("Enter Display Message");
-        borderColorTextField.setPromptText("Enter Color");
-        paddingColorTextField.setPromptText("Enter Color");
+        borderColorTextField.setPromptText("Optional");
+        paddingColorTextField.setPromptText("Optional");
 
         this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
@@ -135,20 +141,9 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        /*Adding ComboBox*/
-        textSegComboBox = new ComboBox<>();
-        textSegComboBox.getItems().addAll("Style","Effect","Border Effect");
-        textSegComboBox.setEditable(false);
-        comboBoxGrid.add(textSegComboBox,5,2);
-        textSegComboBox.setPrefWidth(125);
-        this.setRight(comboBoxGrid); //Adding ComboBoxes to GridPane inserted TextSegmentPane
-
-        /*CSS*/
+        //Css For comboBoxes
         titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                                + "-fx-font-weight: bold;");
-        textSegComboBox.setStyle("-fx-font-family: Helvetica;"
-                                + "-fx-font-size: 15;"
-                                + "-fx-pref-height: 10");
+                + "-fx-font-weight: bold;");
 
         /*SETTING HGAP/VGAP */
         //Setting horizontal/vertical gaps for GridPanes
@@ -156,32 +151,28 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.setVgap(5);
         buttonElementsGrid.setHgap(25);
         buttonElementsGrid.setVgap(5);
-        comboBoxGrid.setHgap(25);
-        comboBoxGrid.setVgap(5);
     }
 
     public TextField getDurationTextField()
     {
         return durationTextField;
     }
-
     public TextField getEnterTextField()
     {
         return enterTextField;
     }
-
     public TextField getBorderColorTextField()
     {
         return borderColorTextField;
     }
-
     public TextField getPaddingColorTextField()
     {
         return paddingColorTextField;
     }
-
-    public ComboBox<String> getTextSegComboBox()
-    {
-        return textSegComboBox;
+    public ComboBox getBorderEffectComboBox() {
+        return borderEffectComboBox;
     }
 }
+
+
+

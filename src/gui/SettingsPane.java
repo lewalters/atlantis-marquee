@@ -48,17 +48,17 @@ public class SettingsPane extends BorderPane
 
         /*Adding Labels*/
         Label setWidthLabel = new Label("Width:");
-        setWidthLabel.setFont(new Font("Helvetica", 15));
+        setWidthLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setWidthLabel, 0, 0);
 
         // Creating Height label
         Label setHeightLabel = new Label("Height:");
-        setHeightLabel.setFont(new Font("Helvetica", 15));
+        setHeightLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
         //Creating Name Label
         Label setNameLabel = new Label("Name");
-        setNameLabel.setFont(new Font("Helvetica", 15));
+        setNameLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setNameLabel,0,2);
 
         //Setting Delay Label
@@ -68,7 +68,7 @@ public class SettingsPane extends BorderPane
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
-        setCommentsLabel.setFont(new Font("Helvetica", 15));
+        setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setCommentsLabel,0,4);
 
 
@@ -79,10 +79,14 @@ public class SettingsPane extends BorderPane
         TextField heightTextField = new TextField();
         leftLabelTextFieldGrid.add(heightTextField,1,1);
         TextField nameTextField = new TextField();
+        nameTextField.setPromptText("Only 23 Characters Allowed");
         leftLabelTextFieldGrid.add(nameTextField,1,2);
         TextField delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,3);
         TextArea commentsTextArea = new TextArea();
+        commentsTextArea.setPromptText("100 Characters Allowed");
+
+
 
 
 
@@ -93,9 +97,9 @@ public class SettingsPane extends BorderPane
         /*Adding Checkboxes*/
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
-        fullScreenCheckBox.setFont(new Font("Helvetica", 15));
+        fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
         authenticationCheckBox = new CheckBox("Authentication");
-        authenticationCheckBox.setFont(new Font("Helvetica", 15));
+        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
@@ -129,17 +133,17 @@ public class SettingsPane extends BorderPane
         /*Adding Buttons*/
         //Creating Start Button
         startButton = new Button("Start");
-        startButton.setFont(new Font("Helvetica", 25));
+        startButton.setFont(new Font("TEXT_FONT", 25));
         startGrid.add(startButton,2,6);
         this.setBottom(startGrid);
 
         //Creating TextSegment Button
         textSegmentButton = new Button("Add Text Segment");
-        textSegmentButton.setFont(new Font("Helvetica", 15));
+        textSegmentButton.setFont(new Font("TEXT_FONT", 15));
 
         //Creating ImageSegment Button
         imageSegmentButton = new Button("Add Image Segment");
-        imageSegmentButton.setFont(new Font("Helvetica", 15));
+        imageSegmentButton.setFont(new Font("TEXT_FONT", 15));
         rightGrid.add(textSegmentButton, 5, 2);
         rightGrid.add(imageSegmentButton,7,2);
         this.setRight(rightGrid);
@@ -150,7 +154,7 @@ public class SettingsPane extends BorderPane
         heightTextField.setMaxWidth(40);
         nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
-        commentsTextArea.setMaxWidth(120);
+        commentsTextArea.setMaxWidth(160);
 
         //Setting Buttons Width
         startButton.setPrefWidth(230);
@@ -158,7 +162,7 @@ public class SettingsPane extends BorderPane
         imageSegmentButton.setPrefWidth(175);
         //Setting Height Properties
         startButton.setPrefHeight(80);
-        commentsTextArea.setPrefHeight(100);
+        commentsTextArea.setPrefHeight(150);
 
         /*Setting TextField Character Limit*/
         //Setting widthTextField Character Length
@@ -190,8 +194,8 @@ public class SettingsPane extends BorderPane
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if(newValue.intValue() > oldValue.intValue()){
-                    if(nameTextField.getText().length() > 26){
-                        nameTextField.setText(nameTextField.getText().substring(0,26));
+                    if(nameTextField.getText().length() > 23){
+                        nameTextField.setText(nameTextField.getText().substring(0,23));
                     }
                 }
             }
@@ -214,8 +218,8 @@ public class SettingsPane extends BorderPane
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if(newValue.intValue() > oldValue.intValue()){
-                    if(commentsTextArea.getText().length() > 68){
-                        commentsTextArea.setText(commentsTextArea.getText().substring(0,68));
+                    if(commentsTextArea.getText().length() > 100){
+                        commentsTextArea.setText(commentsTextArea.getText().substring(0,100));
                     }
                 }
             }
@@ -252,9 +256,9 @@ public class SettingsPane extends BorderPane
 
         //Radio Buttons
         bySegRb = new RadioButton("By Segment");
-        bySegRb.setFont(new Font("Helvetica", 15));
+        bySegRb.setFont(new Font("TEXT_FONT", 15));
         continuousRb = new RadioButton("Continuous");
-        continuousRb.setFont(new Font("Helvetica", 15));
+        continuousRb.setFont(new Font("TEXT_FONT", 15));
 
         //Creating Toggle Group For Radio Button
         final ToggleGroup group = new ToggleGroup();
@@ -263,50 +267,37 @@ public class SettingsPane extends BorderPane
         continuousRb.setToggleGroup(group);
         continuousRb.setSelected(true);
 
-//        //Creating VBox for radio buttons
-//        VBox radioButtonsVB = new VBox();
-//        radioButtonsVB.getChildren().addAll(bySegRb,continuousRb );
-//        radioButtonsVB.setSpacing(5);
-//
-//        //Creating Vertical Box for TextSegment/ImageSegment Button, radioButtonsVB
-//        VBox rightControlVb = new VBox(hBoxButtons, radioButtonsVB);
-//        rightControlVb.setSpacing(10);
-//        this.setRight(rightControlVb);
-
-
-         /*Setting CSS Properties*/
-      //setting padding for VBoxes
+      //setting padding for VBox
         leftControlVb.setStyle("-fx-padding: 15");
-//        rightControlVb.setStyle("-fx-padding: 15");
 
         //setting menuBar font
         menuBar.setStyle("-fx-font-family: Helvetica;");
 
-         //CSS for checkboxes
+        //CSS for checkboxes
         menuBar.setStyle("-fx-border-color: grey; "
-                                    + "-fx-font-size: 12;"
-                                    + "-fx-border-insets: -1; "
-                                    + "-fx-border-radius: 1;"
-                                    + "-fx-border-style: solid;"
-                                    + "-fx-border-width: 1;");
-//        rightControlVb.setStyle("-fx-border-color: grey; "
-//                + "-fx-font-size: 12;"
-//                + "-fx-border-insets: -1; "
-//                + "-fx-border-radius: 1;"
-//                + "-fx-border-style: solid;"
-//                + "-fx-border-width: 1;"
-//                +"-fx-padding: 15");
+                         + "-fx-font-size: 12;"
+                         + "-fx-border-insets: -1; "
+                         + "-fx-border-radius: 1;"
+                         + "-fx-border-style: solid;"
+                         + "-fx-border-width: 1;");
 
         leftControlVb.setStyle("-fx-border-color: grey; "
-                + "-fx-font-size: 12;"
-                + "-fx-border-insets: -1; "
-                + "-fx-border-radius: 1;"
-                + "-fx-border-style: solid;"
-                + "-fx-border-width: 1;"
-                +"-fx-padding: 15");
+                               + "-fx-font-size: 12;"
+                               + "-fx-border-insets: -1; "
+                               + "-fx-border-radius: 1;"
+                               + "-fx-border-style: solid;"
+                               + "-fx-border-width: 1;"
+                               +"-fx-padding: 15");
+
         startButton.setStyle("-fx-border-radius: 15px;");
         textSegmentButton.setStyle("-fx-border-radius: 15px;");
         imageSegmentButton.setStyle("-fx-border-radius: 15px;");
+        //Creating Tooltip for startButton
+        startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
+        authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
+        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
+        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
     }
     //SettingsPane Constructors return properties
     public MenuItem getSave() {
