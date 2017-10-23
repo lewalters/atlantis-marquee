@@ -32,6 +32,7 @@ public final class Global
     public static int MAX_IMAGE_HEIGHT = 200;
     public static int MAX_IMAGE_WIDTH = 1200;
     public static int MIN_OPACITY = 90;
+    public static int MAX_BORDER_COLORS = 4;
 
     private Global() {}
 
