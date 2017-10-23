@@ -12,7 +12,6 @@ import javafx.scene.text.Font;
 
 public class TextSegmentPane extends SegmentPane
 {
-
     private TextField durationTextField, enterTextField,borderColorTextField, paddingColorTextField ;
     private ComboBox borderEffectComboBox;
 
@@ -75,7 +74,6 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.setPromptText("Options");
         textLabelElementsGrid.add(borderEffectComboBox, 1, 5);
-
 
         //Setting text Field Font
         durationTextField.setFont(new Font("Helvetica", 15));

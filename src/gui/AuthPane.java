@@ -63,7 +63,7 @@ public class AuthPane extends VBox
 
         //Creating Cancel Button
         cancelButton = new Button("Cancel");
-        cancelButton.setFont(new Font("Helvetica", 20));
+        cancelButton.setFont(new Font("TEXT_FONT", 20));
         cancelButton.setTooltip(new Tooltip("This cancels and returns control to the Settings Pane"));
 
         //Creating Horizontal Box
