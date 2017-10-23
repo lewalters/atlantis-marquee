@@ -27,7 +27,6 @@ public class ImageSegmentPane extends SegmentPane
         titleLabel.setAlignment(Pos.CENTER);
         this.setTop(titleLabel);
 
-
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
         this.setPrefSize(640, 300);
@@ -92,7 +91,7 @@ public class ImageSegmentPane extends SegmentPane
         comboBoxGrid.add(imgSegComboBox,5,2);
 
         imgSegComboBox.setPrefWidth(125);
-        this.setRight(comboBoxGrid); //Adding ComboBoxes to GridPane inserted TextSegmentPane
+//        this.setRight(comboBoxGrid); //Adding ComboBoxes to GridPane inserted TextSegmentPane
 
         /*CSS*/
         titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
@@ -101,7 +100,7 @@ public class ImageSegmentPane extends SegmentPane
                 + "-fx-font-size: 15;"
                 + "-fx-pref-height: 10");
 
-        /*ETTING HGAP/VGAP*/
+        /*SETTING HGAP/VGAP*/
         //Setting horizontal/vertical gaps for GridPanes
         imgSegleftElementsGrid.setHgap(10);
         imgSegleftElementsGrid.setVgap(5);

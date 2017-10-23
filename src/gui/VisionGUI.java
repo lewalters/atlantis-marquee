@@ -28,6 +28,10 @@ public class VisionGUI extends Application
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
+        primaryStage.setResizable(false); // Disabling Stage resizing
+
+        //Creating the settingsController to handle all events on the settingsPane by passing the settingsPane to it
+        SettingsController settingsController = new SettingsController(settingsPane);
 
         Stage authStage = new Stage();
         authStage.setScene(new Scene(authPane));

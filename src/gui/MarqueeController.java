@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import util.*;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Global.*;

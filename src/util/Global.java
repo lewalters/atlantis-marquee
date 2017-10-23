@@ -24,6 +24,7 @@ public final class Global
 
     // GUI
     public static Color OFF_COLOR = Color.BLACK;
+    public static String TITLE_FONT = "Onyx";
     public static String APP_FONT = "Onyx";
     public static String TEXT_FONT = "Helvetica";
 

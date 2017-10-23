@@ -4,8 +4,6 @@ import data.Marquee;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalTime;
-
 import static org.junit.Assert.assertEquals;
 
 public class MarqueeTest {
