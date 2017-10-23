@@ -31,6 +31,7 @@ public class LED extends Circle
     public void turnOn(Paint paint)
     {
         this.paint = paint;
+        this.setOpacity(1);
         turnOn();
     }
 

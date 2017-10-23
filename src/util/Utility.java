@@ -1,5 +1,6 @@
 package util;
 
+import data.Dot;
 import data.DotMatrix;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -7,8 +8,10 @@ import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
+import static util.Global.MIN_OPACITY;
 import static util.Global.NUM_COLS;
 import static util.Global.NUM_ROWS;
+import static util.Validation.validImage;
 
 /**
  * (Insert a brief comment that describes
@@ -31,23 +34,20 @@ public final class Utility
         Image image;
         DotMatrix matrix;
 
-        try
+        if (validImage(source))
         {
             image = new Image(source);
         }
-        catch (Exception ex)
+        else
         {
-            throw new IOException("Image not found");
+            throw new IOException("Image not usable");
         }
 
         PixelReader pixelReader = image.getPixelReader();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
-        Color[][] pixels = new Color[height][width];
-
-        double ratioWH = 1.0 * width / height;
         int dotHeight = NUM_ROWS;
-        int dotWidth = (int) (dotHeight * ratioWH);
+        int dotWidth = (int) (dotHeight * (1.0 * width / height));
 
         if (dotWidth > NUM_COLS)
         {
@@ -55,16 +55,8 @@ public final class Utility
             dotHeight = (int) (1.0 * height / width);
         }
 
-/*        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
+        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
         matrix = new DotMatrix(dotHeight, dotWidth);
-
-        for (int r = 0; r < height; r++)
-        {
-            for (int c = 0; c < width; c++)
-            {
-                pixels[r][c] = pixelReader.getColor(c, r);
-            }
-        }
 
         for (int r = 0; r < dotHeight; r++)
         {
@@ -74,29 +66,36 @@ public final class Utility
             }
         }
 
+        int dotHeightPx = height / dotHeight;
+        int dotWidthPx = width / dotWidth;
+
         for (int r = 0; r < height; r++)
         {
             for (int c = 0; c < width; c++)
             {
-                // TODO: Dynamic conversion based on generated dotHeight and dotWidth
-                rgbs[r/8][c/8].r += pixels[r][c].getRed();
-                rgbs[r/8][c/8].g += pixels[r][c].getGreen();
-                rgbs[r/8][c/8].b += pixels[r][c].getBlue();
-                rgbs[r/8][c/8].o += pixels[r][c].getOpacity();
+                int row = r / dotHeightPx;
+                int col = c / dotWidthPx;
+                Color pixel = pixelReader.getColor(c, r);
+                rgbs[row][col].r += pixel.getRed();
+                rgbs[row][col].g += pixel.getGreen();
+                rgbs[row][col].b += pixel.getBlue();
+                rgbs[row][col].o += pixel.getOpacity();
             }
         }
+
+        int tgbArea = dotHeightPx * dotWidthPx;
 
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)
             {
-                Color color = Color.color(rgbs[r][c].r / 64, rgbs[r][c].g / 64, rgbs[r][c].b / 64, rgbs[r][c].o / 64);
+                Color color = Color.color(rgbs[r][c].r / tgbArea, rgbs[r][c].g / tgbArea, rgbs[r][c].b / tgbArea, rgbs[r][c].o / tgbArea);
                 int opacity = (int)(color.getOpacity() * 100);
-                matrix.set(new Dot(color.toString(), opacity > 90 ? opacity : 0), r, c);
+                matrix.set(new Dot(color.toString(), opacity > MIN_OPACITY ? opacity : 0), r, c);
             }
-        }*/
+        }
 
-        return new DotMatrix(0, 0);
+        return matrix;
     }
 
     public static void authenticate(String password) {}
