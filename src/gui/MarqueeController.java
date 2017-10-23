@@ -9,6 +9,7 @@ import util.ScrollDirection;
 import util.EffectTime;
 import util.TransitionEffect;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Global.*;
