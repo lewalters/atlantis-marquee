@@ -17,7 +17,7 @@ import static util.Global.OFF_COLOR;
 
 public class TextSegmentPane extends SegmentPane
 {
-    private TextField durationTextField, enterTextField;
+    private TextField durationTextField, enterTextField, borderSpeedTextField;
     private LinkedList<ColorPicker> borderColorPickers;
     private ColorPicker paddingColorPicker;
     private ComboBox<String> borderEffectComboBox;
