@@ -1,29 +1,27 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 
 public class TextSegmentPane extends SegmentPane
 {
-    private TextField durationTextField, enterTextField,borderColorTextField, paddingColorTextField ;
+    private TextField durationTextField, enterTextField,borderColorTextField, paddingColorTextField, borderSpeedTextField;
     private ComboBox borderEffectComboBox;
 
     TextSegmentPane()
     {
         Label titleLabel = new Label("Text Segment Settings");
-        titleLabel.setFont(new Font("Helvetica", 32));
+        titleLabel.setFont(new Font("TEXT_FONT", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
         this.setTop(titleLabel);
 
-        /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
         this.setPrefSize(640, 300);
         this.setPadding(new Insets(30));
@@ -34,7 +32,7 @@ public class TextSegmentPane extends SegmentPane
         //Creating GridPane for buttons
         GridPane buttonElementsGrid = new GridPane();
 
-           /*Adding Labels*/
+        //Adding Labels//
         Label durationLabel = new Label("Duration:");
         textLabelElementsGrid.add(durationLabel, 0, 1);
 
@@ -50,13 +48,16 @@ public class TextSegmentPane extends SegmentPane
         Label borderEffect = new Label("Border Effect:");
         textLabelElementsGrid.add(borderEffect, 0, 5);
 
-        //Setting text Label Font
-        durationLabel.setFont(new Font("Helvetica", 15));
-        enterText.setFont(new Font("Helvetica", 15));
-        borderColor.setFont(new Font("Helvetica", 15));
-        paddingColor.setFont(new Font("Helvetica", 15));
-        borderEffect.setFont(new Font("Helvetica", 15));
+        Label borderSpeed = new Label("Border Speed:");
+        textLabelElementsGrid.add(borderSpeed, 0, 6);
 
+        //Setting text Label Font
+        durationLabel.setFont(new Font("TEXT_FONT", 15));
+        enterText.setFont(new Font("TEXT_FONT", 15));
+        borderColor.setFont(new Font("TEXT_FONT", 15));
+        paddingColor.setFont(new Font("TEXT_FONT", 15));
+        borderEffect.setFont(new Font("TEXT_FONT", 15));
+        borderSpeed.setFont(new Font("TEXT_FONT", 15));
         /*Adding TextFields*/
         durationTextField = new TextField();
         textLabelElementsGrid.add(durationTextField, 1, 1);
@@ -66,6 +67,8 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderColorTextField, 1, 3);
         paddingColorTextField = new TextField();
         textLabelElementsGrid.add(paddingColorTextField, 1, 4);
+        borderSpeedTextField = new TextField();
+        textLabelElementsGrid.add(borderSpeedTextField, 1, 6);
 
         //Creating BorderEffect ComboBox
         borderEffectComboBox = new ComboBox<>();
@@ -76,74 +79,104 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderEffectComboBox, 1, 5);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("Helvetica", 15));
-        enterTextField.setFont(new Font("Helvetica", 15));
-        borderColorTextField.setFont(new Font("Helvetica", 15));
-        paddingColorTextField.setFont(new Font("Helvetica", 15));
+        durationTextField.setFont(new Font("TEXT_FONT", 15));
+        enterTextField.setFont(new Font("TEXT_FONT", 15));
+        borderColorTextField.setFont(new Font("TEXT_FONT", 15));
+        paddingColorTextField.setFont(new Font("TEXT_FONT", 15));
+        borderSpeedTextField.setFont(new Font("TEXT_FONT", 15));
         //Setting text field's width
         durationTextField.setMaxWidth(45);
         enterTextField.setMaxWidth(270);
         borderColorTextField.setMaxWidth(106);
         paddingColorTextField.setMaxWidth(106);
+        borderSpeedTextField.setMaxWidth(45);
         //Setting TextField Prompters
         enterTextField.setPromptText("Enter Display Message");
         borderColorTextField.setPromptText("Optional");
         paddingColorTextField.setPromptText("Optional");
+        //Adding ToolTip Hints for TextSegment Elements
+        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Text Will Be Displayed On The Screen"));
+        enterTextField.setTooltip(new Tooltip("This Assigns An Text Entered By User As The Displayed Marquee Message"));
+        borderColorTextField.setTooltip(new Tooltip("'OPTIONAL:' This Sets The Marquee Border Colors"));
+        paddingColorTextField.setTooltip(new Tooltip("'OPTIONAL:' This Sets The Marquee Padding Colors"));
 
         this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
         /*Setting Character Limit in TextFields*/
         //Setting durationTextField Character Length
-        durationTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(durationTextField.getText().length() > 3){
-                        durationTextField.setText(durationTextField.getText().substring(0,3));
-                    }
+        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(durationTextField.getText().length() > 3){
+                    durationTextField.setText(durationTextField.getText().substring(0,3));
                 }
+            }
+        });
+        //Making durationTextField Accept Only Numeric Values
+        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
         //Setting enterTextField Character Length
-        enterTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(enterTextField.getText().length() > 25){
-                        enterTextField.setText(enterTextField.getText().substring(0,25));
-                    }
+        enterTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(enterTextField.getText().length() > 25){
+                    enterTextField.setText(enterTextField.getText().substring(0,25));
                 }
             }
         });
 
         //Setting borderColorTextField Character Length
-        borderColorTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(borderColorTextField.getText().length() > 12){
-                        borderColorTextField.setText(borderColorTextField.getText().substring(0,12));
-                    }
+        borderColorTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(borderColorTextField.getText().length() > 12){
+                    borderColorTextField.setText(borderColorTextField.getText().substring(0,12));
                 }
             }
         });
 
+        //Setting borderColorTextField to accept only upper or lower case alphabets
+        borderColorTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[|a-z|A-Z]")) {
+                borderColorTextField.setText(newValue.replaceAll("[^|a-z|A-Z]", ""));
+            }
+        });
+
+        //Setting paddingColorTextField to accept only upper or lower case alphabets
+        paddingColorTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[|a-z|A-Z]")) {
+                paddingColorTextField.setText(newValue.replaceAll("[^|a-z|A-Z]", ""));
+            }
+        });
+
+        //Making borderSpeedTextField Accept Only Numeric Values
+        borderSpeedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                borderSpeedTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
         //Setting paddingColorTextField Character Length
-        paddingColorTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(paddingColorTextField.getText().length() > 12){
-                        paddingColorTextField.setText(paddingColorTextField.getText().substring(0,12));
-                    }
+        paddingColorTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(paddingColorTextField.getText().length() > 12){
+                    paddingColorTextField.setText(paddingColorTextField.getText().substring(0,12));
+                }
+            }
+        });
+
+        //Setting borderSpeedTextField Character Length
+        borderSpeedTextField. lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(borderSpeedTextField.getText().length() > 2){
+                    borderSpeedTextField.setText(borderSpeedTextField.getText().substring(0,2));
                 }
             }
         });
 
         //Css For comboBoxes
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                + "-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;" + "-fx-font-weight: bold;");
 
         /*SETTING HGAP/VGAP */
         //Setting horizontal/vertical gaps for GridPanes
@@ -171,6 +204,9 @@ public class TextSegmentPane extends SegmentPane
     }
     public ComboBox getBorderEffectComboBox() {
         return borderEffectComboBox;
+    }
+    public TextField getBorderSpeedTextField() {
+        return borderSpeedTextField;
     }
 }
 

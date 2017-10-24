@@ -58,7 +58,7 @@ public class MarqueeController
         Timeline exitTimeline = new Timeline();
         Timeline resetTimeline = new Timeline(new KeyFrame(Duration.millis(500), e -> marqueePane.reset()));
 
-        // Create the border and padding iff colors are set in the segment
+        // Create the border and padding if colors are set in the segment
         // Do NOT create effect if no border color set
         if (segment instanceof TextSegment)
         {

@@ -26,7 +26,7 @@ public class SettingsPane extends BorderPane
     private MenuItem userGuide;
     private MenuItem about;
     private CheckBox fullScreenCheckBox;
-    private CheckBox authenticationCheckBox;
+    //private CheckBox authenticationCheckBox;
     private Button startButton;
     private Button textSegmentButton;
     private Button imageSegmentButton;
@@ -83,9 +83,7 @@ public class SettingsPane extends BorderPane
         TextField delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,3);
         TextArea commentsTextArea = new TextArea();
-        commentsTextArea.setPromptText("100 Characters Allowed");
-
-
+        commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
 
         //Wrapping commentsTextArea Text Area
         commentsTextArea.setWrapText(true);
@@ -95,8 +93,8 @@ public class SettingsPane extends BorderPane
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
         fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
-        authenticationCheckBox = new CheckBox("Authentication");
-        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
+//        authenticationCheckBox = new CheckBox("Authentication");
+//        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
@@ -161,6 +159,19 @@ public class SettingsPane extends BorderPane
         startButton.setPrefHeight(80);
         commentsTextArea.setPrefHeight(150);
 
+        //Adding ToolTip Hints for TextSegment Elements
+        widthTextField.setTooltip(new Tooltip("This Sets The Width For A Marquee"));
+        heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
+        nameTextField.setTooltip(new Tooltip("This Assigns A Descriptive Name For A Marquee"));
+        delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
+        commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
+        //Creating Tooltip for startButton
+        startButton.setTooltip(new Tooltip("This Starts Marquee Based On User Requirements"));
+        //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
+        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
+        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
+
         /*Setting TextField Character Limit*/
         //Setting widthTextField Character Length
         widthTextField.lengthProperty().addListener(new ChangeListener<>() {
@@ -222,6 +233,31 @@ public class SettingsPane extends BorderPane
             }
         });
 
+        //Making WidthTextField To Accept only Numeric Values
+        widthTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                widthTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making HeightTextField To Accept only Numeric Values
+        heightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                heightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making DelayTextField To Accept only Numeric Values
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                delayTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making commentsTextArea To Accept Alphanumeric Characters, Punctuation Marks and Special Characters (&!-)
+        commentsTextArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[a-z|A-Z|/s|.|,|-|/|:|;|!|&| |]")) {
+                commentsTextArea.setText(newValue.replaceAll("[^a-z|A-Z|/s|.|,|-|/|:|;|!|&| |]", ""));
+            }
+        });
+
         /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
         leftLabelTextFieldGrid.setHgap(15);
@@ -241,7 +277,7 @@ public class SettingsPane extends BorderPane
         this.setTop(menuElements);
 
         //Creating Vertical Box for fullscreen checkbox, authentication checkbox, vertical and start menuElements
-        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenCheckBox, authenticationCheckBox,startGrid);
+        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenCheckBox, /*authenticationCheckBox,*/startGrid);
         leftControlVb.setSpacing(10);
         this.setLeft(leftControlVb);
 
@@ -264,37 +300,20 @@ public class SettingsPane extends BorderPane
         continuousRb.setToggleGroup(group);
         continuousRb.setSelected(true);
 
-      //setting padding for VBox
+        //setting padding for VBox
         leftControlVb.setStyle("-fx-padding: 15");
 
         //setting menuBar font
-        menuBar.setStyle("-fx-font-family: Helvetica;");
+        menuBar.setStyle("-fx-font-family: TEXT_FONT;");
 
         //CSS for checkboxes
-        menuBar.setStyle("-fx-border-color: grey; "
-                         + "-fx-font-size: 12;"
-                         + "-fx-border-insets: -1; "
-                         + "-fx-border-radius: 1;"
-                         + "-fx-border-style: solid;"
-                         + "-fx-border-width: 1;");
-
-        leftControlVb.setStyle("-fx-border-color: grey; "
-                               + "-fx-font-size: 12;"
-                               + "-fx-border-insets: -1; "
-                               + "-fx-border-radius: 1;"
-                               + "-fx-border-style: solid;"
-                               + "-fx-border-width: 1;"
-                               +"-fx-padding: 15");
-
+        menuBar.setStyle("-fx-border-color: grey; " + "-fx-font-size: 12;" + "-fx-border-insets: -1; "
+                         + "-fx-border-radius: 1;"+ "-fx-border-style: solid;"+ "-fx-border-width: 1;");
+        leftControlVb.setStyle("-fx-border-color: grey; " + "-fx-font-size: 12;" + "-fx-border-insets: -1;"
+                               + "-fx-border-radius: 1;" + "-fx-border-style: solid;" + "-fx-border-width: 1;"+"-fx-padding: 15");
         startButton.setStyle("-fx-border-radius: 15px;");
         textSegmentButton.setStyle("-fx-border-radius: 15px;");
         imageSegmentButton.setStyle("-fx-border-radius: 15px;");
-        //Creating Tooltip for startButton
-        startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
-        authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
-        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
-        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
-        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
     }
     //SettingsPane Constructors return properties
     public MenuItem getSave() {
@@ -311,17 +330,17 @@ public class SettingsPane extends BorderPane
         return about;}
     public Button getStartButton(){
         return startButton;}
-    public CheckBox getAuthenticationCheckBox(){
-        return authenticationCheckBox;}
+    /*public CheckBox getAuthenticationCheckBox(){
+        return authenticationCheckBox;}*/
     public Button getTextSegmentButton(){
         return textSegmentButton;}
     public Button getImageSegmentButton(){
         return imageSegmentButton;}
-    public RadioButton getBySegRb(){
-        return bySegRb;
-    }
-    public RadioButton getContinuousRb(){
+    public RadioButton getContinuousRb() {
         return continuousRb;
+    }
+    public RadioButton getBySegRb() {
+        return bySegRb;
     }
 }
 

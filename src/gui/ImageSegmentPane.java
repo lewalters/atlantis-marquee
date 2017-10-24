@@ -1,12 +1,8 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 
@@ -16,13 +12,14 @@ public class ImageSegmentPane extends SegmentPane
     private TextField durationTextField;
     private Label imageSourceLabel;
     private TextField imageSourceTextField;
+    private Button imageSourceButton;
     private  ComboBox <String> imgSegComboBox;
 
     ImageSegmentPane()
     {
         /*Setting TextSegmentPane Header Label*/
         Label titleLabel = new Label("Image Segment Settings");
-        titleLabel.setFont(new Font("Helvetica", 32));
+        titleLabel.setFont(new Font("TEXT_FONT", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
         this.setTop(titleLabel);
@@ -33,31 +30,43 @@ public class ImageSegmentPane extends SegmentPane
         this.setPadding(new Insets(30));
 
         //Creating GridPane for textFields and labels
-        GridPane imgSegleftElementsGrid = new GridPane();
+        GridPane imgSegLeftElementsGrid = new GridPane();
 
         //Creating GridPane ComboBox
         GridPane comboBoxGrid = new GridPane();
 
         /*Adding Labels*/
         durationLabel = new Label("Duration:");
-        imgSegleftElementsGrid.add(durationLabel, 0, 1);
+        imgSegLeftElementsGrid.add(durationLabel, 0, 1);
         //Setting text Label Font
-        durationLabel.setFont(new Font("Helvetica", 15));
+        durationLabel.setFont(new Font("TEXT_FONT", 15));
 
         imageSourceLabel = new Label("Image Source:");
-        imgSegleftElementsGrid.add(imageSourceLabel, 0, 2);
+        imgSegLeftElementsGrid.add(imageSourceLabel, 0, 2);
         //Setting text Label Font
-        imageSourceLabel.setFont(new Font("Helvetica", 15));
+        imageSourceLabel.setFont(new Font("TEXT_FONT", 15));
 
         /*Adding TextFields*/
          durationTextField = new TextField();
          imageSourceTextField = new TextField();
-        imgSegleftElementsGrid.add(durationTextField, 1, 1);
-        imgSegleftElementsGrid.add(imageSourceTextField, 1, 2);
+
+        /************New Code****************/
+        imageSourceButton = new Button("Insert Image");
+        imageSourceButton.setFont(new Font("TEXT_FONT", 15));
+        imageSourceButton.setPrefWidth(180);
+        imageSourceButton.setPrefHeight(15);
+        //Adding ToolTip Hints for imageSourceButton
+        imageSourceButton.setTooltip(new Tooltip("Select Image From Folder"));
+        /************End of New Code****************/
+
+         //Adding TextFields, Labels and Buttons to GridPane (imgSegLeftElementsGrid
+        imgSegLeftElementsGrid.add(durationTextField, 1, 1);
+        imgSegLeftElementsGrid.add(imageSourceTextField, 1, 2);
+        imgSegLeftElementsGrid.add(imageSourceButton, 0, 3);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("Helvetica", 15));
-        imageSourceTextField.setFont(new Font("Helvetica", 15));
+        durationTextField.setFont(new Font("TEXT_FONT", 15));
+        imageSourceTextField.setFont(new Font("TEXT_FONT", 15));
 
         //Setting text field's width
        durationTextField.setMaxWidth(45);
@@ -65,22 +74,34 @@ public class ImageSegmentPane extends SegmentPane
 
         //Setting ImageField Prompters
         imageSourceTextField.setPromptText("Enter Image File Directory");
+        //Adding ToolTip Hints for TextSegment Elements
+        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Image Will Be Displayed On The Screen"));
+        imageSourceTextField.setTooltip(new Tooltip("This Selects An Image To Display Using The Image's File Extension"));
 
-        this.setLeft(imgSegleftElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
+        this.setLeft(imgSegLeftElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
         /*Setting Character Limit in TextFields*/
         //Setting durationTextField Character Length
-        durationTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(durationTextField.getText().length() > 3){
-                        durationTextField.setText(durationTextField.getText().substring(0,3));
-                    }
+        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(durationTextField.getText().length() > 3){
+                    durationTextField.setText(durationTextField.getText().substring(0,3));
                 }
             }
         });
+        //Making imageSegmentDurationTextField accept only numeric values
+        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
+        //Making imageSourceTextArea To Accept alphabets and  Punctuation Marks("", '', :, /, \)
+        imageSourceTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[a-z|A-Z|/s|:|/|.|''|:|&||\\\\|\"]")) {
+                imageSourceTextField.setText(newValue.replaceAll("[^a-z|A-Z|/s|:|/|.|''|:|&||\\\\|\"]", ""));
+            }
+        });
         /*Adding ComboBox*/
         imgSegComboBox = new ComboBox<>();
         imgSegComboBox.getItems().addAll("Style","Effect");
@@ -96,21 +117,20 @@ public class ImageSegmentPane extends SegmentPane
         /*CSS*/
         titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
                 + "-fx-font-weight: bold;");
-        imgSegComboBox.setStyle("-fx-font-family: Helvetica;"
+        imgSegComboBox.setStyle("-fx-font-family: TEXT_FONT;"
                 + "-fx-font-size: 15;"
                 + "-fx-pref-height: 10");
 
         /*SETTING HGAP/VGAP*/
         //Setting horizontal/vertical gaps for GridPanes
-        imgSegleftElementsGrid.setHgap(10);
-        imgSegleftElementsGrid.setVgap(5);
+        imgSegLeftElementsGrid.setHgap(10);
+        imgSegLeftElementsGrid.setVgap(5);
 
         comboBoxGrid.setHgap(25);
         comboBoxGrid.setVgap(5);
     }
 
-    public TextField getDurationTextField()
-    {
+    public TextField getDurationTextField(){
         return durationTextField;
     }
 
@@ -118,7 +138,11 @@ public class ImageSegmentPane extends SegmentPane
         return imageSourceTextField;
     }
 
-    public ComboBox<String> getImgSegComboBox() {
+    public ComboBox<String> getImgSegComboBox(){
         return imgSegComboBox;
+    }
+
+    public Button getImageSourceButton(){
+        return imageSourceButton;
     }
 }
