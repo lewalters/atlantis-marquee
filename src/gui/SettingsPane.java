@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -84,6 +85,8 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.add(delayTextField,1,3);
         TextArea commentsTextArea = new TextArea();
         commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
+
+
 
         //Wrapping commentsTextArea Text Area
         commentsTextArea.setWrapText(true);

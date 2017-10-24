@@ -1,7 +1,6 @@
 package gui;
 
-import data.Marquee;
-import data.Message;
+import data.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
