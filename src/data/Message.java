@@ -42,12 +42,12 @@ public class Message
         return repeatFactor;
     }
 
+    public int getDelay(){return delay;}
+
     public String getComments()
     {
         return comments;
     }
-
-    public int getDelay(){return delay;}
 
     public void setName(String name)
     {
@@ -59,14 +59,14 @@ public class Message
         this.repeatFactor = repeatFactor;
     }
 
-    public void setComments(String comments)
-    {
-        this.comments = comments;
-    }
-
     public void setDelay(int delay)
     {
         this.delay = delay;
+    }
+
+    public void setComments(String comments)
+    {
+        this.comments = comments;
     }
 
     public void addSegment(int pos, Segment segment)

@@ -303,20 +303,37 @@ public class SettingsPane extends BorderPane
         continuousRb.setToggleGroup(group);
         continuousRb.setSelected(true);
 
-        //setting padding for VBox
+      //setting padding for VBox
         leftControlVb.setStyle("-fx-padding: 15");
 
         //setting menuBar font
-        menuBar.setStyle("-fx-font-family: TEXT_FONT;");
+        menuBar.setStyle("-fx-font-family: Helvetica;");
 
         //CSS for checkboxes
-        menuBar.setStyle("-fx-border-color: grey; " + "-fx-font-size: 12;" + "-fx-border-insets: -1; "
-                         + "-fx-border-radius: 1;"+ "-fx-border-style: solid;"+ "-fx-border-width: 1;");
-        leftControlVb.setStyle("-fx-border-color: grey; " + "-fx-font-size: 12;" + "-fx-border-insets: -1;"
-                               + "-fx-border-radius: 1;" + "-fx-border-style: solid;" + "-fx-border-width: 1;"+"-fx-padding: 15");
+        menuBar.setStyle("-fx-border-color: grey; "
+                         + "-fx-font-size: 12;"
+                         + "-fx-border-insets: -1; "
+                         + "-fx-border-radius: 1;"
+                         + "-fx-border-style: solid;"
+                         + "-fx-border-width: 1;");
+
+        leftControlVb.setStyle("-fx-border-color: grey; "
+                               + "-fx-font-size: 12;"
+                               + "-fx-border-insets: -1; "
+                               + "-fx-border-radius: 1;"
+                               + "-fx-border-style: solid;"
+                               + "-fx-border-width: 1;"
+                               +"-fx-padding: 15");
+
         startButton.setStyle("-fx-border-radius: 15px;");
         textSegmentButton.setStyle("-fx-border-radius: 15px;");
         imageSegmentButton.setStyle("-fx-border-radius: 15px;");
+        //Creating Tooltip for startButton
+        startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
+        authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
+        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
+        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
     }
     //SettingsPane Constructors return properties
     public MenuItem getSave() {
