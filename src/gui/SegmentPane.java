@@ -99,6 +99,14 @@ public abstract class SegmentPane extends BorderPane
         effectsVBox.setSpacing(10);
         effectsVBox.setStyle("-fx-padding: 5");
         //effectsVBox.setPadding(new Insets(2,2,2,2));
+        
+        //Setting SegmentRadio/ComboBox Button Prompters
+        statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
+        scrollRadioBtn.setTooltip(new Tooltip("This Sets Marquee Scroll Direction"));
+        effectsRadioBtn.setTooltip(new Tooltip("This Adds Special Effects To The Marquee's Intro/Exit Screen Display"));
+        entranceComboBox.setTooltip(new Tooltip("This Sets The Entrance Effects For The Marquee's Display"));
+        middleComboBox.setTooltip(new Tooltip("This Sets The Static Effects For The Marquee's Display"));
+        exitComboBox.setTooltip(new Tooltip("This Sets The Exit Effects For The Marquee's Display"));
 
         statikRadioBtn.setOnAction(e -> {
             scrollVBox.setVisible(false);
@@ -114,7 +122,7 @@ public abstract class SegmentPane extends BorderPane
             scrollVBox.setVisible(false);
             effectsVBox.setVisible(true);
         });
-
+        //HBox
         HBox radioBox = new HBox(statikRadioBtn, scrollRadioBtn, effectsRadioBtn);
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);

@@ -58,7 +58,7 @@ public class AuthPane extends VBox
         });
         //Creating Continue Button
         continueButton = new Button("Continue");
-        continueButton.setFont(new Font("Helvetica", 20));
+        continueButton.setFont(new Font("TEXT_FONT", 20));
         continueButton.setTooltip(new Tooltip("This Saves Entered Password"));
 
         //Creating Cancel Button

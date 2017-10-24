@@ -54,7 +54,7 @@ public class VisionGUI extends Application
 
         settingsPane.setOnMouseClicked(e -> marqueeStage.show());
 
-        settingsPane.getStartButton().setOnAction(e -> {
+        /*settingsPane.getStartButton().setOnAction(e -> {
             if (settingsPane.getAuthenticationCheckBox().isSelected())
             {
                 authStage.show();
@@ -63,9 +63,11 @@ public class VisionGUI extends Application
             {
                 marqueeStage.show();
             }
-        });
+        });*/
 
         //Creating Event Handler for AuthPane Cancel Button
         authPane.getCancelButton().setOnAction(event -> authStage.close());
+
+
     }
 }
