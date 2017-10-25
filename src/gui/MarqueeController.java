@@ -8,7 +8,6 @@ import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.EffectTime;
 import util.TransitionEffect;
-
 import java.util.Iterator;
 
 import static util.Global.*;
@@ -224,3 +223,4 @@ public class MarqueeController
         timeline.setCycleCount(segment.getSize());
     }
 }
+

@@ -3,11 +3,9 @@ package data;
 import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-
 import static util.Utility.convertImage;
 
 /**
@@ -22,7 +20,6 @@ public abstract class ImageSegment extends Segment
 {
     private String source;
     private DotMatrix contents;
-
     public ImageSegment(ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
     {
         super(scrollDirection, effectEn, effectMi, effectEx);
