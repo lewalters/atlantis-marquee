@@ -34,7 +34,7 @@ public abstract class SegmentPane extends BorderPane
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 360);
+        this.setPrefSize(640, 400);
         this.setPadding(new Insets(30));
 
         /*Adding Creating Buttons and Setting Font/Size*/
@@ -137,17 +137,11 @@ public abstract class SegmentPane extends BorderPane
                               +"-fx-font-weight: bold;"
                               +"-fx-padding: 10 20 10 20;");
     }
-    //Getting Getters and Setters //
+
     public Button getContinueButton(){
         return continueButton;
     }
-    public void setContinueButton(Button continueButton){
-        this.continueButton = continueButton;
-    }
     public Button getCancelButton(){
         return cancelButton;
-    }
-    public void setCancelButton(Button cancelButton){
-     this.cancelButton = cancelButton;
     }
 }

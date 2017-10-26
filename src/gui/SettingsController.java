@@ -34,5 +34,8 @@ public class SettingsController
 
         //Event Handler for ImageSegmentButton to display Image Segment Pane
         pane.getImageSegmentButton().setOnAction(e -> imgSegStage.show());
+
+        // Event handler for imageSourceButton in the imageSegmentPane
+        imageSegmentPane.getImageBox().setOnMouseClicked(e -> imageSegmentPane.getSourceImage(imgSegStage));
     }
 }
