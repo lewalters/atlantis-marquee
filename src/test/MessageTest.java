@@ -1,4 +1,3 @@
-/*
 package test;
 
 import data.CharDot;
@@ -9,7 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import static org.junit.Assert.assertEquals;
+import static util.ScrollDirection.*;
+import static util.StaticEffect.BLINK;
+import static util.StaticEffect.NONE;
+import static util.StaticEffect.RANDOM_COLOR;
 
 public class MessageTest {
 
@@ -44,13 +48,13 @@ public class MessageTest {
 
     //@Test
     //public void testGetContent() {
-    //  m.getContents();
+    //m.getContents();
     //assertEquals(message:"data.Message Test: getContents", expected);
     //}
 
     @Test
     public void testAddSegment() {
-        Segment s = new TextSegment(60, "left-scroll-continuous", "fade");
+        Segment s = new TextSegment(UP, "left-scroll-continuous", BLINK, "GRAY", DOWN, NONE, STATIC, "YELLOW", "BIG");
         m.addSegment(0, s);
         assertEquals("data.Message Test", s, m.getContents().get(0));
     }
@@ -66,7 +70,7 @@ public class MessageTest {
 
     @Test
     public void testRemoveSegment() {
-        Segment a = new TextSegment(60, "left-scroll-continuous", "fade");
+        Segment a = new TextSegment(DOWN, "PINK", BLINK, "BROWN", NONE, RANDOM_COLOR, LEFT, "BROWN", "DARK");
         m.removeSegment(0);
         assertEquals("data.Message Test", a, m.getContents().get(0));
     }
@@ -85,4 +89,4 @@ public class MessageTest {
     }
 }
 
-*/
+

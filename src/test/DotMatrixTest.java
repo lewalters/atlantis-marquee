@@ -21,9 +21,13 @@ public class DotMatrixTest {
     public static void setup()
     {
         row = 2;
-        col = 3;
+        col = 2;
         dm = new DotMatrix(row,col);
         matrix = new Dot[row][col];
+        dm.set(new Dot("B8B116", 1), 0, 0);
+        dm.set(new Dot("4EB816", 1), 0, 1);
+        dm.set(new Dot("16B8AC", 1), 1, 0);
+        dm.set(new Dot("9B16B8", 1), 1, 1);
     }
 
     /*@Test
@@ -33,13 +37,16 @@ public class DotMatrixTest {
         matrix[row][col] = d;
 
         //assertArrayEquals(d, );
-    }
+    }*/
 
     @Test
     public void testIteratorLeft()
     {
         Iterator<Dot[]> direction = dm.iterator(ScrollDirection.LEFT);
         assertTrue("data.DotMatrix test:Left Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot("B8B116", 1), new Dot("16B8AC", 1)};
+        assertArrayEquals(d, direction.next());
     }
 
     @Test
@@ -47,6 +54,9 @@ public class DotMatrixTest {
     {
         Iterator<Dot[]> direction = dm.iterator(ScrollDirection.RIGHT);
         assertTrue("data.DotMatrix test:Right Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot("4EB816", 1), new Dot("9B16B8", 1)};
+        assertArrayEquals(d, direction.next());
     }
 
     @Test
@@ -54,6 +64,9 @@ public class DotMatrixTest {
     {
         Iterator<Dot[]> direction = dm.iterator(ScrollDirection.UP);
         assertTrue("data.DotMatrix test:Up Iterator", direction.hasNext());
+
+        Dot[] d = {new Dot("B8B116", 1), new Dot("4EB816", 1)};
+        assertArrayEquals(d, direction.next());
     }
 
     @Test
@@ -61,5 +74,8 @@ public class DotMatrixTest {
     {
         Iterator<Dot[]> direction = dm.iterator(ScrollDirection.DOWN);
         assertTrue("data.DotMatrix test:Down Iterator", direction.hasNext());
-    }*/
+
+        Dot[] d = {new Dot("16B8AC", 1), new Dot("9B16B8", 1)};
+        assertArrayEquals(d, direction.next());
+    }
 }
