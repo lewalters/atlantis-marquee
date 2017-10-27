@@ -9,7 +9,6 @@ import static util.StaticEffect.*;
 import data.CharDot;
 import data.Dot;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import data.TextSegment;
