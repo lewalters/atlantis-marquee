@@ -1,12 +1,21 @@
 package gui;
 
-import data.Segment;
+import data.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import util.BorderEffect;
+import util.ScrollDirection;
+import util.StaticEffect;
+import util.TransitionEffect;
+
+import java.util.List;
+
+import static util.Global.TEXT_FONT;
 
 
 /**
@@ -31,11 +40,13 @@ public class SettingsPane extends BorderPane
     private Button startButton;
     private Button textSegmentButton;
     private Button imageSegmentButton;
+    private Button reorderButton;
+    private SegmentListView segmentListView;
 
-    SettingsPane()
+    SettingsPane(List<Segment> segments)
     {
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(680, 400);
+        this.setPrefSize(740, 400);
 
         /*Creating GridPanes*/
         // Creating Width label
@@ -131,14 +142,22 @@ public class SettingsPane extends BorderPane
         //Creating ImageSegment Button
         imageSegmentButton = new Button("Add Image Segment");
         imageSegmentButton.setFont(new Font("TEXT_FONT", 15));
+
         HBox segmentButtonsBox = new HBox(textSegmentButton, imageSegmentButton);
         segmentButtonsBox.setSpacing(10);
         segmentButtonsBox.setAlignment(Pos.CENTER);
-        ListView<Segment> segmentListView = new ListView<>();
-        VBox rightPanel = new VBox(segmentButtonsBox, segmentListView);
+
+        segmentListView = new SegmentListView(segments);
+        ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
+        segmentScrollPane.setPadding(new Insets(5));
+
+        reorderButton = new Button("Reorder Segments");
+        reorderButton.setFont(new Font(TEXT_FONT, 15));
+
+        VBox rightPanel = new VBox(segmentButtonsBox, segmentScrollPane, reorderButton);
         rightPanel.setSpacing(15);
         rightPanel.setPadding(new Insets(15));
-        this.setRight(rightPanel);
+        this.setCenter(rightPanel);
 
         /*Setting Width/Height*/
         //Setting TextFields Width
@@ -355,6 +374,16 @@ public class SettingsPane extends BorderPane
     public Button getImageSegmentButton()
     {
         return imageSegmentButton;
+    }
+
+    public Button getReorderButton()
+    {
+        return reorderButton;
+    }
+
+    public SegmentListView getSegmentListView()
+    {
+        return segmentListView;
     }
 }
 
