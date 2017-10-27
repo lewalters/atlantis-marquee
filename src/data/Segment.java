@@ -3,7 +3,6 @@ package data;
 import util.MarqueeEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
-
 import java.util.Iterator;
 
 /**

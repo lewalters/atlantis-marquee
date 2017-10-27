@@ -14,6 +14,7 @@ import util.ScrollDirection;
 import java.util.*;
 
 import static util.Global.*;
+import static util.Global.*;
 
 /**
  * (Insert a brief comment that describes
