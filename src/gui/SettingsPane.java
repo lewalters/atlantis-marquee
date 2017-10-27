@@ -1,12 +1,22 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import data.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import util.BorderEffect;
+import util.ScrollDirection;
+import util.StaticEffect;
+import util.TransitionEffect;
+
+import java.util.List;
+
+import static util.Global.TEXT_FONT;
+
 
 /**
  * (Insert a brief comment that describes
@@ -26,36 +36,35 @@ public class SettingsPane extends BorderPane
     private MenuItem userGuide;
     private MenuItem about;
     private CheckBox fullScreenCheckBox;
-    private CheckBox authenticationCheckBox;
+    //private CheckBox authenticationCheckBox;
     private Button startButton;
     private Button textSegmentButton;
     private Button imageSegmentButton;
+    private Button reorderButton;
+    private SegmentListView segmentListView;
 
-    SettingsPane()
+    SettingsPane(List<Segment> segments)
     {
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(640, 400);
-        this.setPadding(new Insets(8)); //Set to 5 to allow MenuBar to be displayed in top left corner
+        this.setPrefSize(740, 400);
 
         /*Creating GridPanes*/
         // Creating Width label
         GridPane leftLabelTextFieldGrid = new GridPane();
-        GridPane startGrid = new GridPane();
-        GridPane rightGrid = new GridPane();
 
         /*Adding Labels*/
         Label setWidthLabel = new Label("Width:");
-        setWidthLabel.setFont(new Font("Helvetica", 15));
+        setWidthLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setWidthLabel, 0, 0);
 
         // Creating Height label
         Label setHeightLabel = new Label("Height:");
-        setHeightLabel.setFont(new Font("Helvetica", 15));
+        setHeightLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
         //Creating Name Label
         Label setNameLabel = new Label("Name");
-        setNameLabel.setFont(new Font("Helvetica", 15));
+        setNameLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setNameLabel,0,2);
 
         //Setting Delay Label
@@ -65,7 +74,7 @@ public class SettingsPane extends BorderPane
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
-        setCommentsLabel.setFont(new Font("Helvetica", 15));
+        setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setCommentsLabel,0,4);
 
         /*Adding TextFields*/
@@ -75,10 +84,12 @@ public class SettingsPane extends BorderPane
         TextField heightTextField = new TextField();
         leftLabelTextFieldGrid.add(heightTextField,1,1);
         TextField nameTextField = new TextField();
+        nameTextField.setPromptText("Only 23 Characters Allowed");
         leftLabelTextFieldGrid.add(nameTextField,1,2);
         TextField delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,3);
         TextArea commentsTextArea = new TextArea();
+        commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
 
         //Wrapping commentsTextArea Text Area
         commentsTextArea.setWrapText(true);
@@ -87,9 +98,9 @@ public class SettingsPane extends BorderPane
         /*Adding Checkboxes*/
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
-        fullScreenCheckBox.setFont(new Font("Helvetica", 15));
-        authenticationCheckBox = new CheckBox("Authentication");
-        authenticationCheckBox.setFont(new Font("Helvetica", 15));
+        fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
+//        authenticationCheckBox = new CheckBox("Authentication");
+//        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
@@ -98,9 +109,8 @@ public class SettingsPane extends BorderPane
         Menu help = new Menu("Help");
 
         //setting MenuBar Width
-        menuBar.setPrefWidth(700);
+        menuBar.prefWidthProperty().bind(widthProperty());
         menuBar.getMenus().addAll(file, edit, help);
-        leftLabelTextFieldGrid.getChildren().add(menuBar);
 
         //Creating FileMenu Elements
         save = new MenuItem("Save");
@@ -123,20 +133,31 @@ public class SettingsPane extends BorderPane
         /*Adding Buttons*/
         //Creating Start Button
         startButton = new Button("Start");
-        startButton.setFont(new Font("Helvetica", 25));
-        startGrid.add(startButton,2,6);
-        this.setBottom(startGrid);
+        startButton.setFont(new Font("TEXT_FONT", 25));
 
         //Creating TextSegment Button
-        textSegmentButton = new Button("Text Segment");
-        textSegmentButton.setFont(new Font("Helvetica", 20));
+        textSegmentButton = new Button("Add Text Segment");
+        textSegmentButton.setFont(new Font("TEXT_FONT", 15));
 
         //Creating ImageSegment Button
-        imageSegmentButton = new Button("Image Segment");
-        imageSegmentButton.setFont(new Font("Helvetica", 20));
-        rightGrid.add(textSegmentButton, 7, 2);
-        rightGrid.add(imageSegmentButton,7,5);
-        this.setRight(rightGrid);
+        imageSegmentButton = new Button("Add Image Segment");
+        imageSegmentButton.setFont(new Font("TEXT_FONT", 15));
+
+        HBox segmentButtonsBox = new HBox(textSegmentButton, imageSegmentButton);
+        segmentButtonsBox.setSpacing(10);
+        segmentButtonsBox.setAlignment(Pos.CENTER);
+
+        segmentListView = new SegmentListView(segments);
+        ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
+        segmentScrollPane.setPadding(new Insets(5));
+
+        reorderButton = new Button("Reorder Segments");
+        reorderButton.setFont(new Font(TEXT_FONT, 15));
+
+        VBox rightPanel = new VBox(segmentButtonsBox, segmentScrollPane, reorderButton);
+        rightPanel.setSpacing(15);
+        rightPanel.setPadding(new Insets(15));
+        this.setCenter(rightPanel);
 
         /*Setting Width/Height*/
         //Setting TextFields Width
@@ -144,74 +165,112 @@ public class SettingsPane extends BorderPane
         heightTextField.setMaxWidth(40);
         nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
-        commentsTextArea.setMaxWidth(120);
+        commentsTextArea.setMaxWidth(160);
 
         //Setting Buttons Width
         startButton.setPrefWidth(230);
-        textSegmentButton.setPrefWidth(200);
-        imageSegmentButton.setPrefWidth(200);
+        textSegmentButton.setPrefWidth(175);
+        imageSegmentButton.setPrefWidth(175);
+
         //Setting Height Properties
         startButton.setPrefHeight(80);
-        commentsTextArea.setPrefHeight(100);
+        commentsTextArea.setPrefHeight(150);
+
+        //Adding ToolTip Hints for TextSegment Elements
+        widthTextField.setTooltip(new Tooltip("This Sets The Width For A Marquee"));
+        heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
+        nameTextField.setTooltip(new Tooltip("This Assigns A Descriptive Name For A Marquee"));
+        delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
+        commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
+        //Creating Tooltip for startButton
+        startButton.setTooltip(new Tooltip("This Starts Marquee Based On User Requirements"));
+        //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
+        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
+        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
 
         /*Setting TextField Character Limit*/
         //Setting widthTextField Character Length
-        widthTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(widthTextField.getText().length() > 4){
-                        widthTextField.setText(widthTextField.getText().substring(0,4));
-                    }
+        widthTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(widthTextField.getText().length() > 3)
+                {
+                    widthTextField.setText(widthTextField.getText().substring(0,3));
                 }
             }
         });
 
         //Setting heightTextField Character Length
-        heightTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(heightTextField.getText().length() > 4){
-                        heightTextField.setText(heightTextField.getText().substring(0,4));
-                    }
+        heightTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(heightTextField.getText().length() > 3)
+                {
+                    heightTextField.setText(heightTextField.getText().substring(0,3));
                 }
             }
         });
 
         //Setting nameTextField Character Length
-        nameTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(nameTextField.getText().length() > 26){
-                        nameTextField.setText(nameTextField.getText().substring(0,26));
-                    }
+        nameTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(nameTextField.getText().length() > 23)
+                {
+                    nameTextField.setText(nameTextField.getText().substring(0,23));
                 }
             }
         });
 
         //Setting delayTextField Character Length
-        delayTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(delayTextField.getText().length() > 4){
-                        delayTextField.setText(delayTextField.getText().substring(0,4));
-                    }
+        delayTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(delayTextField.getText().length() > 3)
+                {
+                    delayTextField.setText(delayTextField.getText().substring(0,3));
                 }
             }
         });
 
         //Setting commentsTextArea Character Length
-        commentsTextArea.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(commentsTextArea.getText().length() > 91){
-                        commentsTextArea.setText(commentsTextArea.getText().substring(0,91));
-                    }
+        commentsTextArea.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(commentsTextArea.getText().length() > 100)
+                {
+                    commentsTextArea.setText(commentsTextArea.getText().substring(0,100));
                 }
+            }
+        });
+
+        //Making WidthTextField To Accept only Numeric Values
+        widthTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+            {
+                widthTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making HeightTextField To Accept only Numeric Values
+        heightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+            {
+                heightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making DelayTextField To Accept only Numeric Values
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+            {
+                delayTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        //Making commentsTextArea To Accept Alphanumeric Characters, Punctuation Marks and Special Characters (&!-)
+        commentsTextArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[a-zA-Z/s.,-/:;!& ]"))
+            {
+                commentsTextArea.setText(newValue.replaceAll("[^a-zA-Z/s.,-/:;!& ]", ""));
             }
         });
 
@@ -220,9 +279,6 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.setHgap(15);
         leftLabelTextFieldGrid.setVgap(5);
 
-        //Setting rightGrid Horizontal/Vertical Gap
-        rightGrid.setHgap(15);
-        rightGrid.setVgap(5);
         ColumnConstraints col = new ColumnConstraints();
         col.setHalignment(HPos.LEFT);
         leftLabelTextFieldGrid.getColumnConstraints().add(col);
@@ -234,60 +290,101 @@ public class SettingsPane extends BorderPane
         this.setTop(menuElements);
 
         //Creating Vertical Box for fullscreen checkbox, authentication checkbox, vertical and start menuElements
-        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenCheckBox, authenticationCheckBox,startGrid);
+        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenCheckBox, startButton);
         leftControlVb.setSpacing(10);
         this.setLeft(leftControlVb);
-
-        //Creating Vertical Box for TextSegment/ImageSegment Button
-//        VBox rightControlVb = new VBox(textSegmentButton, imageSegmentButton);
-//        rightControlVb.setSpacing(40);
-//        this.setRight(rightControlVb);
-
-         /*Setting CSS Properties*/
-      //setting padding for VBoxes
-        leftControlVb.setStyle("-fx-padding: 15");
-        //rightControlVb.setStyle("-fx-padding: 15");
 
         //setting menuBar font
         menuBar.setStyle("-fx-font-family: Helvetica;");
 
         //CSS for checkboxes
-//      fullScreenCheckBox.setStyle("-fx-border-color: blue; "
-//                                    + "-fx-font-size: 20;"
-//                                    + "-fx-border-insets: -5; "
-//                                    + "-fx-border-radius: 5;"
-//                                    + "-fx-border-style: solid;"
-//                                    + "-fx-border-width: 2;");
-//        authenticationCheckBox.setStyle("-fx-border-color: blue; "
-//                                        + "-fx-font-size: 20;"
-//                                        + "-fx-border-insets: -5; "
-//                                        + "-fx-border-radius: 5;"
-//                                        + "-fx-border-style: solid;"
-//                                        + "-fx-border-width: 2;");
-//        startButton.setStyle("-fx-border-radius: 15px;");
-//        textSegmentButton.setStyle("-fx-border-radius: 15px;");
+        menuBar.setStyle("-fx-border-color: grey; "
+                         + "-fx-font-size: 12;"
+                         + "-fx-border-insets: -1; "
+                         + "-fx-border-radius: 1;"
+                         + "-fx-border-style: solid;"
+                         + "-fx-border-width: 1;");
+
+        leftControlVb.setStyle("-fx-border-color: grey; "
+                               + "-fx-font-size: 12;"
+                               + "-fx-border-insets: -1; "
+                               + "-fx-border-radius: 1;"
+                               + "-fx-border-style: solid;"
+                               + "-fx-border-width: 1;"
+                               + "-fx-padding: 15");
+
+        startButton.setStyle("-fx-border-radius: 15px;");
+        textSegmentButton.setStyle("-fx-border-radius: 15px;");
+        imageSegmentButton.setStyle("-fx-border-radius: 15px;");
+
+        //Creating Tooltip for startButton
+        startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
+        //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
+        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
+        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
     }
+
     //SettingsPane Constructors return properties
-    public MenuItem getSave() {
-        return save;}
-    public MenuItem getLoad() {
-        return load;}
-    public MenuItem getUndo() {
-        return undo;}
-    public MenuItem getRedo() {
-        return redo;}
-    public MenuItem getUserGuide() {
-        return userGuide;}
-    public MenuItem getAbout() {
-        return about;}
-    public Button getStartButton(){
-        return startButton;}
-    public CheckBox getAuthenticationCheckBox(){
-        return authenticationCheckBox;}
-    public Button getTextSegmentButton(){
-        return textSegmentButton;}
-    public Button getImageSegmentButton(){
-        return imageSegmentButton;}
+    public MenuItem getSave()
+    {
+        return save;
+    }
+
+    public MenuItem getLoad()
+    {
+        return load;
+    }
+
+    public MenuItem getUndo()
+    {
+        return undo;
+    }
+
+    public MenuItem getRedo()
+    {
+        return redo;
+    }
+
+    public MenuItem getUserGuide()
+    {
+        return userGuide;
+    }
+
+    public MenuItem getAbout()
+    {
+        return about;
+    }
+
+    public Button getStartButton()
+    {
+        return startButton;
+    }
+
+    /*public CheckBox getAuthenticationCheckBox()
+    {
+        return authenticationCheckBox;
+    }*/
+
+    public Button getTextSegmentButton()
+    {
+        return textSegmentButton;
+    }
+
+    public Button getImageSegmentButton()
+    {
+        return imageSegmentButton;
+    }
+
+    public Button getReorderButton()
+    {
+        return reorderButton;
+    }
+
+    public SegmentListView getSegmentListView()
+    {
+        return segmentListView;
+    }
 }
 
 

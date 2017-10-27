@@ -1,10 +1,13 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -20,12 +23,13 @@ public class AuthPane extends VBox
 {
     private Button continueButton;
     private Button cancelButton;
+    private TextField passwordTextField;
 
     AuthPane()
     {
         //Creating Authentication Header
         Label titleLabel = new Label("Set Authentication");
-        titleLabel.setFont(new Font("Helvetica", 32));
+        titleLabel.setFont(new Font("TEXT_FONT", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
         this.getChildren().add(titleLabel);
@@ -35,16 +39,32 @@ public class AuthPane extends VBox
         passwordLabel.setFont(new Font("Helvetica", 20));
 
         //Creating Password Text Field Label
-        TextField passwordTextField = new TextField();
-        passwordTextField.setMaxWidth(130);
+        passwordTextField = new TextField();
+        passwordTextField.setMaxWidth(150);
 
+        //Creating password TextField Prompter
+        passwordTextField.setPromptText("Enter 10 Characters");
+
+        //Setting TextField Character Limit
+        passwordTextField.lengthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue.intValue() > oldValue.intValue()) {
+                    if(passwordTextField.getText().length() > 10){
+                        passwordTextField.setText(passwordTextField.getText().substring(0,10));
+                    }
+                }
+            }
+        });
         //Creating Continue Button
         continueButton = new Button("Continue");
-        continueButton.setFont(new Font("Helvetica", 20));
+        continueButton.setFont(new Font("TEXT_FONT", 20));
+        continueButton.setTooltip(new Tooltip("This Saves Entered Password"));
 
         //Creating Cancel Button
         cancelButton = new Button("Cancel");
-        cancelButton.setFont(new Font("Helvetica", 20));
+        cancelButton.setFont(new Font("TEXT_FONT", 20));
+        cancelButton.setTooltip(new Tooltip("This cancels and returns control to the Settings Pane"));
 
         //Creating Horizontal Box
         HBox buttons = new HBox(continueButton, cancelButton);
@@ -58,17 +78,18 @@ public class AuthPane extends VBox
         this.getChildren().addAll(passwordLabel, passwordTextField, buttons);
         this.setAlignment(Pos.CENTER);
 
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                +"-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-border-color: grey;"+ "-fx-border-style: solid;"+"-fx-font-weight: bold;");
     }
 
-    public Button getContinueButton()
-    {
+    public Button getContinueButton(){
         return continueButton;
     }
 
-    public Button getCancelButton()
-    {
+    public Button getCancelButton(){
         return cancelButton;
+    }
+
+    public TextField getPasswordTextField() {
+        return passwordTextField;
     }
 }

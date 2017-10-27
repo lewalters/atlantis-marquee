@@ -1,125 +1,129 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+
+import static util.Validation.validImage;
 
 public class ImageSegmentPane extends SegmentPane
 {
-    private Label durationLabel;
     private TextField durationTextField;
-    private Label imageSourceLabel;
-    private TextField imageSourceTextField;
-    private  ComboBox <String> imgSegComboBox;
+    private FileChooser imageChooser;
+    private ImageView sourceImageView;
+    private HBox imageBox;
 
     ImageSegmentPane()
     {
-        /*Setting TextSegmentPane Header Label*/
-        Label titleLabel = new Label("Image Segment Settings");
-        titleLabel.setFont(new Font("Helvetica", 32));
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
-        titleLabel.setAlignment(Pos.CENTER);
-        this.setTop(titleLabel);
+        titleLabel.setText("Image Segment Settings");
 
+        VBox leftSide = new VBox();
 
-        /*Setting TextSegmentPane Size and Padding*/
-        //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 300);
-        this.setPadding(new Insets(30));
+        Label durationLabel = new Label("Duration:");
+        durationLabel.setFont(new Font("TEXT_FONT", 15));
+        durationTextField = new TextField();
 
-        //Creating GridPane for textFields and labels
-        GridPane imgSegleftElementsGrid = new GridPane();
+        HBox durationBox = new HBox(durationLabel, durationTextField);
+        durationBox.setSpacing(10);
+        durationBox.setAlignment(Pos.CENTER_LEFT);
 
-        //Creating GridPane ComboBox
-        GridPane comboBoxGrid = new GridPane();
+        imageChooser = new FileChooser();
+        imageChooser.setTitle("Select Source Image");
+        imageChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
 
-        /*Adding Labels*/
-        durationLabel = new Label("Duration:");
-        imgSegleftElementsGrid.add(durationLabel, 0, 1);
-        //Setting text Label Font
-        durationLabel.setFont(new Font("Helvetica", 15));
+        imageBox = new HBox();
+        imageBox.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;");
+        imageBox.setPrefSize(310, 160);
+        imageBox.setAlignment(Pos.CENTER);
+        imageBox.setPadding(new Insets(5));
 
-        imageSourceLabel = new Label("Image Source:");
-        imgSegleftElementsGrid.add(imageSourceLabel, 0, 2);
-        //Setting text Label Font
-        imageSourceLabel.setFont(new Font("Helvetica", 15));
+        sourceImageView = new ImageView();
+        sourceImageView.setPreserveRatio(true);
+        sourceImageView.visibleProperty().bindBidirectional(sourceImageView.managedProperty());
+        sourceImageView.setVisible(false);
 
-        /*Adding TextFields*/
-         durationTextField = new TextField();
-         imageSourceTextField = new TextField();
-        imgSegleftElementsGrid.add(durationTextField, 1, 1);
-        imgSegleftElementsGrid.add(imageSourceTextField, 1, 2);
+        Label placeholderLabel = new Label("Click here to choose an image");
+        placeholderLabel.visibleProperty().bindBidirectional(placeholderLabel.managedProperty());
+        placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
+        imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("Helvetica", 15));
-        imageSourceTextField.setFont(new Font("Helvetica", 15));
+        durationTextField.setFont(new Font("TEXT_FONT", 15));
 
         //Setting text field's width
-       durationTextField.setMaxWidth(45);
-       imageSourceTextField.setPrefWidth(240);
+        durationTextField.setMaxWidth(45);
 
-        //Setting ImageField Prompters
-        imageSourceTextField.setPromptText("Enter Image File Directory");
+        //Adding ToolTip Hints for ImageSegment Elements
+        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Image Will Be Displayed On The Screen"));
 
-        this.setLeft(imgSegleftElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
+        //this.setLeft(imgSegLeftElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
+        leftSide.getChildren().addAll(durationBox, imageBox);
+        leftSide.setSpacing(10);
+        this.setLeft(leftSide);
 
         /*Setting Character Limit in TextFields*/
         //Setting durationTextField Character Length
-        durationTextField.lengthProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue()){
-                    if(durationTextField.getText().length() > 3){
-                        durationTextField.setText(durationTextField.getText().substring(0,3));
-                    }
+        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(durationTextField.getText().length() > 3){
+                    durationTextField.setText(durationTextField.getText().substring(0,3));
                 }
             }
         });
 
-        /*Adding ComboBox*/
-        imgSegComboBox = new ComboBox<>();
-        imgSegComboBox.getItems().addAll("Style","Effect");
-        imgSegComboBox.setEditable(false);
-        //imgSegComboBox.setPromptText("");
-
-        //String style = (String) imgSegComboBox.getValue();
-        comboBoxGrid.add(imgSegComboBox,5,2);
-
-        imgSegComboBox.setPrefWidth(125);
-        this.setRight(comboBoxGrid); //Adding ComboBoxes to GridPane inserted TextSegmentPane
-
-        /*CSS*/
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                + "-fx-font-weight: bold;");
-        imgSegComboBox.setStyle("-fx-font-family: Helvetica;"
-                + "-fx-font-size: 15;"
-                + "-fx-pref-height: 10");
-
-        /*ETTING HGAP/VGAP*/
-        //Setting horizontal/vertical gaps for GridPanes
-        imgSegleftElementsGrid.setHgap(10);
-        imgSegleftElementsGrid.setVgap(5);
-
-        comboBoxGrid.setHgap(25);
-        comboBoxGrid.setVgap(5);
+        //Making imageSegmentDurationTextField accept only numeric values
+        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
-    public TextField getDurationTextField()
-    {
+    public TextField getDurationTextField(){
         return durationTextField;
     }
 
-    public TextField getImageSourceTextField(){
-        return imageSourceTextField;
+    public HBox getImageBox()
+    {
+        return imageBox;
     }
 
-    public ComboBox<String> getImgSegComboBox() {
-        return imgSegComboBox;
+    public void getSourceImage(Stage stage)
+    {
+        File imageFile = imageChooser.showOpenDialog(stage);
+
+        if (imageFile != null)
+        {
+            String imagePath = imageFile.toURI().toString();
+
+            if (validImage(imagePath))
+            {
+                Image image = new Image(imagePath);
+
+                sourceImageView.setImage(image);
+
+                if (image.getWidth() > imageBox.getPrefWidth())
+                {
+                    sourceImageView.setFitWidth(imageBox.getPrefWidth());
+                }
+
+                if (image.getHeight() > imageBox.getPrefHeight())
+                {
+                    sourceImageView.setFitHeight(imageBox.getPrefHeight());
+                }
+
+                sourceImageView.setVisible(true);
+            }
+        }
     }
 }

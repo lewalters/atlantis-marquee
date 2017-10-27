@@ -1,5 +1,6 @@
 package data;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -42,12 +43,12 @@ public class Message
         return repeatFactor;
     }
 
+    public int getDelay(){return delay;}
+
     public String getComments()
     {
         return comments;
     }
-
-    public int getDelay(){return delay;}
 
     public void setName(String name)
     {
@@ -59,14 +60,14 @@ public class Message
         this.repeatFactor = repeatFactor;
     }
 
-    public void setComments(String comments)
-    {
-        this.comments = comments;
-    }
-
     public void setDelay(int delay)
     {
         this.delay = delay;
+    }
+
+    public void setComments(String comments)
+    {
+        this.comments = comments;
     }
 
     public void addSegment(int pos, Segment segment)
@@ -79,5 +80,13 @@ public class Message
         contents.remove(pos);
     }
 
-    public void changeOrder() {}
+    public void changeOrder(int[] ranks)
+    {
+        Segment[] tempContents = contents.toArray(new Segment[contents.size()]);
+
+        for (int i = 0; i < tempContents.length; i++)
+        {
+            contents.set(ranks[i] - 1, tempContents[i]);
+        }
+    }
 }
