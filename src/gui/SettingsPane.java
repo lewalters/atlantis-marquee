@@ -1,13 +1,22 @@
 package gui;
 
-import data.Segment;
+import data.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import util.BorderEffect;
+import util.ScrollDirection;
+import util.StaticEffect;
+import util.TransitionEffect;
 
+import java.util.List;
+
+import static util.Global.TEXT_FONT;
 
 /**
  * (Insert a brief comment that describes
@@ -31,11 +40,13 @@ public class SettingsPane extends BorderPane
     private Button startButton;
     private Button textSegmentButton;
     private Button imageSegmentButton;
+    private Button reorderButton;
+    private SegmentListView segmentListView;
 
-    SettingsPane()
+    SettingsPane(List<Segment> segments)
     {
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(680, 400);
+        this.setPrefSize(740, 400);
 
         /*Creating GridPanes*/
         GridPane leftLabelTextFieldGrid = new GridPane();
@@ -122,7 +133,6 @@ public class SettingsPane extends BorderPane
         startButton = new Button("Start");
         startButton.setFont(new Font("TEXT_FONT", 25));
 
-
         //Creating TextSegment Button
         textSegmentButton = new Button("Add Text Segment");
         textSegmentButton.setFont(new Font("TEXT_FONT", 15));
@@ -132,6 +142,8 @@ public class SettingsPane extends BorderPane
         imageSegmentButton.setFont(new Font("TEXT_FONT", 15));
         //Creating HBox for Segment Buttons
         HBox segmentButtonsBox = new HBox(textSegmentButton,imageSegmentButton);
+
+        HBox segmentButtonsBox = new HBox(textSegmentButton, imageSegmentButton);
         segmentButtonsBox.setSpacing(10);
         segmentButtonsBox.setAlignment(Pos.CENTER);
         ListView<Segment> segmentListView = new ListView<>();
@@ -139,6 +151,18 @@ public class SettingsPane extends BorderPane
         rightPanelVB.setSpacing(15);
         rightPanelVB.setPadding(new Insets(15));
         this.setRight(rightPanelVB);
+
+        segmentListView = new SegmentListView(segments);
+        ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
+        segmentScrollPane.setPadding(new Insets(5));
+
+        reorderButton = new Button("Reorder Segments");
+        reorderButton.setFont(new Font(TEXT_FONT, 15));
+
+        VBox rightPanel = new VBox(segmentButtonsBox, segmentScrollPane, reorderButton);
+        rightPanel.setSpacing(15);
+        rightPanel.setPadding(new Insets(15));
+        this.setCenter(rightPanel);
 
         /*Setting Width/Height*/
         //Setting TextFields Width
@@ -346,6 +370,16 @@ public class SettingsPane extends BorderPane
 
     public Button getImageSegmentButton(){
         return imageSegmentButton;
+    }
+
+    public Button getReorderButton()
+    {
+        return reorderButton;
+    }
+
+    public SegmentListView getSegmentListView()
+    {
+        return segmentListView;
     }
 }
 

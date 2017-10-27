@@ -101,6 +101,21 @@ public class MarqueePane extends StackPane
         ledGrid.setVgap(ledGap);
     }
 
+    public MarqueePane(Segment segment)
+    {
+        this(300, 1);
+
+        set(segment, true);
+
+        if (segment instanceof TextSegment)
+        {
+            TextSegment textSegment = (TextSegment) segment;
+
+            setBorderColor(textSegment.getBorderColors());
+            setPaddingColor(textSegment.getPaddingColor());
+        }
+    }
+
     // Set the border to the provided colors or randomly
     public void setBorderColor(Color[] colors)
     {
