@@ -1,8 +1,8 @@
 package gui;
 
 import data.*;
-
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -10,7 +10,6 @@ import util.*;
 
 public class VisionGUI extends Application
 {
-
     public static void main(String[] args)
     {
         launch(args);
@@ -26,7 +25,7 @@ public class VisionGUI extends Application
         AuthPane authPane = new AuthPane();
 
         primaryStage.setScene(new Scene(welcomePane));
-        primaryStage.setTitle("Atlantis VISION Marquee");
+        primaryStage.setTitle("VISION Marquee By Atlantis");
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
@@ -65,9 +64,18 @@ public class VisionGUI extends Application
             }
         });*/
 
-        //Creating Event Handler for AuthPane Cancel Button
+        //Event Handler for MenuBar "Exit" item
+        settingsPane.getExit().setOnAction(e ->{
+            if(settingsPane.getExit().getText().matches("Exit"))
+            {
+              Platform.exit();
+            }
+        });
+        // Event Handler for AuthPane Cancel Button
         authPane.getCancelButton().setOnAction(event -> authStage.close());
 
-
+        //Applying CSS Background
+        welcomePane.setStyle("-fx-background-color: rgb(225, 228, 203);");
+        settingsPane.setStyle("-fx-background-color: rgb(225, 228, 203);");
     }
 }

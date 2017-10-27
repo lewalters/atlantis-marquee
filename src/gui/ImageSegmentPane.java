@@ -52,7 +52,8 @@ public class ImageSegmentPane extends SegmentPane
         sourceImageView.visibleProperty().bindBidirectional(sourceImageView.managedProperty());
         sourceImageView.setVisible(false);
 
-        Label placeholderLabel = new Label("Click here to choose an image");
+        Label placeholderLabel = new Label("Please Click To Select An Image");
+        placeholderLabel.setFont(new Font("TEXT_FONT", 15));
         placeholderLabel.visibleProperty().bindBidirectional(placeholderLabel.managedProperty());
         placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
         imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
@@ -87,6 +88,12 @@ public class ImageSegmentPane extends SegmentPane
                 durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        //Applying CSS to Title Label
+       titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-background-color: #b6e7c9;-fx-padding:4");
+       durationLabel.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+       placeholderLabel.setStyle("-fx-font-weight: bold;");
+
     }
 
     public TextField getDurationTextField(){

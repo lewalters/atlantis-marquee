@@ -4,7 +4,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -27,8 +26,7 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                + "-fx-font-weight: bold;");
+
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 10,0));
         this.setTop(titleLabel);
 
@@ -131,11 +129,22 @@ public abstract class SegmentPane extends BorderPane
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
         /*CSS*/
+        //Title
+        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"+ "-fx-font-weight: bold;");
+        //Segment Pane Buttons
         continueButton.setStyle("-fx-font-weight: bold;"
-                                +"-fx-padding: 10 20 10 20;");
-        cancelButton.setStyle("-fx-background-insets: 0,1,2,3,0;"
-                              +"-fx-font-weight: bold;"
-                              +"-fx-padding: 10 20 10 20;");
+                                +"-fx-padding: 10 20 10 20;"
+                                + "-fx-font: 22 arial; -fx-base: #b6e7c9; ");
+        cancelButton.setStyle("-fx-font-weight: bold;"
+                               +"-fx-padding: 10 20 10 20;"
+                               + "-fx-font: 22 arial; -fx-base: #b6e7c9; ");
+        //ComboBox Buttons
+        entranceComboBox.setStyle( "-fx-pref-width: 110;");
+        middleComboBox.setStyle("-fx-pref-width: 110;");
+        exitComboBox.setStyle("-fx-pref-width: 110;");
+        scrollComboBox.setStyle("-fx-pref-width: 110;");
+        //radioBox Buttons
+        radioBox.setStyle("-fx-font-weight: bold;");
     }
 
     public Button getContinueButton(){

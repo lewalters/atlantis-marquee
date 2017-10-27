@@ -1,16 +1,12 @@
 package gui;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import static util.Global.MAX_BORDER_COLORS;
 import static util.Global.OFF_COLOR;
@@ -53,11 +49,11 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeed, 0, 7);
 
         //Setting text Label Font
-        durationLabel.setFont(new Font("Helvetica", 15));
-        enterText.setFont(new Font("Helvetica", 15));
-        borderColor.setFont(new Font("Helvetica", 15));
-        paddingColor.setFont(new Font("Helvetica", 15));
-        borderEffect.setFont(new Font("Helvetica", 15));
+        durationLabel.setFont(new Font("TEXT_FONT", 15));
+        enterText.setFont(new Font("TEXT_FONT", 15));
+        borderColor.setFont(new Font("TEXT_FONT", 15));
+        paddingColor.setFont(new Font("TEXT_FONT", 15));
+        borderEffect.setFont(new Font("TEXT_FONT", 15));
 
         //Setting text Label Font
         durationLabel.setFont(new Font("TEXT_FONT", 15));
@@ -229,11 +225,17 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        //Css For comboBoxes
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;" + "-fx-font-weight: bold;");
+        //Applying CSS To TitleLabel
+        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:3");
+        //Applying CSS to Labels
+        durationLabel.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        enterText.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        borderColor.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        paddingColor.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        borderEffect.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        borderSpeed.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
 
-        /*SETTING HGAP/VGAP */
-        //Setting horizontal/vertical gaps for GridPanes
+         //Setting horizontal/vertical gaps for GridPanes
         textLabelElementsGrid.setHgap(10);
         textLabelElementsGrid.setVgap(5);
         buttonElementsGrid.setHgap(25);

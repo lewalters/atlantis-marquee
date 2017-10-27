@@ -35,7 +35,14 @@ public class SettingsController
         //Event Handler for ImageSegmentButton to display Image Segment Pane
         pane.getImageSegmentButton().setOnAction(e -> imgSegStage.show());
 
-        // Event handler for imageSourceButton in the imageSegmentPane
+          // Event handler for imageSourceButton in the imageSegmentPane
         imageSegmentPane.getImageBox().setOnMouseClicked(e -> imageSegmentPane.getSourceImage(imgSegStage));
+        // Event handler for Cancel Buttons on ImageSegment/ImageSegment Panes
+        imageSegmentPane.getCancelButton().setOnAction(e -> imgSegStage.close());
+        textSegmentPane.getCancelButton().setOnAction(e -> textSegmentStage.close());
+
+        //Applying CSS Background
+        textSegmentPane.setStyle("-fx-background-color: rgb(225, 228, 203);-fx-font-weight: bold;");
+        imageSegmentPane.setStyle("-fx-background-color: rgb(225, 228, 203);-fx-font-weight: bold;");
     }
 }
