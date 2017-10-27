@@ -336,8 +336,7 @@ public class SettingsPane extends BorderPane
         return startButton;
     }
 
-    /*public CheckBox getAuthenticationCheckBox()
-    {
+    /*public CheckBox getAuthenticationCheckBox(){
         return authenticationCheckBox;
     }*/
 
