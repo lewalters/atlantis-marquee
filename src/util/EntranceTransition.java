@@ -1,12 +1,12 @@
 package util;
 
-public enum BorderEffect
+public enum EntranceTransition implements EntranceEffect
 {
-    NONE("None"), BLINK("Blinking"), CLOCKWISE("Clockwise"), COUNTERCLOCKWISE("Counterclockwise");
+    NONE("None"), RANDOM_ON("Random On"), FADE("Fade In");
 
     private String description;
 
-    BorderEffect(String description)
+    EntranceTransition(String description)
     {
         this.description = description;
     }

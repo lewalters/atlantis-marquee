@@ -1,8 +1,7 @@
 package data;
 
-import util.MarqueeEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
+import util.*;
+
 import java.util.Iterator;
 
 /**
@@ -18,10 +17,12 @@ public abstract class Segment
     private int duration;
     private int speed;
     private ScrollDirection scrollDirection;
-    private MarqueeEffect effectEn, effectMi, effectEx;
+    private EntranceEffect effectEn;
+    private MiddleEffect effectMi;
+    private ExitEffect effectEx;
     protected int hLength, vLength, size;
 
-    protected Segment(int duration, int speed, ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx)
+    protected Segment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
     {
         this.duration = duration;
         this.speed = speed;
@@ -46,17 +47,17 @@ public abstract class Segment
         return scrollDirection;
     }
 
-    public MarqueeEffect getEntranceEffect()
+    public EntranceEffect getEntranceEffect()
     {
         return effectEn;
     }
 
-    public MarqueeEffect getMiddleEffect()
+    public MiddleEffect getMiddleEffect()
     {
         return effectMi;
     }
 
-    public MarqueeEffect getExitEffect()
+    public ExitEffect getExitEffect()
     {
         return effectEx;
     }
@@ -91,17 +92,17 @@ public abstract class Segment
         this.scrollDirection = scroll;
     }
 
-    public void setEntranceEffect(MarqueeEffect effect)
+    public void setEntranceEffect(EntranceEffect effect)
     {
         effectEn = effect;
     }
 
-    public void setMiddleEffect(StaticEffect effect)
+    public void setMiddleEffect(MiddleEffect effect)
     {
         effectMi = effect;
     }
 
-    public void setExitEffect(MarqueeEffect effect)
+    public void setExitEffect(ExitEffect effect)
     {
         effectEx = effect;
     }

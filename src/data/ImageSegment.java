@@ -1,8 +1,6 @@
 package data;
 
-import util.MarqueeEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
+import util.*;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -22,7 +20,7 @@ public class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    public ImageSegment(int duration, int speed, ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
+    public ImageSegment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String source)
     {
         super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;

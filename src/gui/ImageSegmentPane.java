@@ -1,5 +1,7 @@
 package gui;
 
+import data.ImageSegment;
+import data.Segment;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -98,32 +100,48 @@ public class ImageSegmentPane extends SegmentPane
         return imageBox;
     }
 
-    public void getSourceImage(Stage stage)
+    // Opens a file chooser as a dialog to select a source image
+    public void chooseSourceImage(Stage stage)
     {
         File imageFile = imageChooser.showOpenDialog(stage);
 
         if (imageFile != null)
         {
-            String imagePath = imageFile.toURI().toString();
+            setSourceImageView(imageFile.toURI().toString());
+        }
+    }
 
-            if (validImage(imagePath))
+    // Fill in the pane's cells with information from the given segment (for segment editing)
+    public void populate(Segment segment)
+    {
+        super.populate(segment);
+
+        ImageSegment imageSegment = (ImageSegment) segment;
+
+        durationTextField.setText(Integer.toString(imageSegment.getDuration()));
+
+        setSourceImageView(imageSegment.getSource());
+    }
+
+    private void setSourceImageView(String path)
+    {
+        if (validImage(path))
+        {
+            Image image = new Image(path);
+
+            sourceImageView.setImage(image);
+
+            if (image.getWidth() > imageBox.getPrefWidth())
             {
-                Image image = new Image(imagePath);
-
-                sourceImageView.setImage(image);
-
-                if (image.getWidth() > imageBox.getPrefWidth())
-                {
-                    sourceImageView.setFitWidth(imageBox.getPrefWidth());
-                }
-
-                if (image.getHeight() > imageBox.getPrefHeight())
-                {
-                    sourceImageView.setFitHeight(imageBox.getPrefHeight());
-                }
-
-                sourceImageView.setVisible(true);
+                sourceImageView.setFitWidth(imageBox.getPrefWidth());
             }
+
+            if (image.getHeight() > imageBox.getPrefHeight())
+            {
+                sourceImageView.setFitHeight(imageBox.getPrefHeight());
+            }
+
+            sourceImageView.setVisible(true);
         }
     }
 }

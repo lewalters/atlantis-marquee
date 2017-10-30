@@ -5,10 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import util.BorderEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
-import util.TransitionEffect;
+import util.*;
 
 public class SettingsController
 {
@@ -21,13 +18,13 @@ public class SettingsController
         marquee = new Marquee(1200, 200, 2);
         Message message = new Message("Test", 2, 10,"");
         marquee.setMessage(message);
-        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
-        Segment segment1 = new TextSegment(10, 10, ScrollDirection.STATIC, colorList, BorderEffect.COUNTERCLOCKWISE, Color.WHITE, TransitionEffect.FADE, StaticEffect.RANDOM_COLOR, TransitionEffect.RANDOM_LIGHT, "5F9EA0", "Wake Tech");
-        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
-        Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment4 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment5 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment6 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
+        Color[] colorList = {Color.RED, Color.ORCHID, Color.YELLOW, Color.GAINSBORO};
+        Segment segment1 = new TextSegment(10, 10, ScrollDirection.RIGHT, colorList, BorderEffect.COUNTERCLOCKWISE, Color.WHITE, EntranceTransition.FADE, MiddleEffect.RANDOM_COLOR, ExitTransition.RANDOM_OFF, "5F9EA0", "Wake Tech");
+        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, MiddleEffect.NONE, ExitTransition.RANDOM_OFF, "DA70D6", "abcdef");
+        Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, EntranceTransition.FADE, MiddleEffect.BLINK, ExitTransition.FADE, "gbf.png");
+        Segment segment4 = new ImageSegment(5, 12, ScrollDirection.STATIC, EntranceTransition.FADE, MiddleEffect.BLINK, ExitTransition.FADE, "gbf.png");
+        Segment segment5 = new ImageSegment(5, 12, ScrollDirection.STATIC, EntranceTransition.FADE, MiddleEffect.BLINK, ExitTransition.FADE, "gbf.png");
+        Segment segment6 = new ImageSegment(5, 12, ScrollDirection.STATIC, EntranceTransition.FADE, MiddleEffect.BLINK, ExitTransition.FADE, "gbf.png");
         message.addSegment(0, segment1);
         message.addSegment(1, segment2);
         message.addSegment(2, segment3);
@@ -61,7 +58,7 @@ public class SettingsController
             ImageSegmentPane imageSegmentPane = new ImageSegmentPane();
 
             // Event handler for imageSourceButton in the imageSegmentPane
-            imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.getSourceImage(imgSegStage));
+            imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.chooseSourceImage(imgSegStage));
 
             imgSegStage.setScene(new Scene(imageSegmentPane));
             imgSegStage.show();
@@ -97,15 +94,17 @@ public class SettingsController
                 if (segment instanceof TextSegment)
                 {
                     TextSegmentPane textSegmentPane = new TextSegmentPane();
+                    textSegmentPane.populate(segment);
                     textSegmentStage.setScene(new Scene(textSegmentPane));
                     textSegmentStage.show();
                 }
                 else // ImageSegment
                 {
                     ImageSegmentPane imageSegmentPane = new ImageSegmentPane();
+                    imageSegmentPane.populate(segment);
 
                     // Event handler for imageSourceButton in the imageSegmentPane
-                    imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.getSourceImage(imgSegStage));
+                    imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.chooseSourceImage(imgSegStage));
 
                     imgSegStage.setScene(new Scene(imageSegmentPane));
                     imgSegStage.show();

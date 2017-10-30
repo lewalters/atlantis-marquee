@@ -31,6 +31,7 @@ public class SegmentListView extends GridPane
         refresh();
     }
 
+    // Reset the visible panel and the lists associated with it
     public void refresh()
     {
         this.getChildren().clear();
@@ -60,6 +61,7 @@ public class SegmentListView extends GridPane
             deleteButtons.add(delete);
         }
 
+        // Delete button deletes the segment from the message and then resets the pane
         deleteButtons.forEach(button -> button.setOnAction(e -> {
             segments.remove(deleteButtons.indexOf(button));
             refresh();
@@ -71,6 +73,7 @@ public class SegmentListView extends GridPane
         }
     }
 
+    // Returns an array containing the values in the rank box next to each segment, in segment order
     public int[] getRanks()
     {
         int[] ranks = new int[orderFields.size()];

@@ -30,7 +30,7 @@ public class TextSegment extends Segment
     private String textColor;
 
     public TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
-                       MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String textColor, String text)
+                       EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String textColor, String text)
     {
         super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
@@ -77,7 +77,7 @@ public class TextSegment extends Segment
     {
         ArrayList<TextSegment> subsegments = new ArrayList<>();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getSpeed(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), (StaticEffect) getMiddleEffect(), getExitEffect(), textColor, subtext)));
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getSpeed(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColor, subtext)));
 
         return subsegments;
     }

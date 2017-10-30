@@ -11,10 +11,6 @@ import java.util.Iterator;
 
 import static util.Global.*;
 import static util.EffectTime.*;
-import static util.StaticEffect.BLINK;
-import static util.StaticEffect.NONE;
-import static util.StaticEffect.RANDOM_COLOR;
-import static util.TransitionEffect.*;
 
 public class MarqueeController
 {
@@ -154,77 +150,77 @@ public class MarqueeController
 
     private void entranceEffect(SequentialTransition transition, Segment segment)
     {
-        MarqueeEffect effect = segment.getEntranceEffect();
+        EntranceEffect effect = segment.getEntranceEffect();
 
         if (effect instanceof ScrollDirection)
         {
             scroll(transition, segment, IN);
         }
-        else if (effect == RANDOM_LIGHT)
+        else if (effect instanceof ScrollEffect)
         {
-            set(transition, segment, false);
-            randomLight(transition, segment, IN);
+            partialScroll(transition, segment, IN);
         }
-        else if (effect == FADE)
+        else
         {
-            set(transition, segment, false);
-            fade(transition, segment, IN);
-        }
-        else if (effect == HALF_SCROLL_TOP_LEFT || effect == HALF_SCROLL_TOP_RIGHT ||
-                 effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN ||
-                 effect == SPLIT_SCROLL_HORIZONTAL || effect == SPLIT_SCROLL_VERTICAL)
-        {
-            partialScroll(transition, segment, effect, IN);
-        }
-        else if (effect == NONE)
-        {
-            set(transition, segment, true);
+            switch ((EntranceTransition) effect)
+            {
+                case RANDOM_ON:
+                    set(transition, segment, false);
+                    randomLight(transition, segment, IN);
+                case FADE:
+                    set(transition, segment, false);
+                    fade(transition, segment, IN);
+                    break;
+                case NONE:
+                    set(transition, segment, true);
+                    break;
+            }
         }
     }
 
     private void middleEffect(Timeline timeline, Segment segment)
     {
-        MarqueeEffect effect = segment.getMiddleEffect();
+        MiddleEffect effect = segment.getMiddleEffect();
 
-        if (effect == NONE)
+        switch (effect)
         {
-            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(segment.getDuration())));
-        }
-        else if (effect == BLINK)
-        {
-            blink(timeline, segment);
-        }
-        else if (effect == RANDOM_COLOR && segment instanceof TextSegment)
-        {
-            randomColorText(timeline, (TextSegment) segment);
+            case NONE:
+                timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(segment.getDuration())));
+                break;
+            case BLINK:
+                blink(timeline, segment);
+                break;
+            case RANDOM_COLOR:
+                randomColorText(timeline, (TextSegment) segment);
+                break;
         }
     }
 
     private void exitEffect(SequentialTransition transition, Segment segment)
     {
-        MarqueeEffect effect = segment.getExitEffect();
+        ExitEffect effect = segment.getExitEffect();
 
         if (effect instanceof ScrollDirection)
         {
             scroll(transition, segment, OUT);
         }
-        else if (effect == RANDOM_LIGHT)
+        else if (effect instanceof ScrollEffect)
         {
-            randomLight(transition, segment, OUT);
+            partialScroll(transition, segment, OUT);
         }
-        else if (effect == FADE)
+        else
         {
-            fade(transition, segment, OUT);
-        }
-        else if (effect == HALF_SCROLL_TOP_LEFT || effect == HALF_SCROLL_TOP_RIGHT ||
-                effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN ||
-                effect == SPLIT_SCROLL_HORIZONTAL || effect == SPLIT_SCROLL_VERTICAL)
-        {
-            partialScroll(transition, segment, effect, OUT);
-        }
-        else if (effect == NONE)
-        {
-            transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE)));
+            switch ((ExitTransition) effect)
+            {
+                case RANDOM_OFF:
+                    randomLight(transition, segment, OUT);
+                    break;
+                case FADE:
+                    fade(transition, segment, OUT);
+                    break;
+                case NONE:
+                    transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE)));
+            }
         }
     }
 
@@ -306,50 +302,34 @@ public class MarqueeController
         transition.getChildren().add(timeline);
     }
 
-    private void partialScroll(SequentialTransition transition, Segment segment, MarqueeEffect effect, EffectTime time)
+    private void partialScroll(SequentialTransition transition, Segment segment, EffectTime time)
     {
         Timeline timeline1 = new Timeline();
         Timeline timeline2 = new Timeline();
         int cycles;
         int speed = 1000 / segment.getSpeed();
+        ScrollEffect effect = time == IN ? (ScrollEffect) segment.getEntranceEffect() : (ScrollEffect) segment.getExitEffect();
+        int columns = segment instanceof TextSegment ? TEXT_COLS : NUM_COLS;
+        int rows = segment instanceof TextSegment ? TEXT_ROWS : NUM_ROWS;
 
-        if (segment instanceof TextSegment)
+        switch (effect)
         {
-            if (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT)
-            {
-                cycles = (segment.getHlength() + TEXT_COLS) / 2;
-            }
-            else if (effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN)
-            {
-                cycles = (segment.getVlength() + TEXT_ROWS) / 2;
-            }
-            else if (effect == SPLIT_SCROLL_HORIZONTAL)
-            {
-                cycles = TEXT_COLS / 2;
-            }
-            else // SPLIT_SCROLL_VERTICAL
-            {
-                cycles = TEXT_ROWS / 2;
-            }
-        }
-        else // ImageSegment
-        {
-            if (effect == TransitionEffect.HALF_SCROLL_TOP_LEFT || effect == TransitionEffect.HALF_SCROLL_TOP_RIGHT)
-            {
-                cycles = (segment.getHlength() + NUM_COLS) / 2;
-            }
-            else if (effect == HALF_SCROLL_LEFT_UP || effect == HALF_SCROLL_LEFT_DOWN)
-            {
-                cycles = (segment.getVlength() + NUM_ROWS) / 2;
-            }
-            else if (effect == SPLIT_SCROLL_HORIZONTAL)
-            {
-                cycles = NUM_COLS / 2;
-            }
-            else // SPLIT_SCROLL_VERTICAL
-            {
-                cycles = NUM_ROWS / 2;
-            }
+            case HALF_SCROLL_TOP_LEFT:
+            case HALF_SCROLL_TOP_RIGHT:
+                cycles = (segment.getHlength() + columns) / 2;
+                break;
+            case HALF_SCROLL_LEFT_UP:
+            case HALF_SCROLL_LEFT_DOWN:
+                cycles = (segment.getVlength() + rows) / 2;
+                break;
+            case SPLIT_SCROLL_HORIZONTAL:
+                cycles = columns / 2;
+                break;
+            case SPLIT_SCROLL_VERTICAL:
+                cycles = rows / 2;
+                break;
+            default:
+                cycles = 0;
         }
 
         if (time == OUT)
@@ -362,7 +342,7 @@ public class MarqueeController
             case IN:
                 Iterator<Dot[]> topIterator, bottomIterator, leftIterator, rightIterator;
 
-                switch ((TransitionEffect) effect)
+                switch (effect)
                 {
                     case HALF_SCROLL_TOP_LEFT:
                         topIterator = segment.iterator(ScrollDirection.LEFT);
@@ -429,7 +409,7 @@ public class MarqueeController
                 }
                 break;
             case OUT:
-                switch ((TransitionEffect) effect)
+                switch (effect)
                 {
                     case HALF_SCROLL_TOP_LEFT:
                         timeline1.getKeyFrames().add(new KeyFrame(Duration.millis(speed),
@@ -471,8 +451,8 @@ public class MarqueeController
         }
 
         // Set the cycle counts with an offset for half scrolls that are split horizontally and have an odd length
-        timeline1.setCycleCount(effect == HALF_SCROLL_TOP_LEFT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
-        timeline2.setCycleCount(effect == HALF_SCROLL_TOP_RIGHT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
+        timeline1.setCycleCount(effect == ScrollEffect.HALF_SCROLL_TOP_LEFT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
+        timeline2.setCycleCount(effect == ScrollEffect.HALF_SCROLL_TOP_RIGHT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
         transition.getChildren().add(new ParallelTransition(timeline1, timeline2));
     }
 
