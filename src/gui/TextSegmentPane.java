@@ -22,7 +22,9 @@ import static util.Global.OFF_COLOR;
 
 public class TextSegmentPane extends SegmentPane
 {
-    private TextField durationTextField, enterTextField, borderSpeedTextField;
+    private TextSegment segment;
+
+    private TextField textTextField, borderSpeedTextField;
     private RadioButton borderColorNone, borderColorRandom, borderColorCustom;
     private RadioButton paddingColorNone, paddingColorCustom;
     private LinkedList<ColorPicker> borderColorPickers;
@@ -30,7 +32,22 @@ public class TextSegmentPane extends SegmentPane
     private ComboBox<BorderEffect> borderEffectComboBox;
     private Button addBorderColorButton;
 
-    TextSegmentPane()
+    public TextSegmentPane(TextSegment segment)
+    {
+        super(new TextSegment(segment));
+        this.segment = (TextSegment) getSegment();
+        construct();
+        populate();
+    }
+
+    public TextSegmentPane()
+    {
+        super(new TextSegment());
+        this.segment = (TextSegment) getSegment();
+        construct();
+    }
+
+    private void construct()
     {
         titleLabel.setText("Text Segment Settings");
         middleComboBox.getItems().add(MiddleEffect.RANDOM_COLOR);
@@ -42,11 +59,10 @@ public class TextSegmentPane extends SegmentPane
         GridPane buttonElementsGrid = new GridPane();
 
         //Adding Labels//
-        Label durationLabel = new Label("Duration:");
-        textLabelElementsGrid.add(durationLabel, 0, 1);
+        Label textLabel = new Label("Text:");
+        textLabelElementsGrid.add(textLabel, 0, 1);
 
-        Label enterText = new Label("Enter Text:");
-        textLabelElementsGrid.add(enterText, 0, 2);
+        textLabelElementsGrid.add(durSpeedLabels, 0, 2);
 
         Label borderColor = new Label("Border Color(s):");
         textLabelElementsGrid.add(borderColor, 0, 3);
@@ -61,40 +77,29 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeed, 0, 7);
 
         //Setting text Label Font
-        durationLabel.setFont(new Font("Helvetica", 15));
-        enterText.setFont(new Font("Helvetica", 15));
-        borderColor.setFont(new Font("Helvetica", 15));
-        paddingColor.setFont(new Font("Helvetica", 15));
-        borderEffect.setFont(new Font("Helvetica", 15));
-
-        //Setting text Label Font
-        durationLabel.setFont(new Font("TEXT_FONT", 15));
-        enterText.setFont(new Font("TEXT_FONT", 15));
+        textLabel.setFont(new Font("TEXT_FONT", 15));
         borderColor.setFont(new Font("TEXT_FONT", 15));
         paddingColor.setFont(new Font("TEXT_FONT", 15));
         borderEffect.setFont(new Font("TEXT_FONT", 15));
         borderSpeed.setFont(new Font("TEXT_FONT", 15));
+
         /*Adding TextFields*/
-        durationTextField = new TextField();
-        textLabelElementsGrid.add(durationTextField, 1, 1);
-        enterTextField = new TextField();
-        textLabelElementsGrid.add(enterTextField, 1, 2);
+        textTextField = new TextField();
+        textLabelElementsGrid.add(textTextField, 1, 1);
+        textLabelElementsGrid.add(durSpeedFields, 1, 2);
         borderSpeedTextField = new TextField();
         textLabelElementsGrid.add(borderSpeedTextField, 1, 7);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("TEXT_FONT", 15));
-        enterTextField.setFont(new Font("TEXT_FONT", 15));
+        textTextField.setFont(new Font("TEXT_FONT", 15));
         borderSpeedTextField.setFont(new Font("TEXT_FONT", 15));
         //Setting text field's width
-        durationTextField.setMaxWidth(45);
-        enterTextField.setMaxWidth(270);
+        textTextField.setMaxWidth(270);
         borderSpeedTextField.setMaxWidth(45);
         //Setting TextField Prompters
-        enterTextField.setPromptText("Enter Display Message");
+        textTextField.setPromptText("Enter Display Message");
         //Adding ToolTip Hints for TextSegment Elements
-        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Text Will Be Displayed On The Screen"));
-        enterTextField.setTooltip(new Tooltip("This Assigns An Text Entered By User As The Displayed Marquee Message"));
+        textTextField.setTooltip(new Tooltip("This Assigns An Text Entered By User As The Displayed Marquee Message"));
 
         // Adding border color choices
         ToggleGroup borderGroup = new ToggleGroup();
@@ -187,8 +192,6 @@ public class TextSegmentPane extends SegmentPane
 
         //Creating BorderEffect ComboBox
         borderEffectComboBox = new ComboBox<>();
-
-        //Adding ComboBox contents
         borderEffectComboBox.getItems().addAll(BorderEffect.values());
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.getSelectionModel().selectFirst();
@@ -197,29 +200,27 @@ public class TextSegmentPane extends SegmentPane
         this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
         /*Setting Character Limit in TextFields*/
-        //Setting durationTextField Character Length
-        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        //Setting enterTextField Character Length
+        textTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue()){
-                if(durationTextField.getText().length() > 3){
-                    durationTextField.setText(durationTextField.getText().substring(0,3));
+                if(textTextField.getText().length() > 25){
+                    textTextField.setText(textTextField.getText().substring(0,25));
                 }
-            }
-        });
-        //Making durationTextField Accept Only Numeric Values
-        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
-        //Setting enterTextField Character Length
-        enterTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue()){
-                if(enterTextField.getText().length() > 25){
-                    enterTextField.setText(enterTextField.getText().substring(0,25));
+        // Set the text in the segment or warn if the text is invalid
+        textTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String text = textTextField.getText();
+
+                if (!text.isEmpty())
+                {
+                    segment.setText(text);
                 }
             }
-        });
+        }));
 
         //Making borderSpeedTextField Accept Only Numeric Values
         borderSpeedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -237,9 +238,6 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        //Css For comboBoxes
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;" + "-fx-font-weight: bold;");
-
         /*SETTING HGAP/VGAP */
         //Setting horizontal/vertical gaps for GridPanes
         textLabelElementsGrid.setHgap(10);
@@ -248,14 +246,9 @@ public class TextSegmentPane extends SegmentPane
         buttonElementsGrid.setVgap(5);
     }
 
-    public TextField getDurationTextField()
+    public TextField getTextTextField()
     {
-        return durationTextField;
-    }
-
-    public TextField getEnterTextField()
-    {
-        return enterTextField;
+        return textTextField;
     }
 
     public ComboBox getBorderEffectComboBox() {
@@ -267,16 +260,13 @@ public class TextSegmentPane extends SegmentPane
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
-    public void populate(Segment segment)
+    private void populate()
     {
         super.populate(segment);
 
-        TextSegment textSegment = (TextSegment) segment;
+        textTextField.setText(segment.getText());
 
-        durationTextField.setText(Integer.toString(textSegment.getDuration()));
-        enterTextField.setText(textSegment.getText());
-
-        Color[] borderColors = textSegment.getBorderColors();
+        Color[] borderColors = segment.getBorderColors();
 
         if (borderColors.length == 1)
         {
@@ -304,19 +294,19 @@ public class TextSegmentPane extends SegmentPane
             }
         }
 
-        if (textSegment.getPaddingColor() == OFF_COLOR)
+        if (segment.getPaddingColor() == OFF_COLOR)
         {
             paddingColorNone.setSelected(true);
         }
         else // Custom color
         {
             paddingColorCustom.setSelected(true);
-            paddingColorPicker.setValue(textSegment.getPaddingColor());
+            paddingColorPicker.setValue(segment.getPaddingColor());
         }
 
         if (!borderColorNone.isSelected())
         {
-            borderEffectComboBox.getSelectionModel().select(textSegment.getBorderEffect());
+            borderEffectComboBox.getSelectionModel().select(segment.getBorderEffect());
         }
     }
 }

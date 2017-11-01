@@ -1,6 +1,7 @@
 package data;
 
 import data.Message;
+import javafx.geometry.Pos;
 
 import java.time.LocalTime;
 
@@ -18,7 +19,7 @@ public class Marquee
 {
     private Message message;
     private int width, height;
-    private String screenPos;
+    private Pos screenPos;
     private boolean fullscreen;
     private int ledGap;
     private LocalTime startTime;
@@ -28,6 +29,16 @@ public class Marquee
         this.width = width;
         this.height = height;
         this.ledGap = ledGap;
+    }
+
+    public Marquee()
+    {
+        message = new Message();
+        width = 1200;
+        height = 200;
+        screenPos = Pos.CENTER;
+        fullscreen = false;
+        ledGap = 0;
     }
 
     public Message getMessage()
@@ -45,7 +56,7 @@ public class Marquee
         return height;
     }
 
-    public String getScreenPos()
+    public Pos getScreenPos()
     {
         return screenPos;
     }
@@ -80,7 +91,7 @@ public class Marquee
         this.height = height;
     }
 
-    public void setScreenPosition(String screenPos)
+    public void setScreenPosition(Pos screenPos)
     {
         this.screenPos = screenPos;
     }

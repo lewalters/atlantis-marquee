@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static util.Global.BREAK_CHAR;
+import static util.Global.OFF_COLOR;
 import static util.Global.TEXT_ROWS;
 
 /**
@@ -29,7 +30,7 @@ public class TextSegment extends Segment
     private Color paddingColor;
     private String textColor;
 
-    public TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
+    private TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
                        EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String textColor, String text)
     {
         super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
@@ -46,11 +47,28 @@ public class TextSegment extends Segment
         padding = paddingColor != null;
 
         setContents();
+    }
 
-        if (hasSubsegments())
-        {
-            setSubtexts();
-        }
+    // Copy constructor
+    public TextSegment(TextSegment segment)
+    {
+        this(segment.getDuration(), segment.getSpeed(), segment.getScrollDirection(),
+                segment.borderColors.clone(), segment.borderEffect, segment.paddingColor, segment.getEntranceEffect(),
+                segment.getMiddleEffect(), segment.getExitEffect(), segment.textColor, segment.text);
+    }
+
+    public TextSegment()
+    {
+        text = "";
+        contents = new ArrayList<>();
+        subtexts = new ArrayList<>();
+        borderColors = new Color[]{OFF_COLOR};
+        borderEffect = BorderEffect.NONE;
+        paddingColor = OFF_COLOR;
+        textColor = "FFFFFF";
+
+        border = false;
+        padding = false;
     }
 
     public boolean hasBorder()
@@ -144,6 +162,11 @@ public class TextSegment extends Segment
         {
             hLength += cd.getHLength();
             size += cd.getSize();
+        }
+
+        if (hasSubsegments())
+        {
+            setSubtexts();
         }
     }
 
@@ -296,5 +319,11 @@ public class TextSegment extends Segment
                 }
             };
         }
+    }
+
+    @Override
+    public boolean isValid()
+    {
+        return super.isValid() && !text.isEmpty();
     }
 }

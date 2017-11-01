@@ -10,11 +10,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import util.*;
 
+import static util.Global.TEXT_FONT;
+
 public abstract class SegmentPane extends BorderPane
 {
+    private Segment segment;
+
     protected Label titleLabel;
     private VBox scrollVBox;
     private VBox effectsVBox;
+    private TextField durationTextField, speedTextField;
     private RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     private ComboBox<EntranceEffect> entranceComboBox;
     protected ComboBox<MiddleEffect> middleComboBox;
@@ -23,8 +28,12 @@ public abstract class SegmentPane extends BorderPane
     private Button continueButton;
     private Button cancelButton;
 
-    SegmentPane()
+    protected VBox durSpeedLabels, durSpeedFields;
+
+    public SegmentPane(Segment segment)
     {
+        this.segment = segment;
+
         titleLabel = new Label("Segment Settings");
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
@@ -38,6 +47,89 @@ public abstract class SegmentPane extends BorderPane
         //This sets the TextSegment Pane size and padding
         this.setPrefSize(640, 400);
         this.setPadding(new Insets(30));
+
+        Label durationLabel = new Label("Duration:");
+        durationLabel.setFont(new Font(TEXT_FONT, 15));
+
+        durationTextField = new TextField();
+        durationTextField.setFont(new Font(TEXT_FONT, 15));
+        durationTextField.setMaxWidth(45);
+        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Text Will Be Displayed On The Screen"));
+
+        //Setting durationTextField Character Length
+        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(durationTextField.getText().length() > 3){
+                    durationTextField.setText(durationTextField.getText().substring(0,3));
+                }
+            }
+        });
+
+        //Making durationTextField Accept Only Numeric Values
+        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // Set the duration in the segment or warn if the duration is invalid
+        durationTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String durationText = durationTextField.getText();
+
+                int duration = durationText.isEmpty() ? 0 : Integer.valueOf(durationText);
+
+                if (duration > 0)
+                {
+                    segment.setDuration(duration);
+                }
+            }
+        }));
+
+        Label speedLabel = new Label("Speed:");
+        speedLabel.setFont(new Font(TEXT_FONT, 15));
+
+        speedTextField = new TextField();
+        speedTextField.setFont(new Font(TEXT_FONT, 15));
+        speedTextField.setMaxWidth(45);
+        speedTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
+
+        //Setting speedTextField Character Length
+        speedTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(speedTextField.getText().length() > 3){
+                    speedTextField.setText(speedTextField.getText().substring(0,3));
+                }
+            }
+        });
+
+        //Making speedTextField Accept Only Numeric Values
+        speedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                speedTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // Set the speed in the segment or warn if the speed is invalid
+        speedTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String speedText = speedTextField.getText();
+
+                int speed = speedText.isEmpty() ? 0 : Integer.valueOf(speedText);
+
+                if (speed > 0)
+                {
+                    segment.setSpeed(speed);
+                }
+            }
+        }));
+
+        durSpeedLabels = new VBox(durationLabel, speedLabel);
+        durSpeedLabels.setAlignment(Pos.CENTER_LEFT);
+        durSpeedFields = new VBox(durationTextField, speedTextField);
+        durSpeedFields.setAlignment(Pos.CENTER_LEFT);
 
         /*Adding Creating Buttons and Setting Font/Size*/
         continueButton = new Button("Continue");
@@ -114,6 +206,16 @@ public abstract class SegmentPane extends BorderPane
         middleComboBox.setTooltip(new Tooltip("This Sets The Static Effects For The Marquee's Display"));
         exitComboBox.setTooltip(new Tooltip("This Sets The Exit Effects For The Marquee's Display"));
 
+        // Swapping between duration and speed
+        durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
+        durationLabel.visibleProperty().bind(speedLabel.visibleProperty().not());
+        durationTextField.visibleProperty().bindBidirectional(durationTextField.managedProperty());
+        durationTextField.visibleProperty().bind(durationLabel.visibleProperty());
+        speedLabel.visibleProperty().bindBidirectional(speedLabel.managedProperty());
+        speedLabel.visibleProperty().bind(scrollRadioBtn.selectedProperty());
+        speedTextField.visibleProperty().bindBidirectional(speedTextField.managedProperty());
+        speedTextField.visibleProperty().bind(speedLabel.visibleProperty());
+
         //HBox
         HBox radioBox = new HBox(statikRadioBtn, scrollRadioBtn, effectsRadioBtn);
         radioBox.setStyle("-fx-padding: 10");
@@ -130,6 +232,11 @@ public abstract class SegmentPane extends BorderPane
                               +"-fx-padding: 10 20 10 20;");
     }
 
+    public Segment getSegment()
+    {
+        return segment;
+    }
+
     public Button getContinueButton(){
         return continueButton;
     }
@@ -139,8 +246,11 @@ public abstract class SegmentPane extends BorderPane
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
-    public void populate(Segment segment)
+    protected void populate(Segment segment)
     {
+        durationTextField.setText(Integer.toString(segment.getDuration()));
+        speedTextField.setText(Integer.toString(segment.getSpeed()));
+
         // Set display type radio button choice
         if (segment.getScrollDirection() != ScrollDirection.STATIC)
         {

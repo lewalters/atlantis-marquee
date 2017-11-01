@@ -2,6 +2,10 @@ package gui;
 
 import data.*;
 import javafx.animation.*;
+import javafx.geometry.Side;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import util.*;
@@ -17,12 +21,26 @@ public class MarqueeController
     private MarqueePane marqueePane;
     private Marquee marquee;
 
+    private MenuItem restart;
+
     public MarqueeController(Marquee marquee)
     {
         this.marquee = marquee;
         marqueePane = new MarqueePane(marquee.getWidth(), marquee.getLedGap());
 
-        marqueePane.setOnMouseClicked(e -> play());
+        restart = new MenuItem("Restart");
+        restart.setOnAction(e -> play());
+
+        final ContextMenu contextMenu = new ContextMenu(restart);
+
+        marqueePane.setOnContextMenuRequested(e -> contextMenu.show(marqueePane, e.getScreenX(), e.getScreenY()));
+
+        marqueePane.setOnMouseClicked(e -> {
+            if (contextMenu.isShowing())
+            {
+                contextMenu.hide();
+            }
+        });
     }
 
     public Pane getMarqueePane()
@@ -31,7 +49,7 @@ public class MarqueeController
     }
 
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat
-    private void play()
+    public void play()
     {
         Message message = marquee.getMessage();
         SequentialTransition messageAnimation = new SequentialTransition();
@@ -71,6 +89,9 @@ public class MarqueeController
 
         messageAnimation.setCycleCount(message.getRepeatFactor());
         messageAnimation.play();
+
+        restart.setDisable(true);
+        messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
 
     // Add an animation that encompasses the given segment to the full animation

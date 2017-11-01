@@ -25,10 +25,6 @@ public final class Utility
 {
     private Utility() {}
 
-    public static void saveData(String fileName) {}
-
-    public static void loadData(String fileName) {}
-
     public static DotMatrix convertImage(String source) throws IOException
     {
         Image image;
@@ -43,6 +39,8 @@ public final class Utility
             throw new IOException("Image not usable");
         }
 
+        // Get the width and height in pixels from the image and use them to set the width and height of
+        // the image in dots, scaling if the width would be larger than the number of dots on the marquee
         PixelReader pixelReader = image.getPixelReader();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
@@ -58,6 +56,7 @@ public final class Utility
         RGB[][] rgbs = new RGB[dotHeight][dotWidth];
         matrix = new DotMatrix(dotHeight, dotWidth);
 
+        // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)
@@ -66,9 +65,11 @@ public final class Utility
             }
         }
 
-        int dotHeightPx = height / dotHeight;
-        int dotWidthPx = width / dotWidth;
+        // Calculate the width and height of each dot in terms of pixels in the original image
+        int dotHeightPx = (int) Math.ceil((height * 1.0) / dotHeight);
+        int dotWidthPx = (int) Math.ceil((width * 1.0) / dotWidth);
 
+        // Sum the red, green, blue, and opacity values for all pixels in the "area" of each dot
         for (int r = 0; r < height; r++)
         {
             for (int c = 0; c < width; c++)
@@ -83,8 +84,11 @@ public final class Utility
             }
         }
 
+        // Calculate the area of each dot in terms of pixels in the original image
         int tgbArea = dotHeightPx * dotWidthPx;
 
+        // Set the color and opacity of each dot based on the average of its pixels,
+        // using a min_opacity to sharpen the final image
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)

@@ -38,7 +38,7 @@ public class SettingsPane extends BorderPane
     private Button reorderButton;
     private SegmentListView segmentListView;
 
-    SettingsPane(List<Segment> segments)
+    SettingsPane(Marquee marquee)
     {
         // Setting SettingsPane Width/Height/Padding
         this.setPrefSize(740, 400);
@@ -142,7 +142,7 @@ public class SettingsPane extends BorderPane
         segmentButtonsBox.setSpacing(10);
         segmentButtonsBox.setAlignment(Pos.CENTER);
 
-        segmentListView = new SegmentListView(segments);
+        segmentListView = new SegmentListView(marquee.getMessage().getContents());
         ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
         segmentScrollPane.setPadding(new Insets(5));
 

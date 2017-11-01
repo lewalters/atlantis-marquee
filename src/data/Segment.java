@@ -32,6 +32,16 @@ public abstract class Segment
         this.effectEx = effectEx;
     }
 
+    protected Segment()
+    {
+        duration = 0;
+        speed = 0;
+        scrollDirection = ScrollDirection.STATIC;
+        effectEn = EntranceTransition.NONE;
+        effectMi = MiddleEffect.NONE;
+        effectEx = ExitTransition.NONE;
+    }
+
     public int getDuration()
     {
         return duration;
@@ -108,4 +118,16 @@ public abstract class Segment
     }
 
     public abstract Iterator<Dot[]> iterator(ScrollDirection direction);
+
+    public boolean isValid()
+    {
+        if (scrollDirection == ScrollDirection.STATIC)
+        {
+            return duration > 0;
+        }
+        else
+        {
+            return speed > 0;
+        }
+    }
 }

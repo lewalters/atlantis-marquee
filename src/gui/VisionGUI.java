@@ -22,45 +22,36 @@ public class VisionGUI extends Application
         Global.init();
 
         WelcomePane welcomePane = new WelcomePane();
-        AuthPane authPane = new AuthPane();
+        //AuthPane authPane = new AuthPane();
+
+        Stage marqueeStage = new Stage();
 
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
-        //Creating the settingsController to handle all events on the settingsPane by passing the settingsPane to it
+        //Creating the settingsController to handle all events on the settingsPane
         SettingsController settingsController = new SettingsController();
 
-        Stage authStage = new Stage();
-        authStage.setScene(new Scene(authPane));
-
-        Marquee marquee = new Marquee(1200, 200, 2);
-        Message message = new Message("Test", 2, 10,"");
-        marquee.setMessage(message);
-        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
-        Segment segment = new TextSegment(10, 10, ScrollDirection.STATIC, colorList, BorderEffect.COUNTERCLOCKWISE, Color.WHITE, EntranceTransition.FADE, MiddleEffect.RANDOM_COLOR, ExitTransition.RANDOM_OFF, "5F9EA0", "Wake Tech");
-        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, MiddleEffect.NONE, ExitTransition.RANDOM_OFF, "DA70D6", "abcdef");
-        Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, EntranceTransition.FADE, MiddleEffect.BLINK, ExitTransition.FADE, "gbf.png");
-        message.addSegment(0, segment);
-        message.addSegment(1, segment2);
-        message.addSegment(2, segment3);
-        MarqueeController marqueeController = new MarqueeController(marquee);
-        Stage marqueeStage = new Stage();
-        marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
+        //Stage authStage = new Stage();
+        //authStage.setScene(new Scene(authPane));
 
         SettingsPane settingsPane = settingsController.getSettingsPane();
 
         welcomePane.setOnMouseClicked(e -> primaryStage.setScene(new Scene(settingsPane)));
 
-        settingsPane.setOnMouseClicked(e -> {
+        settingsPane.getStartButton().setOnAction(e -> {
+            MarqueeController marqueeController = new MarqueeController(settingsController.getMarquee());
+            marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
             marqueeStage.show();
             primaryStage.hide();
+            marqueeController.play();
         });
 
         marqueeStage.setOnCloseRequest(e -> primaryStage.show());
 
         //Creating Event Handler for AuthPane Cancel Button
-        authPane.getCancelButton().setOnAction(event -> authStage.close());
+        //authPane.getCancelButton().setOnAction(event -> authStage.close());
     }
 }
