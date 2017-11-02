@@ -2,6 +2,9 @@ package gui;
 
 import data.Segment;
 import data.TextSegment;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -27,7 +30,7 @@ public class TextSegmentPane extends SegmentPane
     private TextField textTextField, borderSpeedTextField;
     private RadioButton borderColorNone, borderColorRandom, borderColorCustom;
     private RadioButton paddingColorNone, paddingColorCustom;
-    private LinkedList<ColorPicker> borderColorPickers;
+    private ObservableList<ColorPicker> borderColorPickers;
     private ColorPicker paddingColorPicker;
     private ComboBox<BorderEffect> borderEffectComboBox;
     private Button addBorderColorButton;
@@ -112,7 +115,7 @@ public class TextSegmentPane extends SegmentPane
         borderColorCustom.setToggleGroup(borderGroup);
         HBox borderChoicesBox = new HBox(borderColorNone, borderColorRandom, borderColorCustom);
         borderChoicesBox.setSpacing(2);
-        borderColorPickers = new LinkedList<>();
+        borderColorPickers = FXCollections.observableArrayList();
         ColorPicker borderColorPicker = new ColorPicker(OFF_COLOR);
         borderColorPicker.getStyleClass().add("button");
         borderColorPicker.setStyle("-fx-color-label-visible: false;");
@@ -129,9 +132,8 @@ public class TextSegmentPane extends SegmentPane
         // Set the border color to TRANSPARENT if "random" is selected (TRANSPARENT is handled internally as a flag)
         borderColorRandom.setOnAction(e -> segment.setBorderColors(new Color[]{Color.TRANSPARENT}));
 
-        // Placeholder
-        borderColorCustom.setOnAction(e -> segment.setBorderColors(new Color[]{Color.RED}));
-
+        // Set the border colors if the color picker is changed
+        borderColorPicker.setOnAction(e -> changeColors());
 
         // Create buttons to manage border color selection
         addBorderColorButton = new Button();
@@ -145,6 +147,8 @@ public class TextSegmentPane extends SegmentPane
             newBorderColorPicker.getStyleClass().add("button");
             newBorderColorPicker.setStyle("-fx-color-label-visible: false;");
             borderColorPickers.add(newBorderColorPicker);
+
+            newBorderColorPicker.setOnAction(e2 -> changeColors());
 
             if (borderColorPickers.size() == 2)
             {
@@ -175,13 +179,14 @@ public class TextSegmentPane extends SegmentPane
                 borderColorsBox.getChildren().remove(borderColorsBox.getChildren().size() - 3);
             }
 
-            borderColorPickers.removeLast();
+            borderColorPickers.remove(borderColorPickers.size() - 1);
 
             if (borderColorPickers.size() == 1)
             {
                 borderColorsBox.getChildren().remove(removeBorderColorButton);
             }
         });
+
         borderColorsBox.getChildren().add(addBorderColorButton);
 
         // Adding padding color choices
@@ -206,6 +211,9 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.getSelectionModel().selectFirst();
         textLabelElementsGrid.add(borderEffectComboBox, 1, 6);
+
+        // Set the border effect on the segment if the combo box value is changed
+        borderEffectComboBox.setOnAction(e -> segment.setBorderEffect(borderEffectComboBox.getValue()));
         
         this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
@@ -318,6 +326,18 @@ public class TextSegmentPane extends SegmentPane
         {
             borderEffectComboBox.getSelectionModel().select(segment.getBorderEffect());
         }
+    }
+
+    private void changeColors()
+    {
+        Color[] colors = new Color[borderColorPickers.size()];
+
+        for (int i = 0; i < borderColorPickers.size(); i++)
+        {
+            colors[i] = borderColorPickers.get(i).getValue();
+        }
+
+        segment.setBorderColors(colors);
     }
 }
 

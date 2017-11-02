@@ -2,9 +2,7 @@ package gui;
 
 import data.*;
 import javafx.animation.*;
-import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -188,6 +186,7 @@ public class MarqueeController
                 case RANDOM_ON:
                     set(transition, segment, false);
                     randomLight(transition, segment, IN);
+                    break;
                 case FADE:
                     set(transition, segment, false);
                     fade(transition, segment, IN);
@@ -328,7 +327,7 @@ public class MarqueeController
         Timeline timeline1 = new Timeline();
         Timeline timeline2 = new Timeline();
         int cycles;
-        int speed = 1000 / segment.getSpeed();
+        int speed = 1000 / 5;
         ScrollEffect effect = time == IN ? (ScrollEffect) segment.getEntranceEffect() : (ScrollEffect) segment.getExitEffect();
         int columns = segment instanceof TextSegment ? TEXT_COLS : NUM_COLS;
         int rows = segment instanceof TextSegment ? TEXT_ROWS : NUM_ROWS;

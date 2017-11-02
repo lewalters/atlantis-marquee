@@ -4,7 +4,9 @@ import data.Dot;
 import data.Segment;
 import data.TextSegment;
 import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -30,7 +32,7 @@ public class MarqueePane extends StackPane
     private List<LED> border;
     private List<LED> padding;
 
-    MarqueePane(int width, int ledGap)
+    public MarqueePane(int width, int ledGap)
     {
         // Determine the radius based on the provided width
         int ledRadius = ((width - (NUM_COLS - 1) * ledGap) / (NUM_COLS)) / 2;

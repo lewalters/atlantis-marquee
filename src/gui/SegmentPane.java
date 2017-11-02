@@ -87,7 +87,7 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        Label speedLabel = new Label("Speed:");
+        Label speedLabel = new Label("Scroll Speed:");
         speedLabel.setFont(new Font(TEXT_FONT, 15));
 
         speedTextField = new TextField();
@@ -194,19 +194,31 @@ public abstract class SegmentPane extends BorderPane
         effectsVBox = new VBox(entranceComboBox, middleComboBox, exitComboBox);
         effectsVBox.visibleProperty().bindBidirectional(effectsVBox.managedProperty());
         effectsVBox.visibleProperty().bind(effectsRadioBtn.selectedProperty());
-        effectsVBox.setSpacing(10);
-        effectsVBox.setStyle("-fx-padding: 5");
-        //effectsVBox.setPadding(new Insets(2,2,2,2));
-        
-        //Setting SegmentRadio/ComboBox Button Prompters
-        statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
-        scrollRadioBtn.setTooltip(new Tooltip("This Sets Marquee Scroll Direction"));
-        effectsRadioBtn.setTooltip(new Tooltip("This Adds Special Effects To The Marquee's Intro/Exit Screen Display"));
-        entranceComboBox.setTooltip(new Tooltip("This Sets The Entrance Effects For The Marquee's Display"));
-        middleComboBox.setTooltip(new Tooltip("This Sets The Static Effects For The Marquee's Display"));
-        exitComboBox.setTooltip(new Tooltip("This Sets The Exit Effects For The Marquee's Display"));
+        effectsVBox.setSpacing(5);
+        effectsVBox.setPadding(new Insets(5));
 
-        // Swapping between duration and speed
+        // Set the scroll direction to STATIC and remove effects if "static" is chosen
+        statikRadioBtn.setOnAction(e -> {
+            segment.setScrollDirection(ScrollDirection.STATIC);
+            resetEffects();
+        });
+
+        // Set the scroll direction to the initial / selected direction and remove effects if "scroll" is chosen
+        scrollRadioBtn.setOnAction(e -> {
+            segment.setScrollDirection(scrollComboBox.getValue());
+            resetEffects();
+        });
+        scrollComboBox.setOnAction(e -> {
+            segment.setScrollDirection(scrollComboBox.getValue());
+            resetEffects();
+        });
+
+        // Set the effects as changed if "effects" is chosen
+        entranceComboBox.setOnAction(e -> segment.setEntranceEffect(entranceComboBox.getValue()));
+        middleComboBox.setOnAction(e -> segment.setMiddleEffect(middleComboBox.getValue()));
+        exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
+
+        // Swapping between duration and speed labels / boxes
         durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
         durationLabel.visibleProperty().bind(speedLabel.visibleProperty().not());
         durationTextField.visibleProperty().bindBidirectional(durationTextField.managedProperty());
@@ -215,6 +227,14 @@ public abstract class SegmentPane extends BorderPane
         speedLabel.visibleProperty().bind(scrollRadioBtn.selectedProperty());
         speedTextField.visibleProperty().bindBidirectional(speedTextField.managedProperty());
         speedTextField.visibleProperty().bind(speedLabel.visibleProperty());
+        
+        //Setting SegmentRadio/ComboBox Button Prompters
+        statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
+        scrollRadioBtn.setTooltip(new Tooltip("This Sets Marquee Scroll Direction"));
+        effectsRadioBtn.setTooltip(new Tooltip("This Adds Special Effects To The Marquee's Intro/Exit Screen Display"));
+        entranceComboBox.setTooltip(new Tooltip("This Sets The Entrance Effects For The Marquee's Display"));
+        middleComboBox.setTooltip(new Tooltip("This Sets The Static Effects For The Marquee's Display"));
+        exitComboBox.setTooltip(new Tooltip("This Sets The Exit Effects For The Marquee's Display"));
 
         //HBox
         HBox radioBox = new HBox(statikRadioBtn, scrollRadioBtn, effectsRadioBtn);
@@ -270,5 +290,12 @@ public abstract class SegmentPane extends BorderPane
             middleComboBox.getSelectionModel().select(segment.getMiddleEffect());
             exitComboBox.getSelectionModel().select(segment.getExitEffect());
         }
+    }
+
+    private void resetEffects()
+    {
+        entranceComboBox.getSelectionModel().selectFirst();
+        middleComboBox.getSelectionModel().selectFirst();
+        exitComboBox.getSelectionModel().selectFirst();
     }
 }

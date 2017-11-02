@@ -44,6 +44,10 @@ public class VisionGUI extends Application
         settingsPane.getStartButton().setOnAction(e -> {
             MarqueeController marqueeController = new MarqueeController(settingsController.getMarquee());
             marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
+            if (settingsController.getMarquee().isFullscreen())
+            {
+                marqueeStage.setFullScreen(true);
+            }
             marqueeStage.show();
             primaryStage.hide();
             marqueeController.play();

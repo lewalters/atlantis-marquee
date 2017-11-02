@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
+import static util.Global.MIN_WIDTH;
 import static util.Global.TEXT_FONT;
 
 
@@ -268,6 +269,75 @@ public class SettingsPane extends BorderPane
                 commentsTextArea.setText(newValue.replaceAll("[^a-zA-Z/s.,-/:;!& ]", ""));
             }
         });
+
+        // Set the width of the marquee or warn if the width is invalid
+        widthTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String widthText = widthTextField.getText();
+
+                int width = widthText.isEmpty() ? 0 : Integer.valueOf(widthText);
+
+                if (width >= MIN_WIDTH)
+                {
+                    marquee.setWidth(width);
+                }
+            }
+        }));
+
+        // Set the height of the marquee or warn if the height is invalid
+        heightTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String heightText = widthTextField.getText();
+
+                int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
+
+                if (height >= 50)
+                {
+                    marquee.setHeight(height);
+                }
+            }
+        }));
+
+        // Set the name of the message or warn if the name is invalid
+        nameTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String name = nameTextField.getText();
+
+                if (!name.isEmpty())
+                {
+                    marquee.getMessage().setName(name);
+                }
+            }
+        }));
+
+        // Set the delay of the message or warn if the delay is invalid
+        delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String delayText = delayTextField.getText();
+
+                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
+
+                if (delay >= 0)
+                {
+                    marquee.getMessage().setDelay(delay);
+                }
+            }
+        }));
+
+        // Set the comments of the message
+        commentsTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                marquee.getMessage().setComments(commentsTextArea.getText());
+            }
+        }));
+
+        // Set the fullscreen toggle on the marquee
+        fullScreenCheckBox.selectedProperty().addListener((((observable, oldValue, newValue) -> marquee.setFullscreen(fullScreenCheckBox.isSelected()))));
 
         /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
