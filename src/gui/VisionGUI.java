@@ -21,7 +21,7 @@ public class VisionGUI extends Application
         Global.init();
 
         WelcomePane welcomePane = new WelcomePane();
-        SettingsPane settingsPane = new SettingsPane();
+
         AuthPane authPane = new AuthPane();
 
         primaryStage.setScene(new Scene(welcomePane));
@@ -61,17 +61,13 @@ public class VisionGUI extends Application
         marqueeStage.setOnCloseRequest(e -> primaryStage.show());
 
         //Event Handler for MenuBar "Exit" item
-        settingsPane.getExit().setOnAction(e ->{
-            if(settingsPane.getExit().getText().matches("Exit"))
-            {
-              Platform.exit();
-            }
-        });
+        settingsPane.getExit().setOnAction(e -> Platform.exit());
+        
         // Event Handler for AuthPane Cancel Button
         authPane.getCancelButton().setOnAction(event -> authStage.close());
 
-        //Applying CSS Background
-        welcomePane.setStyle("-fx-background-color: rgb(225, 228, 203);");
-        settingsPane.setStyle("-fx-background-color: rgb(225, 228, 203);");
+        //CSS for Skin
+        welcomePane.setStyle("-fx-background:#383838; -fx-text-fill: #FFFFFF;");
+        settingsPane.setStyle("-fx-background:#383838; -fx-text-fill: #FFFFFF;");
     }
 }

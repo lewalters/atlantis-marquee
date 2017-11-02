@@ -9,14 +9,13 @@ import util.BorderEffect;
 import util.ScrollDirection;
 import util.StaticEffect;
 import util.TransitionEffect;
+
 public class SettingsController
 {
     private Marquee marquee;
     private SettingsPane settingsPane;
-    private ImageSegmentPane imageSegmentPane;
-    private TextSegmentPane textSegmentPane;
 
-    public SettingsController(SettingsPane pane)
+    public SettingsController()
     {
         // FOR TESTING
         marquee = new Marquee(1200, 200, 2);
@@ -53,8 +52,12 @@ public class SettingsController
         //Event Handler for TextSegmentButton to display Text Segment Pane
         settingsPane.getTextSegmentButton().setOnAction(e -> {
             TextSegmentPane textSegmentPane = new TextSegmentPane();
+            textSegmentPane.getCancelButton().setOnAction(event -> textSegmentStage.close());
             textSegmentStage.setScene(new Scene(textSegmentPane));
             textSegmentStage.show();
+
+            //Applying CSS to TextSegmentPane Skin
+            textSegmentPane.setStyle("-fx-background:#383838;");
         });
 
         //Event Handler for ImageSegmentButton to display Image Segment Pane
@@ -62,19 +65,16 @@ public class SettingsController
             ImageSegmentPane imageSegmentPane = new ImageSegmentPane();
 
           // Event handler for imageSourceButton in the imageSegmentPane
-        imageSegmentPane.getImageBox().setOnMouseClicked(e -> imageSegmentPane.getSourceImage(imgSegStage));
-        // Event handler for Cancel Buttons on ImageSegment/ImageSegment Panes
-        imageSegmentPane.getCancelButton().setOnAction(e -> imgSegStage.close());
-        textSegmentPane.getCancelButton().setOnAction(e -> textSegmentStage.close());
-
-        //Applying CSS Background
-        textSegmentPane.setStyle("-fx-background-color: rgb(225, 228, 203);-fx-font-weight: bold;");
-        imageSegmentPane.setStyle("-fx-background-color: rgb(225, 228, 203);-fx-font-weight: bold;");
-            // Event handler for imageSourceButton in the imageSegmentPane
-            imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.getSourceImage(imgSegStage));
+        imageSegmentPane.getImageBox().setOnMouseClicked(event -> imageSegmentPane.getSourceImage(imgSegStage));
+            
+        // Event handler for Cancel Buttons on ImageSegment Pane
+        imageSegmentPane.getCancelButton().setOnAction(event -> imgSegStage.close());
 
             imgSegStage.setScene(new Scene(imageSegmentPane));
             imgSegStage.show();
+
+            //Applying CSS to ImageSegmentPane Skin
+            imageSegmentPane.setStyle("-fx-background:#383838;");
         });
 
         // Event handler for reorder segments button
@@ -109,6 +109,7 @@ public class SettingsController
                     TextSegmentPane textSegmentPane = new TextSegmentPane();
                     textSegmentStage.setScene(new Scene(textSegmentPane));
                     textSegmentStage.show();
+
                 }
                 else // ImageSegment
                 {
@@ -119,6 +120,7 @@ public class SettingsController
 
                     imgSegStage.setScene(new Scene(imageSegmentPane));
                     imgSegStage.show();
+
                 }
             });
         }

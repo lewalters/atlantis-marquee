@@ -1,22 +1,17 @@
 package gui;
 
-import data.*;
+import data.Segment;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import util.BorderEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
-import util.TransitionEffect;
 
 import java.util.List;
 
 import static util.Global.TEXT_FONT;
+
 
 /**
  * (Insert a brief comment that describes
@@ -50,29 +45,30 @@ public class SettingsPane extends BorderPane
 
         /*Creating GridPanes*/
         GridPane leftLabelTextFieldGrid = new GridPane();
+        
         /*Adding Labels*/
         Label setWidthLabel = new Label("Width:");
-        setWidthLabel.setFont(new Font("TEXT_FONT", 15));
+        setWidthLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setWidthLabel, 0, 0);
 
         // Creating Height label
         Label setHeightLabel = new Label("Height:");
-        setHeightLabel.setFont(new Font("TEXT_FONT", 15));
+        setHeightLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
         //Creating Name Label
         Label setNameLabel = new Label("Name");
-        setNameLabel.setFont(new Font("TEXT_FONT", 15));
+        setNameLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setNameLabel,0,2);
 
         //Setting Delay Label
         Label setDelayLabel = new Label("Delay:");
-        setDelayLabel.setFont(new Font("TEXT_FONT", 15));
+        setDelayLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setDelayLabel,0,3);
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
-        setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
+        setCommentsLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setCommentsLabel,0,4);
 
         /*Adding TextFields*/
@@ -96,7 +92,7 @@ public class SettingsPane extends BorderPane
         /*Adding Checkboxes*/
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
-        fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
+        fullScreenCheckBox.setFont(new Font(TEXT_FONT, 15));
 //        authenticationCheckBox = new CheckBox("Authentication");
 //        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
@@ -131,26 +127,20 @@ public class SettingsPane extends BorderPane
         /*Adding Buttons*/
         //Creating Start Button
         startButton = new Button("Start");
-        startButton.setFont(new Font("TEXT_FONT", 25));
+        startButton.setFont(new Font(TEXT_FONT, 25));
 
         //Creating TextSegment Button
         textSegmentButton = new Button("Add Text Segment");
-        textSegmentButton.setFont(new Font("TEXT_FONT", 15));
+        textSegmentButton.setFont(new Font(TEXT_FONT, 15));
 
         //Creating ImageSegment Button
         imageSegmentButton = new Button("Add Image Segment");
-        imageSegmentButton.setFont(new Font("TEXT_FONT", 15));
+        imageSegmentButton.setFont(new Font(TEXT_FONT, 15));
+        
         //Creating HBox for Segment Buttons
-        HBox segmentButtonsBox = new HBox(textSegmentButton,imageSegmentButton);
-
         HBox segmentButtonsBox = new HBox(textSegmentButton, imageSegmentButton);
         segmentButtonsBox.setSpacing(10);
         segmentButtonsBox.setAlignment(Pos.CENTER);
-        ListView<Segment> segmentListView = new ListView<>();
-        VBox rightPanelVB = new VBox(segmentButtonsBox, segmentListView);
-        rightPanelVB.setSpacing(15);
-        rightPanelVB.setPadding(new Insets(15));
-        this.setRight(rightPanelVB);
 
         segmentListView = new SegmentListView(segments);
         ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
@@ -164,7 +154,6 @@ public class SettingsPane extends BorderPane
         rightPanel.setPadding(new Insets(15));
         this.setCenter(rightPanel);
 
-        /*Setting Width/Height*/
         //Setting TextFields Width
         widthTextField.setMaxWidth(40);
         heightTextField.setMaxWidth(40);
@@ -193,6 +182,7 @@ public class SettingsPane extends BorderPane
         fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
+        reorderButton.setTooltip(new Tooltip("This Reorders Segments Created"));
 
         //Setting widthTextField Character Length
         widthTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -278,7 +268,6 @@ public class SettingsPane extends BorderPane
             }
         });
 
-        /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
         leftLabelTextFieldGrid.setHgap(15);
         leftLabelTextFieldGrid.setVgap(5);
@@ -304,22 +293,22 @@ public class SettingsPane extends BorderPane
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
 
-        //CSS for MenuBar
-        menuBar.setStyle("-fx-base:#b6e7c9;-fx-font-family:Helvetica;-fx-font-weight:bold;-fx-font-size:12;-fx-border-width:1;-fx-border-style:solid;-fx-border-color:grey;");
+        //CSS for MenuBar -fx-base:#B8B8B8;
+        menuBar.setStyle("-fx-base:#585858;-fx-font-family:Helvetica;-fx-font-size:12;-fx-border-width:1;-fx-border-style:solid;-fx-border-color:grey; -fx-text-fill:#B8B8B8 ");
         //CSS for VBoxes
         leftPanelVB.setStyle("-fx-padding:15");
-        rightPanelVB.setStyle("-fx-padding:15");
+        rightPanel.setStyle("-fx-padding:15");
         //CSS for Labels
-        setWidthLabel.setStyle("-fx-border-style:solid;-fx-border-width:2px;-fx-font-weight:bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        setHeightLabel.setStyle("-fx-border-style:solid;-fx-border-width:2px;-fx-font-weight:bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        setNameLabel.setStyle("-fx-border-style:solid;-fx-border-width:2px;-fx-font-weight:bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        setDelayLabel.setStyle("-fx-border-style:solid;-fx-border-width:2px;-fx-font-weight:bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        setCommentsLabel.setStyle("-fx-border-style:solid;-fx-border-width:2px;-fx-font-weight:bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        setWidthLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
+        setHeightLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
+        setNameLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
+        setDelayLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
+        setCommentsLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;fx-padding:2;");
         //CSS for Buttons
-        startButton.setStyle("-fx-border-radius:15px;-fx-base:#b6e7c9;");
-        //-fx-background-image: url('http://icons.iconarchive.com/icons/aha-soft/desktop-buffet/128/Pizza-icon.png');
-        textSegmentButton.setStyle("-fx-base:#b6e7c9;");
-        imageSegmentButton.setStyle("-fx-base:#b6e7c9;");
+        startButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;");
+        textSegmentButton.setStyle("-fx-base:#585858;-fx-border-radius: 6;-fx-border-color:grey;");
+        imageSegmentButton.setStyle("-fx-base:#585858; -fx-border-radius: 6; -fx-border-color:grey;");
+        reorderButton.setStyle("-fx-base:#585858;-fx-border-radius: 6;-fx-border-color:grey;");
     }
 
     //SettingsPane Constructors return properties
@@ -333,7 +322,10 @@ public class SettingsPane extends BorderPane
         return load;
     }
 
-    public MenuItem getExit() {return exit;}
+    public MenuItem getExit()
+    {
+        return exit;
+    }
 
     public MenuItem getUndo()
     {
@@ -368,7 +360,8 @@ public class SettingsPane extends BorderPane
         return textSegmentButton;
     }
 
-    public Button getImageSegmentButton(){
+    public Button getImageSegmentButton()
+    {
         return imageSegmentButton;
     }
 
@@ -376,10 +369,10 @@ public class SettingsPane extends BorderPane
     {
         return reorderButton;
     }
-
     public SegmentListView getSegmentListView()
     {
         return segmentListView;
+        
     }
 }
 

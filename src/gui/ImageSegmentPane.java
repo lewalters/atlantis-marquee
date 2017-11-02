@@ -2,7 +2,9 @@ package gui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -12,9 +14,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-
+import static util.Global.TEXT_FONT;
 import static util.Validation.validImage;
-
 public class ImageSegmentPane extends SegmentPane
 {
     private TextField durationTextField;
@@ -29,7 +30,7 @@ public class ImageSegmentPane extends SegmentPane
         VBox leftSide = new VBox();
 
         Label durationLabel = new Label("Duration:");
-        durationLabel.setFont(new Font("TEXT_FONT", 15));
+        durationLabel.setFont(new Font(TEXT_FONT, 15));
         durationTextField = new TextField();
 
         HBox durationBox = new HBox(durationLabel, durationTextField);
@@ -53,13 +54,13 @@ public class ImageSegmentPane extends SegmentPane
         sourceImageView.setVisible(false);
 
         Label placeholderLabel = new Label("Please Click To Select An Image");
-        placeholderLabel.setFont(new Font("TEXT_FONT", 15));
+        placeholderLabel.setFont(new Font(TEXT_FONT, 15));
         placeholderLabel.visibleProperty().bindBidirectional(placeholderLabel.managedProperty());
         placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
         imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("TEXT_FONT", 15));
+        durationTextField.setFont(new Font(TEXT_FONT, 15));
 
         //Setting text field's width
         durationTextField.setMaxWidth(45);
@@ -90,8 +91,8 @@ public class ImageSegmentPane extends SegmentPane
         });
 
         //Applying CSS to Title Label
-       titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-background-color: #b6e7c9;-fx-padding:4");
-       durationLabel.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+       titleLabel.setStyle("-fx-border-style: solid; -fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:4");
+       durationLabel.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
        placeholderLabel.setStyle("-fx-font-weight: bold;");
 
     }

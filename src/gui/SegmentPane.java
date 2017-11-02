@@ -130,14 +130,12 @@ public abstract class SegmentPane extends BorderPane
 
         /*CSS*/
         //Title
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"+ "-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-font-weight: bold;");
         //Segment Pane Buttons
-        continueButton.setStyle("-fx-font-weight: bold;"
-                                +"-fx-padding: 10 20 10 20;"
-                                + "-fx-font: 22 arial; -fx-base: #b6e7c9; ");
-        cancelButton.setStyle("-fx-font-weight: bold;"
-                               +"-fx-padding: 10 20 10 20;"
-                               + "-fx-font: 22 arial; -fx-base: #b6e7c9; ");
+        continueButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;-fx-font-weight: bold;");
+        cancelButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;-fx-font-weight: bold;");
+        //continueButton.setStyle("-fx-font-weight: bold;-fx-padding: 10 20 10 20; -fx-font: 22 helvetica;-fx-base:#E8E8E8; -fx-background-radius: 6");
+        //cancelButton.setStyle("-fx-font-weight: bold;-fx-padding: 10 20 10 20; -fx-font: 22 helvetica;-fx-base:#E8E8E8; -fx-background-radius: 6");
         //ComboBox Buttons
         entranceComboBox.setStyle( "-fx-pref-width: 110;");
         middleComboBox.setStyle("-fx-pref-width: 110;");

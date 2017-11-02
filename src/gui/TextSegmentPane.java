@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 import java.util.LinkedList;
-
+import static util.Global.TEXT_FONT;
 import static util.Global.MAX_BORDER_COLORS;
 import static util.Global.OFF_COLOR;
 
@@ -49,19 +49,19 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeed, 0, 7);
 
         //Setting text Label Font
-        durationLabel.setFont(new Font("TEXT_FONT", 15));
-        enterText.setFont(new Font("TEXT_FONT", 15));
-        borderColor.setFont(new Font("TEXT_FONT", 15));
-        paddingColor.setFont(new Font("TEXT_FONT", 15));
-        borderEffect.setFont(new Font("TEXT_FONT", 15));
+        durationLabel.setFont(new Font(TEXT_FONT, 15));
+        enterText.setFont(new Font(TEXT_FONT, 15));
+        borderColor.setFont(new Font(TEXT_FONT, 15));
+        paddingColor.setFont(new Font(TEXT_FONT, 15));
+        borderEffect.setFont(new Font(TEXT_FONT, 15));
 
         //Setting text Label Font
-        durationLabel.setFont(new Font("TEXT_FONT", 15));
-        enterText.setFont(new Font("TEXT_FONT", 15));
-        borderColor.setFont(new Font("TEXT_FONT", 15));
-        paddingColor.setFont(new Font("TEXT_FONT", 15));
-        borderEffect.setFont(new Font("TEXT_FONT", 15));
-        borderSpeed.setFont(new Font("TEXT_FONT", 15));
+        durationLabel.setFont(new Font(TEXT_FONT, 15));
+        enterText.setFont(new Font(TEXT_FONT, 15));
+        borderColor.setFont(new Font(TEXT_FONT, 15));
+        paddingColor.setFont(new Font(TEXT_FONT, 15));
+        borderEffect.setFont(new Font(TEXT_FONT, 15));
+        borderSpeed.setFont(new Font(TEXT_FONT, 15));
         /*Adding TextFields*/
         durationTextField = new TextField();
         textLabelElementsGrid.add(durationTextField, 1, 1);
@@ -71,9 +71,9 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeedTextField, 1, 7);
 
         //Setting text Field Font
-        durationTextField.setFont(new Font("TEXT_FONT", 15));
-        enterTextField.setFont(new Font("TEXT_FONT", 15));
-        borderSpeedTextField.setFont(new Font("TEXT_FONT", 15));
+        durationTextField.setFont(new Font(TEXT_FONT, 15));
+        enterTextField.setFont(new Font(TEXT_FONT, 15));
+        borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));
         //Setting text field's width
         durationTextField.setMaxWidth(45);
         enterTextField.setMaxWidth(270);
@@ -226,14 +226,14 @@ public class TextSegmentPane extends SegmentPane
         });
 
         //Applying CSS To TitleLabel
-        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:3");
+        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
         //Applying CSS to Labels
-        durationLabel.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        enterText.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        borderColor.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        paddingColor.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        borderEffect.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
-        borderSpeed.setStyle("-fx-border-style: solid; -fx-border-width: 2px;-fx-font-weight: bold;-fx-background-color:#b6e7c9;-fx-padding:2");
+        durationLabel.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
+        enterText.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
+        borderColor.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
+        paddingColor.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
+        borderEffect.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
+        borderSpeed.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
 
          //Setting horizontal/vertical gaps for GridPanes
         textLabelElementsGrid.setHgap(10);
