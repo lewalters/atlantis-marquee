@@ -123,6 +123,16 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderChoicesBox, 1, 3);
         textLabelElementsGrid.add(borderColorsBox, 1, 4);
 
+        // Set the border color to the off color if "none" is selected
+        borderColorNone.setOnAction(e -> segment.setBorderColors(new Color[]{OFF_COLOR}));
+
+        // Set the border color to TRANSPARENT if "random" is selected (TRANSPARENT is handled internally as a flag)
+        borderColorRandom.setOnAction(e -> segment.setBorderColors(new Color[]{Color.TRANSPARENT}));
+
+        // Placeholder
+        borderColorCustom.setOnAction(e -> segment.setBorderColors(new Color[]{Color.RED}));
+
+
         // Create buttons to manage border color selection
         addBorderColorButton = new Button();
         Button removeBorderColorButton = new Button();

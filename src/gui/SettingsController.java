@@ -2,10 +2,8 @@ package gui;
 
 import data.*;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import util.*;
 
 import java.util.List;
 
@@ -14,14 +12,14 @@ public class SettingsController
     private Marquee marquee;
     private List<Segment> segments;
     private SettingsPane settingsPane;
-    private Stage textSegmentStage, segmentStage;
+    private Stage segmentStage;
 
     public SettingsController()
     {
         marquee = new Marquee();
         segments = marquee.getMessage().getContents();
 
-        settingsPane = new SettingsPane(marquee);
+        settingsPane = new SettingsPane(this, marquee);
 
         //Creating Segment Stage
         segmentStage = new Stage();
@@ -55,14 +53,6 @@ public class SettingsController
                 settingsPane.getSegmentListView().refresh();
             }
         });
-
-        // Event handlers for segment edit buttons
-        for (int i = 0; i < segments.size(); i++)
-        {
-            Segment segment = segments.get(i);
-
-            settingsPane.getSegmentListView().getEditButtons().get(i).setOnAction(e -> createSegmentPane(segment));
-        }
     }
 
     public SettingsPane getSettingsPane()
@@ -75,7 +65,7 @@ public class SettingsController
         return marquee;
     }
 
-    private void createSegmentPane(Segment segment)
+    public void createSegmentPane(Segment segment)
     {
         createSegmentPane(segment, segment instanceof TextSegment);
     }

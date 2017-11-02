@@ -195,6 +195,7 @@ public class TextSegment extends Segment
     public void setBorderColors(Color[] borderColors)
     {
         this.borderColors = borderColors;
+        border = borderColors[0] != OFF_COLOR;
     }
 
     public void setBorderEffect(BorderEffect borderEffect)
@@ -205,6 +206,7 @@ public class TextSegment extends Segment
     public void setPaddingColor(Color paddingColor)
     {
         this.paddingColor = paddingColor;
+        padding = paddingColor != OFF_COLOR;
     }
 
     public void setTextColor(String textColor)

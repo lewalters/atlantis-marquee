@@ -15,9 +15,11 @@ public class SegmentListView extends GridPane
     private List<Segment> segments;
     private List<TextField> orderFields;
     private List<Button> editButtons, deleteButtons;
+    private SettingsController controller; // Replace with proper event handling if time allows
 
-    public SegmentListView(List<Segment> segments)
+    public SegmentListView(SettingsController controller, List<Segment> segments)
     {
+        this.controller = controller;
         this.segments = segments;
 
         orderFields = new ArrayList<>();
@@ -61,6 +63,14 @@ public class SegmentListView extends GridPane
             deleteButtons.add(delete);
         }
 
+        // Edit button opens new segment pane with fields populated
+        for (int i = 0; i < segments.size(); i++)
+        {
+            Segment segment = segments.get(i);
+
+            editButtons.get(i).setOnAction(e -> controller.createSegmentPane(segment));
+        }
+
         // Delete button deletes the segment from the message and then resets the pane
         deleteButtons.forEach(button -> button.setOnAction(e -> {
             segments.remove(deleteButtons.indexOf(button));
@@ -84,10 +94,5 @@ public class SegmentListView extends GridPane
         }
 
         return ranks;
-    }
-
-    public List<Button> getEditButtons()
-    {
-        return editButtons;
     }
 }
