@@ -4,8 +4,14 @@ import data.*;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.util.List;
+
+//imports for Joe
+import data.XMLParser;
+import java.io.File;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+//end imports for Joe
 
 public class SettingsController
 {
@@ -52,6 +58,34 @@ public class SettingsController
                 marquee.getMessage().changeOrder(ranks);
                 settingsPane.getSegmentListView().refresh();
             }
+        });
+        
+        //Event handler for file menu save
+        settingsPane.getSave().setOnAction(e ->
+        {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+          	fileChooser.setTitle("Save XML File");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if(file != null) 
+            {
+              XMLParser xmlp = new XMLParser(file);
+              xmlp.XMLWriter(marquee);
+            }
+        });        
+
+        //Event handler for file menu load
+        settingsPane.getLoad().setOnAction(e ->
+        {
+          FileChooser fileChooser = new FileChooser();
+          fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+          fileChooser.setTitle("Load XML File");
+          File file = fileChooser.showOpenDialog(new Stage());
+          if(file != null) 
+          {
+            XMLParser xmlp = new XMLParser(file);
+            marquee = xmlp.XMLReader();
+          }
         });
     }
 
@@ -117,7 +151,6 @@ public class SettingsController
                 System.out.println("INVALID SEGMENT");
             }
         });
-
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();
     }
