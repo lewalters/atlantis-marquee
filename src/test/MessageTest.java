@@ -40,8 +40,8 @@ public class MessageTest {
         assertEquals("data.Message Test: setComments", "Welcome Message 2", m.getComments());
     }
 
-    // @Test
-    //public void testGetContent() {
+ //    @Test
+   // public void testGetContent() {
     //m.getContents();
     //assertEquals(message:"data.Message Test: getContents", expected);
     //}
