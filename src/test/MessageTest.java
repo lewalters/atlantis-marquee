@@ -1,24 +1,17 @@
-/*
 package test;
-
-import data.CharDot;
-import data.Message;
-import data.Segment;
-import data.TextSegment;
+import data.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
 import static org.junit.Assert.assertEquals;
-import static util.ScrollDirection.*;
-import static util.StaticEffect.BLINK;
-import static util.StaticEffect.NONE;
-import static util.StaticEffect.RANDOM_COLOR;
+
 
 public class MessageTest {
 
     private Message m;
+    private TextSegment s;
 
     @Before
     public void setUp() {
@@ -47,7 +40,7 @@ public class MessageTest {
         assertEquals("data.Message Test: setComments", "Welcome Message 2", m.getComments());
     }
 
-    //@Test
+    // @Test
     //public void testGetContent() {
     //m.getContents();
     //assertEquals(message:"data.Message Test: getContents", expected);
@@ -55,7 +48,9 @@ public class MessageTest {
 
     @Test
     public void testAddSegment() {
-        Segment s = new TextSegment(UP, "left-scroll-continuous", BLINK, "GRAY", DOWN, NONE, STATIC, "YELLOW", "BIG");
+        //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+
+        Segment s = new TextSegment();
         m.addSegment(0, s);
         assertEquals("data.Message Test", s, m.getContents().get(0));
     }
@@ -64,23 +59,41 @@ public class MessageTest {
     @Test
     public void testGetRepeatFactor() {
         m.setRepeatFactor(2);
-
         assertEquals("data.Message Test: setRepeatFactor", 2, m.getRepeatFactor());
 
     }
 
     @Test
     public void testRemoveSegment() {
-        Segment a = new TextSegment(DOWN, "PINK", BLINK, "BROWN", NONE, RANDOM_COLOR, LEFT, "BROWN", "DARK");
+
+        Segment a = new TextSegment();
+        m.addSegment(0, a);
         m.removeSegment(0);
-        assertEquals("data.Message Test", a, m.getContents().get(0));
+        assertEquals("data.Message", m.getContents().size(), 0);
     }
 
 
-    //@Test
-    //public void testChangeOrder() {
+    @Test
+    public void testChangeOrder() {
+        //Create three new segments and add them to the message
+        //Create an integer array of 3 integers for a new order (ex. 3, 1, 2)
+        //Pass the int array to the change order method of the message
+        //Using three assertEquals, check that each segment is in the NEW position
+        Segment segment = new TextSegment();
+        Segment segment2 = new TextSegment();
+        Segment segment3 = new TextSegment();
+        m.addSegment(0, segment);
+        m.addSegment(1, segment2);
+        m.addSegment(2, segment3);
+        // declare the array first and then initialise it
+        int[] addSegment;
+        addSegment = new int[]{3, 1, 2};
+        m.changeOrder(addSegment);
+        assertEquals("data.Message Test", segment2, m.getContents().get(0));
+        assertEquals("data.Message Test", segment, m.getContents().get(2));
+        assertEquals("data.Message Test", segment3, m.getContents().get(1));
 
-    //}
+    }
 
 
     @After
@@ -91,4 +104,4 @@ public class MessageTest {
 }
 
 
-*/
+

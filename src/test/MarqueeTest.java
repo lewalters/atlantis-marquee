@@ -64,6 +64,7 @@ public class MarqueeTest {
     public void testSetScreenPosition() {
         m.setScreenPosition("Position");
         assertEquals("data.Message Test: getScreenPos", "Position", m.getScreenPos());
+
     }
 
     @Test
@@ -114,4 +115,5 @@ public class MarqueeTest {
     }
 
 
-}*/
+}
+*/
