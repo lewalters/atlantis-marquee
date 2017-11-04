@@ -153,6 +153,7 @@ public class MarqueeController
                 {
                     case BLINK:
                         blinkBorder(timeline, duration);
+                        break;
                     case CLOCKWISE:
                     case COUNTERCLOCKWISE:
                         rotateBorder(timeline, segment, duration);
@@ -513,7 +514,7 @@ public class MarqueeController
     private void blink(Timeline timeline, Segment segment)
     {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.toggle(segment)));
-        timeline.setCycleCount(segment.getDuration() * 5);
+        timeline.setCycleCount(segment.getDuration() * 5 - 1);
     }
 
     private void randomColorText(Timeline timeline, TextSegment segment)
