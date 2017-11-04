@@ -14,12 +14,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import java.io.File;
+import java.util.List;
 
 public class XMLParser 
 {
@@ -27,15 +27,20 @@ public class XMLParser
   private DocumentBuilderFactory dbFactory;
   private DocumentBuilder dBuilder;
   private Document doc;
+  private Message message;
+  private List<Segment> segments;
   
   public XMLParser(File XMLFile)
   {
     this.XMLFile = XMLFile;
 	try
 	{
+	  if(!XMLFile.exists())
+	  {
+		 XMLFile.createNewFile();
+	  }
 	  dbFactory = DocumentBuilderFactory.newInstance();
 	  dBuilder = dbFactory.newDocumentBuilder();
-	  doc = dBuilder.parse(XMLFile);
     }
 	catch (Exception e) 
 	{
@@ -43,8 +48,16 @@ public class XMLParser
     }
   }
   
-  public void XMLReader() 
+  public Marquee XMLReader() 
   {
+    try 
+    {
+	  doc = dBuilder.parse(XMLFile);
+	} 
+    catch (Exception e) 
+    {
+	  e.printStackTrace();
+	}
 	doc.getDocumentElement().normalize();
     Marquee marquee = new Marquee(0, 0, 0);
 //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
@@ -154,62 +167,59 @@ public class XMLParser
         }
       }
 	}
+	return(marquee);
   }
   
-  public void XMLWriter()
+  public void XMLWriter(Marquee marquee)
   {
+    message = marquee.getMessage();
+    segments = message.getContents();
+
  	try 
  	{
-  	  Element rootElement = doc.createElement("message");
-  	  doc.appendChild(rootElement);
+      doc = dBuilder.newDocument();
+  	  Element root = doc.createElement("message");
+  	  doc.appendChild(root);
+  	  Element marqueeWidth = doc.createElement("marqueeWidth");
+  	  root.appendChild(marqueeWidth);
+  	  marqueeWidth.appendChild(doc.createTextNode(Integer.toString(marquee.getWidth())));
 
-  	  // staff elements
-  	  Element staff = doc.createElement("Staff");
-  	  rootElement.appendChild(staff);
+  	  Element marqueeHeight = doc.createElement("marqueeHeight");
+  	  root.appendChild(marqueeHeight);
+  	  marqueeHeight.appendChild(doc.createTextNode(Integer.toString(marquee.getHeight())));
 
-  	  // set attribute to staff element
-  	  Attr attr = doc.createAttribute("id");
-  	  attr.setValue("1");
-  	  staff.setAttributeNode(attr);
+  	  Element marqueeLedGap = doc.createElement("marqueeLedGap");
+  	  root.appendChild(marqueeLedGap);
+  	  marqueeLedGap.appendChild(doc.createTextNode(Integer.toString(marquee.getLedGap())));
 
-  	  // shorten way
-  	  // staff.setAttribute("id", "1");
+  	  Element messageName = doc.createElement("name");
+  	  root.appendChild(messageName);
+  	  messageName.appendChild(doc.createTextNode(message.getName()));
 
-  	  // firstname elements
-  	  Element firstname = doc.createElement("firstname");
-  	  firstname.appendChild(doc.createTextNode("yong"));
-  	  staff.appendChild(firstname);
+  	  Element messageRepeatFactor = doc.createElement("repeatFactor");
+  	  root.appendChild(messageRepeatFactor);
+  	  messageRepeatFactor.appendChild(doc.createTextNode(Integer.toString(message.getRepeatFactor())));
 
-  	  // lastname elements
-  	  Element lastname = doc.createElement("lastname");
-  	  lastname.appendChild(doc.createTextNode("mook kim"));
-  	  staff.appendChild(lastname);
+  	  Element messageDelay = doc.createElement("delay");
+  	  root.appendChild(messageDelay);
+  	  messageDelay.appendChild(doc.createTextNode(Integer.toString(message.getDelay())));
 
-  	  // nickname elements
-  	  Element nickname = doc.createElement("nickname");
-  	  nickname.appendChild(doc.createTextNode("mkyong"));
-  	  staff.appendChild(nickname);
- 	  // salary elements
- 	  Element salary = doc.createElement("salary");
- 	  salary.appendChild(doc.createTextNode("100000"));
- 	  staff.appendChild(salary);
+  	  Element messageComments = doc.createElement("comments");
+  	  root.appendChild(messageComments);
+  	  messageComments.appendChild(doc.createTextNode(message.getComments()));
 
   	  // write the content into xml file
   	  TransformerFactory transformerFactory = TransformerFactory.newInstance();
   	  Transformer transformer = transformerFactory.newTransformer();
   	  DOMSource source = new DOMSource(doc);
   	  StreamResult result = new StreamResult(XMLFile);
-
   	  // Output to console for testing
   	  // StreamResult result = new StreamResult(System.out);
-
   	  transformer.transform(source, result);
-
-  	  System.out.println("File saved!");
     } 
  	catch (TransformerException tfe) 
  	{
   	  tfe.printStackTrace();
-  	}
+  	} 
   }
 }

@@ -66,11 +66,11 @@ public class SettingsController
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
           	fileChooser.setTitle("Save XML File");
-            File file = fileChooser.showOpenDialog(new Stage());
+            File file = fileChooser.showSaveDialog(new Stage());
             if(file != null) 
             {
               XMLParser xmlp = new XMLParser(file);
-              xmlp.XMLWriter();
+              xmlp.XMLWriter(marquee);
             }
         });        
 
@@ -84,7 +84,7 @@ public class SettingsController
           if(file != null) 
           {
             XMLParser xmlp = new XMLParser(file);
-            xmlp.XMLReader();
+            marquee = xmlp.XMLReader();
           }
         });
     }
