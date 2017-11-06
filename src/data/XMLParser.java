@@ -17,9 +17,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import util.ScrollDirection;
 import org.w3c.dom.Node;
 import java.io.File;
-import java.util.List;
 
 public class XMLParser 
 {
@@ -28,7 +28,6 @@ public class XMLParser
   private DocumentBuilder dBuilder;
   private Document doc;
   private Message message;
-  private List<Segment> segments;
   
   public XMLParser(File XMLFile)
   {
@@ -173,9 +172,8 @@ public class XMLParser
   public void XMLWriter(Marquee marquee)
   {
     message = marquee.getMessage();
-    segments = message.getContents();
 
- 	try 
+    try 
  	{
       doc = dBuilder.newDocument();
   	  Element root = doc.createElement("message");
@@ -203,11 +201,73 @@ public class XMLParser
   	  Element messageDelay = doc.createElement("delay");
   	  root.appendChild(messageDelay);
   	  messageDelay.appendChild(doc.createTextNode(Integer.toString(message.getDelay())));
-
+  
   	  Element messageComments = doc.createElement("comments");
   	  root.appendChild(messageComments);
   	  messageComments.appendChild(doc.createTextNode(message.getComments()));
 
+      message.getContents().forEach(segment -> 
+      {
+    	if (segment instanceof TextSegment)
+        {
+      	  TextSegment textSegment = (TextSegment) segment;
+    	  Element seg = doc.createElement("textSegment");
+    	  root.appendChild(seg);
+      	  
+      	  Element duration = doc.createElement("duration");
+      	  seg.appendChild(duration);
+      	  duration.appendChild(doc.createTextNode(Integer.toString(textSegment.getDuration())));
+
+      	  Element speed = doc.createElement("speed");
+      	  seg.appendChild(speed);
+      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getSpeed())));
+
+      	  Element scrollDirection = doc.createElement("scrollDirection");
+      	  seg.appendChild(scrollDirection);
+      	  scrollDirection.appendChild(doc.createTextNode(textSegment.getScrollDirection().name()));
+
+      	  Element effectEn = doc.createElement("effectEn");
+      	  seg.appendChild(effectEn);
+      	  effectEn.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getEntranceEffect()).name()));
+      	  
+      	  Element effectMi = doc.createElement("effectMi");
+      	  seg.appendChild(effectMi);
+      	  effectMi.appendChild(doc.createTextNode(textSegment.getMiddleEffect().name()));
+
+      	  Element effectEx = doc.createElement("effectEx");
+      	  seg.appendChild(effectEx);
+      	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getExitEffect()).name()));
+        }
+        else
+        {
+          ImageSegment imageSegment = (ImageSegment) segment;
+       	  Element seg = doc.createElement("imageSegment");
+          root.appendChild(seg);
+      	  Element duration = doc.createElement("duration");
+      	  seg.appendChild(duration);
+      	  duration.appendChild(doc.createTextNode(Integer.toString(imageSegment.getDuration())));
+
+      	  Element speed = doc.createElement("speed");
+      	  seg.appendChild(speed);
+      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getSpeed())));
+
+      	  Element scrollDirection = doc.createElement("scrollDirection");
+      	  seg.appendChild(scrollDirection);
+      	  scrollDirection.appendChild(doc.createTextNode(imageSegment.getScrollDirection().name()));
+
+      	  Element effectEn = doc.createElement("effectEn");
+      	  seg.appendChild(effectEn);
+      	  effectEn.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getEntranceEffect()).name()));
+      	  
+      	  Element effectMi = doc.createElement("effectMi");
+      	  seg.appendChild(effectMi);
+      	  effectMi.appendChild(doc.createTextNode(imageSegment.getMiddleEffect().name()));
+
+      	  Element effectEx = doc.createElement("effectEx");
+      	  seg.appendChild(effectEx);
+      	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getExitEffect()).name()));
+        }
+      });
   	  // write the content into xml file
   	  TransformerFactory transformerFactory = TransformerFactory.newInstance();
   	  Transformer transformer = transformerFactory.newTransformer();
