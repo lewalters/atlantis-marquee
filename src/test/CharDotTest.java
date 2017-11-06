@@ -19,7 +19,6 @@ public class CharDotTest {
     @BeforeClass
     public static void setup()
     {
-        CharDot.initMap();
         color = "EF0404";
         cd = new CharDot('C', color);
     }

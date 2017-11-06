@@ -2,8 +2,10 @@ package data;
 
 import util.ScrollDirection;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 /**
  * (Insert a brief comment that describes
@@ -15,8 +17,6 @@ import java.util.Iterator;
  */
 public class CharDot
 {
-    public static final HashMap<Character, int[][]> charMap = new HashMap<>(50);
-
     private String color;
     private DotMatrix charDots;
     private int hLength, vLength, size;
@@ -90,60 +90,6 @@ public class CharDot
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
         return charDots.iterator(direction);
-    }
-
-    public static void initMap()
-    {
-        charMap.put('A', A);
-        charMap.put('B', B);
-        charMap.put('C', C);
-        charMap.put('D', D);
-        charMap.put('E', E);
-        charMap.put('F', F);
-        charMap.put('G', G);
-        charMap.put('H', H);
-        charMap.put('I', I);
-        charMap.put('J', J);
-        charMap.put('K', K);
-        charMap.put('L', L);
-        charMap.put('M', M);
-        charMap.put('N', N);
-        charMap.put('O', O);
-        charMap.put('P', P);
-        charMap.put('Q', Q);
-        charMap.put('R', R);
-        charMap.put('S', S);
-        charMap.put('T', T);
-        charMap.put('U', U);
-        charMap.put('V', V);
-        charMap.put('W', W);
-        charMap.put('X', X);
-        charMap.put('Y', Y);
-        charMap.put('Z', Z);
-        charMap.put('0', ZERO);
-        charMap.put('1', ONE);
-        charMap.put('2', TWO);
-        charMap.put('3', THREE);
-        charMap.put('4', FOUR);
-        charMap.put('5', FIVE);
-        charMap.put('6', SIX);
-        charMap.put('7', SEVEN);
-        charMap.put('8', EIGHT);
-        charMap.put('9', NINE);
-        charMap.put('!', EXCL);
-        charMap.put('.', PERIOD);
-        charMap.put(',', COMMA);
-        charMap.put('$', DOLLAR);
-        charMap.put('#', HASH);
-        charMap.put('@', AT);
-        charMap.put('&', AMP);
-        charMap.put('*', ASTERISK);
-        charMap.put('(', LEFTPAR);
-        charMap.put(')', RIGHTPAR);
-        charMap.put('+', PLUS);
-        charMap.put('-', HYPHEN);
-        charMap.put('/', SLASH);
-        charMap.put(' ', SPACE);
     }
 
     private static final int[][] A = {{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -591,5 +537,58 @@ public class CharDot
     private static final int[][] SPACE = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+    public static final Map<Character, int[][]> charMap = Map.ofEntries(
+        entry('A', A),
+        entry('B', B),
+        entry('C', C),
+        entry('D', D),
+        entry('E', E),
+        entry('F', F),
+        entry('G', G),
+        entry('H', H),
+        entry('I', I),
+        entry('J', J),
+        entry('K', K),
+        entry('L', L),
+        entry('M', M),
+        entry('N', N),
+        entry('O', O),
+        entry('P', P),
+        entry('Q', Q),
+        entry('R', R),
+        entry('S', S),
+        entry('T', T),
+        entry('U', U),
+        entry('V', V),
+        entry('W', W),
+        entry('X', X),
+        entry('Y', Y),
+        entry('Z', Z),
+        entry('0', ZERO),
+        entry('1', ONE),
+        entry('2', TWO),
+        entry('3', THREE),
+        entry('4', FOUR),
+        entry('5', FIVE),
+        entry('6', SIX),
+        entry('7', SEVEN),
+        entry('8', EIGHT),
+        entry('9', NINE),
+        entry('!', EXCL),
+        entry('.', PERIOD),
+        entry(',', COMMA),
+        entry('$', DOLLAR),
+        entry('#', HASH),
+        entry('@', AT),
+        entry('&', AMP),
+        entry('*', ASTERISK),
+        entry('(', LEFTPAR),
+        entry(')', RIGHTPAR),
+        entry('+', PLUS),
+        entry('-', HYPHEN),
+        entry('/', SLASH),
+        entry(' ', SPACE)
+    );
 }
 

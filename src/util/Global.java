@@ -36,9 +36,4 @@ public final class Global
     public static int MAX_BORDER_COLORS = 4;
 
     private Global() {}
-
-    public static void init()
-    {
-        CharDot.initMap();
-    }
 }

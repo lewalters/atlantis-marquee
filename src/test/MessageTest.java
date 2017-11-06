@@ -15,7 +15,6 @@ public class MessageTest {
 
     @Before
     public void setUp() {
-        CharDot.initMap();
         m = new Message("Hello", 1, 3, "Welcome Message");
     }
 

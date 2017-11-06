@@ -19,8 +19,6 @@ public class VisionGUI extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Global.init();
-
         WelcomePane welcomePane = new WelcomePane();
         //AuthPane authPane = new AuthPane();
 
