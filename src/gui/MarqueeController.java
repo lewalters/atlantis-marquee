@@ -1,15 +1,20 @@
 package gui;
 
 import data.*;
+import util.*;
+
 import javafx.animation.*;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import util.*;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static util.Global.*;
 import static util.EffectTime.*;
@@ -86,7 +91,18 @@ public class MarqueeController
         }
 
         messageAnimation.setCycleCount(message.getRepeatFactor());
-        messageAnimation.play();
+
+        // If there is a start time, delay the start of the marquee animation until the specified time
+        if (marquee.getStartTime() == null)
+        {
+            messageAnimation.play();
+        }
+        else
+        {
+            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+            long waitTime = java.time.Duration.between(LocalTime.now(), marquee.getStartTime()).toMillis();
+            scheduler.schedule(messageAnimation::play, waitTime, TimeUnit.MILLISECONDS);
+        }
 
         restart.setDisable(true);
         messageAnimation.setOnFinished(e -> restart.setDisable(false));

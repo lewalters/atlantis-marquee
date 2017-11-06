@@ -95,4 +95,9 @@ public class SegmentListView extends GridPane
 
         return ranks;
     }
+
+    public void setSegments(List<Segment> segments)
+    {
+        this.segments = segments;
+    }
 }

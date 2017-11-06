@@ -7,8 +7,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.util.StringConverter;
+import javafx.util.converter.LocalTimeStringConverter;
 
-import java.util.List;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static util.Global.MIN_WIDTH;
 import static util.Global.TEXT_FONT;
@@ -24,13 +31,11 @@ import static util.Global.TEXT_FONT;
  */
 public class SettingsPane extends BorderPane
 {
-    private MenuItem save;
-    private MenuItem load;
-    private MenuItem exit;
-    private MenuItem undo;
-    private MenuItem redo;
-    private MenuItem userGuide;
-    private MenuItem about;
+    private Marquee marquee;
+
+    private MenuItem newMarq, save, load, exit;
+    private MenuItem undo, redo;
+    private MenuItem userGuide, about;
     private CheckBox fullScreenCheckBox;
     //private CheckBox authenticationCheckBox;
     private Button startButton;
@@ -38,11 +43,16 @@ public class SettingsPane extends BorderPane
     private Button imageSegmentButton;
     private Button reorderButton;
     private SegmentListView segmentListView;
+    private TextField widthTextField, heightTextField, nameTextField, delayTextField, repeatTextField;
+    private TextArea commentsTextArea;
+    private ComboBox<Pos> screenPosition;
 
     SettingsPane(SettingsController controller, Marquee marquee)
     {
+        this.marquee = marquee;
+
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(740, 400);
+        this.setPrefSize(760, 400);
 
         /*Creating GridPanes*/
         // Creating Width label
@@ -68,28 +78,135 @@ public class SettingsPane extends BorderPane
         setDelayLabel.setFont(new Font("Helvetica", 15));
         leftLabelTextFieldGrid.add(setDelayLabel,0,3);
 
+        // Repeat Factor Label
+        Label setRepeatLabel = new Label("Repeat:");
+        setRepeatLabel.setFont(new Font(TEXT_FONT, 15));
+        leftLabelTextFieldGrid.add(setRepeatLabel, 0, 4);
+
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
         setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
-        leftLabelTextFieldGrid.add(setCommentsLabel,0,4);
+        leftLabelTextFieldGrid.add(setCommentsLabel,0,5);
+
+        // Screen position label
+        Label screenPositionLabel = new Label("Screen Position");
+        screenPositionLabel.setFont(new Font(TEXT_FONT, 15));
+        leftLabelTextFieldGrid.add(screenPositionLabel, 0, 6);
+
+        // Start Time Label
+        Label startTimeLabel = new Label("Start Time:");
+        startTimeLabel.setFont(new Font(TEXT_FONT, 15));
+        leftLabelTextFieldGrid.add(startTimeLabel, 0, 7);
 
         /*Adding TextFields*/
         //Creating Label TextFields
-        TextField widthTextField = new TextField();
+        widthTextField = new TextField();
         leftLabelTextFieldGrid.add(widthTextField, 1,0);
-        TextField heightTextField = new TextField();
+        heightTextField = new TextField();
         leftLabelTextFieldGrid.add(heightTextField,1,1);
-        TextField nameTextField = new TextField();
+        nameTextField = new TextField();
         nameTextField.setPromptText("Only 23 Characters Allowed");
         leftLabelTextFieldGrid.add(nameTextField,1,2);
-        TextField delayTextField = new TextField();
+        delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,3);
-        TextArea commentsTextArea = new TextArea();
+        repeatTextField = new TextField();
+        leftLabelTextFieldGrid.add(repeatTextField, 1, 4);
+        commentsTextArea = new TextArea();
         commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
-
-        //Wrapping commentsTextArea Text Area
         commentsTextArea.setWrapText(true);
-        leftLabelTextFieldGrid.add(commentsTextArea,1,4);
+        leftLabelTextFieldGrid.add(commentsTextArea,1,5);
+
+        // Screen position combo box using Pos with modified string values
+        screenPosition = new ComboBox<>();
+        screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 9));
+        screenPosition.getSelectionModel().select(Pos.CENTER);
+        screenPosition.setConverter(new StringConverter<>()
+        {
+            Map<String, Pos> map = new HashMap<>();
+
+            @Override
+            public String toString(Pos object)
+            {
+                String string = Arrays.stream(object.toString().toLowerCase().split("_"))
+                                .map(word -> Character.toTitleCase(word.charAt(0)) + word.substring(1))
+                                .collect(Collectors.joining(" "));
+                map.put(string, object);
+                return string;
+            }
+
+            @Override
+            public Pos fromString(String string)
+            {
+                return map.get(string);
+            }
+        });
+        leftLabelTextFieldGrid.add(screenPosition, 1, 6);
+
+        // Radio buttons to decide between start time = now or a custom start time
+        ToggleGroup timeGroup = new ToggleGroup();
+        RadioButton timeImmediate = new RadioButton("Immediate");
+        timeImmediate.setToggleGroup(timeGroup);
+        timeImmediate.setSelected(true);
+        RadioButton timeCustom = new RadioButton("Custom");
+        timeCustom.setToggleGroup(timeGroup);
+        HBox timeChoices = new HBox(timeImmediate, timeCustom);
+        timeChoices.setSpacing(5);
+
+        // Time spinner to select a start time for the marquee animations
+        Spinner<LocalTime> timeSpinner = new Spinner<>();
+        SpinnerValueFactory<LocalTime> timeValueFactory = new SpinnerValueFactory<>()
+        {
+            @Override
+            public void decrement(int steps)
+            {
+                setValue(getValue().minusMinutes(steps));
+            }
+
+            @Override
+            public void increment(int steps)
+            {
+                setValue(getValue().plusMinutes(steps));
+            }
+        };
+        timeValueFactory.setConverter(new StringConverter<>()
+        {
+            LocalTimeStringConverter converter = new LocalTimeStringConverter();
+
+            @Override
+            public String toString(LocalTime object)
+            {
+                return converter.toString(object);
+            }
+
+            @Override
+            public LocalTime fromString(String string)
+            {
+                try
+                {
+                    return converter.fromString(string);
+                }
+                catch (DateTimeParseException ex)
+                {
+                    return LocalTime.now();
+                }
+            }
+        });
+        timeSpinner.setValueFactory(timeValueFactory);
+        timeSpinner.setEditable(true);
+        timeSpinner.disableProperty().bind(timeCustom.selectedProperty().not());
+
+        timeImmediate.setOnAction(e -> {
+            timeValueFactory.setValue(null);
+            marquee.setStartTime(null);
+        });
+        timeCustom.setOnAction(e -> {
+            timeValueFactory.setValue(LocalTime.now());
+            marquee.setStartTime(LocalTime.now());
+        });
+
+        VBox timeBox = new VBox(timeChoices, timeSpinner);
+        timeBox.setSpacing(5);
+        leftLabelTextFieldGrid.add(timeBox, 1, 7);
 
         /*Adding Checkboxes*/
         //Creating Checkboxes
@@ -109,6 +226,7 @@ public class SettingsPane extends BorderPane
         menuBar.getMenus().addAll(file, edit, help);
 
         //Creating FileMenu Elements
+        newMarq = new MenuItem("New");
         save = new MenuItem("Save");
         load = new MenuItem("Load");
         exit = new MenuItem("Exit");
@@ -122,7 +240,7 @@ public class SettingsPane extends BorderPane
         about = new MenuItem("About"); //Create a new pane
 
         //Adding File Elements
-        file.getItems().addAll(save, load, exit);
+        file.getItems().addAll(newMarq, save, load, exit);
         edit.getItems().addAll(undo, redo);
         help.getItems().addAll(userGuide, about);
 
@@ -161,6 +279,7 @@ public class SettingsPane extends BorderPane
         heightTextField.setMaxWidth(40);
         nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
+        repeatTextField.setMaxWidth(40);
         commentsTextArea.setMaxWidth(160);
 
         //Setting Buttons Width
@@ -177,6 +296,7 @@ public class SettingsPane extends BorderPane
         heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
         nameTextField.setTooltip(new Tooltip("This Assigns A Descriptive Name For A Marquee"));
         delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
+        repeatTextField.setTooltip(new Tooltip("This sets the repeat factor for the message"));
         commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
         //Creating Tooltip for startButton
         startButton.setTooltip(new Tooltip("This Starts Marquee Based On User Requirements"));
@@ -225,10 +345,21 @@ public class SettingsPane extends BorderPane
             {
                 if(delayTextField.getText().length() > 3)
                 {
-                    delayTextField.setText(delayTextField.getText().substring(0,3));
+                    delayTextField.setText(delayTextField.getText(0, 3));
                 }
             }
         });
+
+        // Restrict repeatTextField to 3 characters
+        repeatTextField.lengthProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+            {
+                if (repeatTextField.getText().length() > 3)
+                {
+                    repeatTextField.setText(repeatTextField.getText(0, 3));
+                }
+            }
+        }));
 
         //Setting commentsTextArea Character Length
         commentsTextArea.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -236,7 +367,7 @@ public class SettingsPane extends BorderPane
             {
                 if(commentsTextArea.getText().length() > 100)
                 {
-                    commentsTextArea.setText(commentsTextArea.getText().substring(0,100));
+                    commentsTextArea.setText(commentsTextArea.getText(0, 100));
                 }
             }
         });
@@ -248,6 +379,7 @@ public class SettingsPane extends BorderPane
                 widthTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
         //Making HeightTextField To Accept only Numeric Values
         heightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*"))
@@ -255,6 +387,7 @@ public class SettingsPane extends BorderPane
                 heightTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
         //Making DelayTextField To Accept only Numeric Values
         delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*"))
@@ -262,6 +395,15 @@ public class SettingsPane extends BorderPane
                 delayTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        // Restrict repeatTextField to only accept numeric characters
+        repeatTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+            {
+                repeatTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
         //Making commentsTextArea To Accept Alphanumeric Characters, Punctuation Marks and Special Characters (&!-)
         commentsTextArea.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("[a-zA-Z/s.,-/:;!& ]"))
@@ -328,6 +470,21 @@ public class SettingsPane extends BorderPane
             }
         }));
 
+        // Set the repeat factor of the message or warn if the repeat value is invalid
+        repeatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String repeatText = repeatTextField.getText();
+
+                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
+
+                if (repeat >= 0)
+                {
+                    marquee.getMessage().setRepeatFactor(repeat);
+                }
+            }
+        });
+
         // Set the comments of the message
         commentsTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
@@ -336,8 +493,19 @@ public class SettingsPane extends BorderPane
             }
         }));
 
+        // Set the screen position of the marquee
+        screenPosition.setOnAction(e -> marquee.setScreenPosition(screenPosition.getValue()));
+
+        // Set the start time of the marquee
+        timeSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                marquee.setStartTime(timeSpinner.getValue());
+            }
+        });
+
         // Set the fullscreen toggle on the marquee
-        fullScreenCheckBox.selectedProperty().addListener((((observable, oldValue, newValue) -> marquee.setFullscreen(fullScreenCheckBox.isSelected()))));
+        fullScreenCheckBox.setOnAction(e -> marquee.setFullscreen(fullScreenCheckBox.isSelected()));
 
         /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
@@ -391,6 +559,11 @@ public class SettingsPane extends BorderPane
     }
 
     //SettingsPane Constructors return properties
+    public MenuItem getNew()
+    {
+        return newMarq;
+    }
+
     public MenuItem getSave()
     {
         return save;
@@ -449,6 +622,36 @@ public class SettingsPane extends BorderPane
     public SegmentListView getSegmentListView()
     {
         return segmentListView;
+    }
+
+    // Fill in the pane's cells with information from the marquee
+    public void populate()
+    {
+        widthTextField.setText(Integer.toString(marquee.getWidth()));
+        heightTextField.setText(Integer.toString(marquee.getHeight()));
+        nameTextField.setText(marquee.getMessage().getName());
+        delayTextField.setText(Integer.toString(marquee.getMessage().getDelay()));
+        repeatTextField.setText(Integer.toString(marquee.getMessage().getRepeatFactor()));
+        commentsTextArea.setText(marquee.getMessage().getComments());
+        screenPosition.getSelectionModel().select(marquee.getScreenPos());
+        fullScreenCheckBox.setSelected(marquee.isFullscreen());
+        segmentListView.setSegments(marquee.getMessage().getContents());
+        segmentListView.refresh();
+    }
+
+    // Resets the pane to its original state and refreshes the segment list view
+    public void reset()
+    {
+        widthTextField.clear();
+        heightTextField.clear();
+        nameTextField.clear();
+        delayTextField.clear();
+        repeatTextField.clear();
+        commentsTextArea.clear();
+        screenPosition.getSelectionModel().select(Pos.CENTER);
+        fullScreenCheckBox.setSelected(false);
+        segmentListView.setSegments(marquee.getMessage().getContents());
+        segmentListView.refresh();
     }
 }
 

@@ -1,29 +1,24 @@
 package gui;
 
 import data.*;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import java.util.List;
 
-//imports for Joe
-import data.XMLParser;
-import java.io.File;
+import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-//end imports for Joe
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.File;
 
 public class SettingsController
 {
     private Marquee marquee;
-    private List<Segment> segments;
     private SettingsPane settingsPane;
     private Stage segmentStage;
 
     public SettingsController()
     {
         marquee = new Marquee();
-        segments = marquee.getMessage().getContents();
 
         settingsPane = new SettingsPane(this, marquee);
 
@@ -59,6 +54,13 @@ public class SettingsController
                 settingsPane.getSegmentListView().refresh();
             }
         });
+
+        // Event handler for file menu new
+        settingsPane.getNew().setOnAction(e ->
+        {
+            marquee = new Marquee();
+            settingsPane.reset();
+        });
         
         //Event handler for file menu save
         settingsPane.getSave().setOnAction(e ->
@@ -69,23 +71,24 @@ public class SettingsController
             File file = fileChooser.showSaveDialog(new Stage());
             if(file != null) 
             {
-              XMLParser xmlp = new XMLParser(file);
-              xmlp.XMLWriter(marquee);
+                XMLParser xmlp = new XMLParser(file);
+                xmlp.XMLWriter(marquee);
             }
         });        
 
         //Event handler for file menu load
         settingsPane.getLoad().setOnAction(e ->
         {
-          FileChooser fileChooser = new FileChooser();
-          fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
-          fileChooser.setTitle("Load XML File");
-          File file = fileChooser.showOpenDialog(new Stage());
-          if(file != null) 
-          {
-            XMLParser xmlp = new XMLParser(file);
-            marquee = xmlp.XMLReader();
-          }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+            fileChooser.setTitle("Load XML File");
+            File file = fileChooser.showOpenDialog(new Stage());
+            if(file != null)
+            {
+                XMLParser xmlp = new XMLParser(file);
+                marquee = xmlp.XMLReader();
+                settingsPane.populate();
+            }
         });
     }
 
@@ -129,18 +132,18 @@ public class SettingsController
 
         segmentPane.getContinueButton().setOnAction(e -> {
 
-            int index = segments.indexOf(segment);
+            int index = marquee.getMessage().getContents().indexOf(segment);
             Segment newSegment = segmentPane.getSegment();
 
             if (newSegment.isValid())
             {
                 if (index < 0)
                 {
-                    segments.add(segmentPane.getSegment());
+                    marquee.getMessage().getContents().add(segmentPane.getSegment());
                 }
                 else
                 {
-                    segments.set(index, segmentPane.getSegment());
+                    marquee.getMessage().getContents().set(index, segmentPane.getSegment());
                 }
 
                 settingsPane.getSegmentListView().refresh();
@@ -151,6 +154,7 @@ public class SettingsController
                 System.out.println("INVALID SEGMENT");
             }
         });
+
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();
     }
