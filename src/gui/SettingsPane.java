@@ -1,6 +1,9 @@
 package gui;
 
 import data.*;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,7 +34,8 @@ import static util.Global.TEXT_FONT;
  */
 public class SettingsPane extends BorderPane
 {
-    private Marquee marquee;
+    //private Marquee marquee;
+    private ObjectProperty<Marquee> marquee;
 
     private MenuItem newMarq, save, load, exit;
     private MenuItem undo, redo;
@@ -47,9 +51,9 @@ public class SettingsPane extends BorderPane
     private TextArea commentsTextArea;
     private ComboBox<Pos> screenPosition;
 
-    SettingsPane(SettingsController controller, Marquee marquee)
+    SettingsPane(SettingsController controller)
     {
-        this.marquee = marquee;
+        marquee = new SimpleObjectProperty<>(controller.getMarquee());
 
         // Setting SettingsPane Width/Height/Padding
         this.setPrefSize(760, 400);
@@ -197,11 +201,13 @@ public class SettingsPane extends BorderPane
 
         timeImmediate.setOnAction(e -> {
             timeValueFactory.setValue(null);
-            marquee.setStartTime(null);
+            marquee.set(marquee.get().withStartTime(null));
+            //marquee.setStartTime(null);
         });
         timeCustom.setOnAction(e -> {
             timeValueFactory.setValue(LocalTime.now());
-            marquee.setStartTime(LocalTime.now());
+            marquee.set(marquee.get().withStartTime(LocalTime.now()));
+            //marquee.setStartTime(LocalTime.now());
         });
 
         VBox timeBox = new VBox(timeChoices, timeSpinner);
@@ -261,7 +267,7 @@ public class SettingsPane extends BorderPane
         segmentButtonsBox.setSpacing(10);
         segmentButtonsBox.setAlignment(Pos.CENTER);
 
-        segmentListView = new SegmentListView(controller, marquee.getMessage().getContents());
+        segmentListView = new SegmentListView(controller, marquee.get().getMessage().getContents());
         ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
         segmentScrollPane.setPadding(new Insets(5));
 
@@ -422,7 +428,8 @@ public class SettingsPane extends BorderPane
 
                 if (width >= MIN_WIDTH)
                 {
-                    marquee.setWidth(width);
+                    marquee.set(marquee.get().withWidth(width));
+                    //marquee.setWidth(width);
                 }
             }
         }));
@@ -431,13 +438,14 @@ public class SettingsPane extends BorderPane
         heightTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                String heightText = widthTextField.getText();
+                String heightText = heightTextField.getText();
 
                 int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
 
                 if (height >= 50)
                 {
-                    marquee.setHeight(height);
+                    marquee.set(marquee.get().withHeight(height));
+                    //marquee.setHeight(height);
                 }
             }
         }));
@@ -450,7 +458,7 @@ public class SettingsPane extends BorderPane
 
                 if (!name.isEmpty())
                 {
-                    marquee.getMessage().setName(name);
+                    marquee.get().getMessage().setName(name);
                 }
             }
         }));
@@ -465,7 +473,7 @@ public class SettingsPane extends BorderPane
 
                 if (delay >= 0)
                 {
-                    marquee.getMessage().setDelay(delay);
+                    marquee.get().getMessage().setDelay(delay);
                 }
             }
         }));
@@ -480,7 +488,7 @@ public class SettingsPane extends BorderPane
 
                 if (repeat >= 0)
                 {
-                    marquee.getMessage().setRepeatFactor(repeat);
+                    marquee.get().getMessage().setRepeatFactor(repeat);
                 }
             }
         });
@@ -489,23 +497,30 @@ public class SettingsPane extends BorderPane
         commentsTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                marquee.getMessage().setComments(commentsTextArea.getText());
+                marquee.get().getMessage().setComments(commentsTextArea.getText());
             }
         }));
 
         // Set the screen position of the marquee
-        screenPosition.setOnAction(e -> marquee.setScreenPosition(screenPosition.getValue()));
+        screenPosition.setOnAction(e -> {
+            marquee.set(marquee.get().withPosition(screenPosition.getValue()));
+            //marquee.setScreenPosition(screenPosition.getValue());
+        });
 
         // Set the start time of the marquee
         timeSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                marquee.setStartTime(timeSpinner.getValue());
+                marquee.set(marquee.get().withStartTime(timeSpinner.getValue()));
+                //marquee.setStartTime(timeSpinner.getValue());
             }
         });
 
         // Set the fullscreen toggle on the marquee
-        fullScreenCheckBox.setOnAction(e -> marquee.setFullscreen(fullScreenCheckBox.isSelected()));
+        fullScreenCheckBox.setOnAction(e -> {
+            marquee.set(marquee.get().withFullscreen(fullScreenCheckBox.isSelected()));
+            //marquee.setFullscreen(fullScreenCheckBox.isSelected());
+        });
 
         /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
@@ -627,15 +642,15 @@ public class SettingsPane extends BorderPane
     // Fill in the pane's cells with information from the marquee
     public void populate()
     {
-        widthTextField.setText(Integer.toString(marquee.getWidth()));
-        heightTextField.setText(Integer.toString(marquee.getHeight()));
-        nameTextField.setText(marquee.getMessage().getName());
-        delayTextField.setText(Integer.toString(marquee.getMessage().getDelay()));
-        repeatTextField.setText(Integer.toString(marquee.getMessage().getRepeatFactor()));
-        commentsTextArea.setText(marquee.getMessage().getComments());
-        screenPosition.getSelectionModel().select(marquee.getScreenPos());
-        fullScreenCheckBox.setSelected(marquee.isFullscreen());
-        segmentListView.setSegments(marquee.getMessage().getContents());
+        widthTextField.setText(Integer.toString(marquee.get().getWidth()));
+        heightTextField.setText(Integer.toString(marquee.get().getHeight()));
+        nameTextField.setText(marquee.get().getMessage().getName());
+        delayTextField.setText(Integer.toString(marquee.get().getMessage().getDelay()));
+        repeatTextField.setText(Integer.toString(marquee.get().getMessage().getRepeatFactor()));
+        commentsTextArea.setText(marquee.get().getMessage().getComments());
+        screenPosition.getSelectionModel().select(marquee.get().getPosition());
+        fullScreenCheckBox.setSelected(marquee.get().isFullscreen());
+        segmentListView.setSegments(marquee.get().getMessage().getContents());
         segmentListView.refresh();
     }
 
@@ -650,10 +665,22 @@ public class SettingsPane extends BorderPane
         commentsTextArea.clear();
         screenPosition.getSelectionModel().select(Pos.CENTER);
         fullScreenCheckBox.setSelected(false);
-        segmentListView.setSegments(marquee.getMessage().getContents());
+        segmentListView.setSegments(marquee.get().getMessage().getContents());
         segmentListView.refresh();
     }
+
+    public Marquee getMarquee()
+    {
+        return marquee.get();
+    }
+
+    public void setMarquee(Marquee marquee)
+    {
+        this.marquee.set(marquee);
+    }
+
+    public ObjectProperty<Marquee> marqueeProperty()
+    {
+        return marquee;
+    }
 }
-
-
-

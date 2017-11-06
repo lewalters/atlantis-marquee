@@ -1,44 +1,38 @@
 package data;
 
-import data.Message;
 import javafx.geometry.Pos;
+import javafx.util.converter.LocalTimeStringConverter;
 
 import java.time.LocalTime;
 
-import java.time.LocalTime;
-
-/**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
- * <p>
- * <p/> Bugs: None known
- *
- * @author Team Atlantis
- */
-public class Marquee
+final public class Marquee
 {
-    private Message message;
-    private int width, height;
-    private Pos screenPos;
-    private boolean fullscreen;
-    private int ledGap;
-    private LocalTime startTime;
-
-    public Marquee(int width, int height, int ledGap)
-    {
-        this.width = width;
-        this.height = height;
-        this.ledGap = ledGap;
-    }
+    final private Message message;
+    final private int width, height;
+    final private Pos position;
+    final private boolean fullscreen;
+    final private int ledGap;
+    final private LocalTime startTime;
 
     public Marquee()
     {
-        message = new Message();
-        width = 1200;
-        height = 200;
-        screenPos = Pos.CENTER;
-        fullscreen = false;
-        ledGap = 0;
+        this(new MarqueeBuilder());
+    }
+
+    public Marquee(Marquee marquee)
+    {
+        this(new MarqueeBuilder(marquee));
+    }
+
+    private Marquee(MarqueeBuilder builder)
+    {
+        message = builder.message != null ? builder.message : new Message();
+        width = builder.width != 0 ? builder.width : 1200;
+        height = builder.height != 0 ? builder.height : 200;
+        position = builder.position != null ? builder.position : Pos.CENTER;
+        fullscreen = builder.fullscreen;
+        ledGap = builder.ledGap;
+        startTime = builder.startTime;
     }
 
     public Message getMessage()
@@ -46,9 +40,19 @@ public class Marquee
         return message;
     }
 
+    public Marquee withMessage(Message message)
+    {
+        return new MarqueeBuilder(this).message(message).build();
+    }
+
     public int getWidth()
     {
         return width;
+    }
+
+    public Marquee withWidth(int width)
+    {
+        return new MarqueeBuilder(this).width(width).build();
     }
 
     public int getHeight()
@@ -56,9 +60,19 @@ public class Marquee
         return height;
     }
 
-    public Pos getScreenPos()
+    public Marquee withHeight(int height)
     {
-        return screenPos;
+        return new MarqueeBuilder(this).height(height).build();
+    }
+
+    public Pos getPosition()
+    {
+        return position;
+    }
+
+    public Marquee withPosition(Pos position)
+    {
+        return new MarqueeBuilder(this).position(position).build();
     }
 
     public boolean isFullscreen()
@@ -66,9 +80,19 @@ public class Marquee
         return fullscreen;
     }
 
+    public Marquee withFullscreen(boolean fullscreen)
+    {
+        return new MarqueeBuilder(this).fullscreen(fullscreen).build();
+    }
+
     public int getLedGap()
     {
         return ledGap;
+    }
+
+    public Marquee withLedGap(int ledGap)
+    {
+        return new MarqueeBuilder(this).ledGap(ledGap).build();
     }
 
     public LocalTime getStartTime()
@@ -76,38 +100,116 @@ public class Marquee
         return startTime;
     }
 
-    public void setMessage(Message message)
+    public Marquee withStartTime(LocalTime startTime)
     {
-        this.message = message;
+        return new MarqueeBuilder(this).startTime(startTime).build();
     }
 
-    public void setWidth(int width)
+    // TODO: optimize / fix the time check
+    @Override
+    public boolean equals(Object obj)
     {
-        this.width = width;
+        if (obj instanceof Marquee)
+        {
+            Marquee marquee = (Marquee) obj;
+
+            boolean time;
+
+            if (startTime == null)
+            {
+                if (marquee.startTime == null)
+                {
+                    time = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return message.equals(marquee.message) && width == marquee.width && height == marquee.height &&
+                    position == marquee.position && fullscreen == marquee.fullscreen && ledGap == marquee.ledGap;
+        }
+
+        return false;
     }
 
-    public void setHeight(int height)
+    public static class MarqueeBuilder
     {
-        this.height = height;
-    }
+        private Message message;
+        private int width, height;
+        private Pos position;
+        private boolean fullscreen;
+        private int ledGap;
+        private LocalTime startTime;
 
-    public void setScreenPosition(Pos screenPos)
-    {
-        this.screenPos = screenPos;
-    }
+        public MarqueeBuilder()
+        {
+            message = new Message();
+            width = 1200;
+            height = 200;
+            position = Pos.CENTER;
+            fullscreen = false;
+            ledGap = 0;
+            startTime = null;
+        }
 
-    public void setFullscreen(boolean fullscreen)
-    {
-        this.fullscreen = fullscreen;
-    }
+        private MarqueeBuilder(Marquee marquee)
+        {
+            message = marquee.message;
+            width = marquee.width;
+            height = marquee.height;
+            position = marquee.position;
+            fullscreen = marquee.fullscreen;
+            ledGap = marquee.ledGap;
+            startTime = marquee.startTime;
+        }
 
-    public void setLedGap(int ledGap)
-    {
-        this.ledGap = ledGap;
-    }
+        public MarqueeBuilder message(Message message)
+        {
+            this.message = message;
+            return this;
+        }
 
-    public void setStartTime(LocalTime startTime)
-    {
-        this.startTime = startTime;
+        public MarqueeBuilder width(int width)
+        {
+            this.width = width;
+            return this;
+        }
+
+        public MarqueeBuilder height(int height)
+        {
+            this.height = height;
+            return this;
+        }
+
+        public MarqueeBuilder position(Pos position)
+        {
+            this.position = position;
+            return this;
+        }
+
+        public MarqueeBuilder fullscreen(boolean fullscreen)
+        {
+            this.fullscreen = fullscreen;
+            return this;
+        }
+
+        public MarqueeBuilder ledGap(int ledGap)
+        {
+            this.ledGap = ledGap;
+            return this;
+        }
+
+        public MarqueeBuilder startTime(LocalTime startTime)
+        {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public Marquee build()
+        {
+            return new Marquee(this);
+        }
     }
 }

@@ -2,25 +2,45 @@ package gui;
 
 import data.*;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.ObservableDeque;
+import util.URDeque;
 
 import java.io.File;
 
 public class SettingsController
 {
-    private Marquee marquee;
+    //private Marquee marquee;
+    private ObjectProperty<Marquee> marquee;
     private SettingsPane settingsPane;
     private Stage segmentStage;
 
     public SettingsController()
     {
-        marquee = new Marquee();
+        ObservableDeque<Marquee> undoStack = new URDeque<>();
+        ObservableDeque<Marquee> redoStack = new URDeque<>();
 
-        settingsPane = new SettingsPane(this, marquee);
+        marquee = new SimpleObjectProperty<>(new Marquee());
+
+        settingsPane = new SettingsPane(this);
+
+        marqueeProperty().bindBidirectional(settingsPane.marqueeProperty());
+
+        // Event handler to record user-enacted changes to the marquee
+        marqueeProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(redoStack.peek()))
+            {
+                System.out.println("Marquee changed!");
+                undoStack.push(oldValue);
+                marquee.set(newValue);
+            }
+        });
 
         //Creating Segment Stage
         segmentStage = new Stage();
@@ -50,7 +70,7 @@ public class SettingsController
 
             if (!isSorted)
             {
-                marquee.getMessage().changeOrder(ranks);
+                marquee.get().getMessage().changeOrder(ranks);
                 settingsPane.getSegmentListView().refresh();
             }
         });
@@ -58,7 +78,7 @@ public class SettingsController
         // Event handler for file menu new
         settingsPane.getNew().setOnAction(e ->
         {
-            marquee = new Marquee();
+            marquee.set(new Marquee());
             settingsPane.reset();
         });
         
@@ -71,8 +91,8 @@ public class SettingsController
             File file = fileChooser.showSaveDialog(new Stage());
             if(file != null) 
             {
-                XMLParser xmlp = new XMLParser(file);
-                xmlp.XMLWriter(marquee);
+//                XMLParser xmlp = new XMLParser(file);
+//                xmlp.XMLWriter(marquee);
             }
         });        
 
@@ -85,10 +105,21 @@ public class SettingsController
             File file = fileChooser.showOpenDialog(new Stage());
             if(file != null)
             {
-                XMLParser xmlp = new XMLParser(file);
-                marquee = xmlp.XMLReader();
-                settingsPane.populate();
+//                XMLParser xmlp = new XMLParser(file);
+//                marquee = xmlp.XMLReader();
+//                settingsPane.populate();
             }
+        });
+
+        settingsPane.getUndo().disableProperty().bind(undoStack.emptyProperty());
+        settingsPane.getRedo().disableProperty().bind(redoStack.emptyProperty());
+
+        settingsPane.getUndo().setOnAction(e ->
+        {
+            redoStack.push(marquee.get());
+            marquee.set(undoStack.pop());
+            settingsPane.reset();
+            settingsPane.populate();
         });
     }
 
@@ -98,6 +129,11 @@ public class SettingsController
     }
 
     public Marquee getMarquee()
+    {
+        return marquee.get();
+    }
+
+    public ObjectProperty<Marquee> marqueeProperty()
     {
         return marquee;
     }
@@ -132,18 +168,18 @@ public class SettingsController
 
         segmentPane.getContinueButton().setOnAction(e -> {
 
-            int index = marquee.getMessage().getContents().indexOf(segment);
+            int index = marquee.get().getMessage().getContents().indexOf(segment);
             Segment newSegment = segmentPane.getSegment();
 
             if (newSegment.isValid())
             {
                 if (index < 0)
                 {
-                    marquee.getMessage().getContents().add(segmentPane.getSegment());
+                    marquee.get().getMessage().getContents().add(segmentPane.getSegment());
                 }
                 else
                 {
-                    marquee.getMessage().getContents().set(index, segmentPane.getSegment());
+                    marquee.get().getMessage().getContents().set(index, segmentPane.getSegment());
                 }
 
                 settingsPane.getSegmentListView().refresh();

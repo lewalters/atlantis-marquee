@@ -98,4 +98,10 @@ public class Message
             contents.set(ranks[i] - 1, tempContents[i]);
         }
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return obj instanceof Message;
+    }
 }

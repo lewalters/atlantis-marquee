@@ -1,10 +1,11 @@
-/**
+/*
  * XML Parsing class
  * 
  * Bugs: None known
  *
  * @author Team Atlantis
- */
+ *//*
+
 package data;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,7 +59,7 @@ public class XMLParser
 	  e.printStackTrace();
 	}
 	doc.getDocumentElement().normalize();
-    Marquee marquee = new Marquee(0, 0, 0);
+    Marquee marquee = new Marquee();
 //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
 
 	NodeList msgList = doc.getElementsByTagName("message");
@@ -282,4 +283,4 @@ public class XMLParser
   	  tfe.printStackTrace();
   	} 
   }
-}
+}*/
