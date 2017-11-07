@@ -1,11 +1,13 @@
 package data;
 
+import javafx.scene.paint.Color;
 import util.ScrollDirection;
 
 import java.util.Iterator;
 import java.util.Map;
 
 import static java.util.Map.entry;
+import static util.Global.OFF_COLOR;
 
 /**
  * (Insert a brief comment that describes
@@ -17,11 +19,11 @@ import static java.util.Map.entry;
  */
 public class CharDot
 {
-    private String color;
+    private Color color;
     private DotMatrix charDots;
     private int hLength, vLength, size;
 
-    public CharDot(char ch, String color)
+    public CharDot(char ch, Color color)
     {
         this.color = color;
         int[][] leds = charMap.get(ch);
@@ -55,14 +57,14 @@ public class CharDot
 
         for (int i = 0; i < 12; i++)
         {
-            color = "696969";
+            color = OFF_COLOR;
             hLength = 1;
             vLength = 12;
             charDots.set(new Dot(color, 0), i, 0);
         }
     }
 
-    public String getColor()
+    public Color getColor()
     {
         return color;
     }
@@ -82,7 +84,7 @@ public class CharDot
         return size;
     }
 
-    public void setColor(String color)
+    public void setColor(Color color)
     {
         this.color = color;
     }

@@ -22,9 +22,9 @@ public class LED extends Circle
         return on;
     }
 
-    public void turnOn(String color, int intensity)
+    public void turnOn(Color color, int intensity)
     {
-        paint = Color.web(color, intensity / 100.0);
+        paint = color;
         turnOn();
     }
 

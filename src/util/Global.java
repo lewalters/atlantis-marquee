@@ -25,12 +25,13 @@ public final class Global
 
     // GUI
     public static Color OFF_COLOR = Color.BLACK;
+    public static Color DEFAULT_TEXT_COLOR = Color.WHITE;
     public static String TITLE_FONT = "Onyx";
     public static String APP_FONT = "Onyx";
     public static String TEXT_FONT = "Helvetica";
 
     // Validation
-    public static int MAX_IMAGE_HEIGHT = 200;
+    public static int MAX_IMAGE_HEIGHT = 300;
     public static int MAX_IMAGE_WIDTH = 1200;
     public static int MIN_OPACITY = 90;
     public static int MAX_BORDER_COLORS = 4;

@@ -45,7 +45,7 @@ public abstract class SegmentPane extends BorderPane
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 400);
+        this.setPrefSize(640, 440);
         this.setPadding(new Insets(30));
 
         Label durationLabel = new Label("Duration:");

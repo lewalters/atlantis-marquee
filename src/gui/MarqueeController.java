@@ -1,6 +1,9 @@
 package gui;
 
 import data.*;
+import javafx.geometry.Pos;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import util.*;
 
 import javafx.animation.*;
@@ -48,7 +51,43 @@ public class MarqueeController
 
     public Pane getMarqueePane()
     {
-        return marqueePane;
+        BorderPane frame = new BorderPane();
+        Pos position = marquee.getScreenPos();
+
+        switch (position)
+        {
+            case TOP_LEFT:
+            case TOP_RIGHT:
+            case TOP_CENTER:
+                frame.setTop(marqueePane);
+                break;
+            case CENTER:
+            case CENTER_LEFT:
+            case CENTER_RIGHT:
+                frame.setCenter(marqueePane);
+                break;
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+            case BOTTOM_CENTER:
+                frame.setBottom(marqueePane);
+                break;
+        }
+
+        switch (position)
+        {
+            case TOP_LEFT:
+            case BOTTOM_LEFT:
+            case CENTER_LEFT:
+                marqueePane.setAlignment(Pos.CENTER_LEFT);
+                break;
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+            case CENTER_RIGHT:
+                marqueePane.setAlignment(Pos.CENTER_RIGHT);
+                break;
+        }
+
+        return frame;
     }
 
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat

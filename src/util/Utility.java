@@ -56,18 +56,18 @@ public final class Utility
         RGB[][] rgbs = new RGB[dotHeight][dotWidth];
         matrix = new DotMatrix(dotHeight, dotWidth);
 
+        // Calculate the width and height of each dot in terms of pixels in the original image
+        int dotHeightPx = (int) Math.ceil((height * 1.0) / dotHeight);
+        int dotWidthPx = (int) Math.ceil((width * 1.0) / dotWidth);
+
         // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)
             {
-                rgbs[r][c] = new RGB();
+                rgbs[r][c] = new RGB(dotHeightPx, dotWidthPx);
             }
         }
-
-        // Calculate the width and height of each dot in terms of pixels in the original image
-        int dotHeightPx = (int) Math.ceil((height * 1.0) / dotHeight);
-        int dotWidthPx = (int) Math.ceil((width * 1.0) / dotWidth);
 
         // Sum the red, green, blue, and opacity values for all pixels in the "area" of each dot
         for (int r = 0; r < height; r++)
@@ -77,10 +77,10 @@ public final class Utility
                 int row = r / dotHeightPx;
                 int col = c / dotWidthPx;
                 Color pixel = pixelReader.getColor(c, r);
-                rgbs[row][col].r += pixel.getRed();
-                rgbs[row][col].g += pixel.getGreen();
-                rgbs[row][col].b += pixel.getBlue();
-                rgbs[row][col].o += pixel.getOpacity();
+                rgbs[row][col].addRed(pixel.getRed());
+                rgbs[row][col].addGreen(pixel.getGreen());
+                rgbs[row][col].addBlue(pixel.getBlue());
+                rgbs[row][col].addOpacity(pixel.getOpacity());
             }
         }
 
@@ -93,9 +93,9 @@ public final class Utility
         {
             for (int c = 0; c < dotWidth; c++)
             {
-                Color color = Color.color(rgbs[r][c].r / tgbArea, rgbs[r][c].g / tgbArea, rgbs[r][c].b / tgbArea, rgbs[r][c].o / tgbArea);
+                Color color = Color.color(rgbs[r][c].getRed(), rgbs[r][c].getGreen(), rgbs[r][c].getBlue(), rgbs[r][c].getOpacity());
                 int opacity = (int)(color.getOpacity() * 100);
-                matrix.set(new Dot(color.toString(), opacity > MIN_OPACITY ? opacity : 0), r, c);
+                matrix.set(new Dot(color, opacity > MIN_OPACITY ? opacity : 0), r, c);
             }
         }
 

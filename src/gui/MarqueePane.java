@@ -95,7 +95,7 @@ public class MarqueePane extends StackPane
         }
 
         // Center the grid and add it to the pane
-        ledGrid.setAlignment(Pos.CENTER);
+        ledGrid.alignmentProperty().bind(this.alignmentProperty());
         this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs

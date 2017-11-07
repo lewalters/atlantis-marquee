@@ -4,9 +4,11 @@ import data.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalTimeStringConverter;
 
@@ -36,7 +38,7 @@ public class SettingsPane extends BorderPane
     private MenuItem newMarq, save, load, exit;
     private MenuItem undo, redo;
     private MenuItem userGuide, about;
-    private CheckBox fullScreenCheckBox;
+    private CheckBox fullScreenCheckBox, maxSizeCheckBox;
     //private CheckBox authenticationCheckBox;
     private Button startButton;
     private Button textSegmentButton;
@@ -212,6 +214,13 @@ public class SettingsPane extends BorderPane
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
         fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
+        maxSizeCheckBox = new CheckBox("Max Size");
+        maxSizeCheckBox.setFont(new Font(TEXT_FONT, 15));
+        maxSizeCheckBox.disableProperty().bind(fullScreenCheckBox.selectedProperty().not());
+        widthTextField.disableProperty().bind(maxSizeCheckBox.selectedProperty());
+        heightTextField.disableProperty().bind(maxSizeCheckBox.selectedProperty());
+        HBox fullScreenBox = new HBox(fullScreenCheckBox, maxSizeCheckBox);
+        fullScreenBox.setSpacing(10);
 //        authenticationCheckBox = new CheckBox("Authentication");
 //        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
@@ -431,7 +440,7 @@ public class SettingsPane extends BorderPane
         heightTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                String heightText = widthTextField.getText();
+                String heightText = heightTextField.getText();
 
                 int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
 
@@ -507,6 +516,36 @@ public class SettingsPane extends BorderPane
         // Set the fullscreen toggle on the marquee
         fullScreenCheckBox.setOnAction(e -> marquee.setFullscreen(fullScreenCheckBox.isSelected()));
 
+        // Set the marquee to the maximum display size if max size is checked
+        maxSizeCheckBox.setOnAction(e -> {
+            if (maxSizeCheckBox.isSelected())
+            {
+                Rectangle2D bounds = Screen.getPrimary().getBounds();
+                marquee.setWidth((int) bounds.getWidth());
+                marquee.setHeight((int) bounds.getHeight());
+            }
+            else
+            {
+                String widthText = widthTextField.getText();
+
+                int width = widthText.isEmpty() ? 0 : Integer.valueOf(widthText);
+
+                if (width >= MIN_WIDTH)
+                {
+                    marquee.setWidth(width);
+                }
+
+                String heightText = heightTextField.getText();
+
+                int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
+
+                if (height >= 50)
+                {
+                    marquee.setHeight(height);
+                }
+            }
+        });
+
         /*Setting Horizontal/Vertical Gap for GridPane*/
         //Setting leftLabelTextFieldGrid Horizontal/Vertical Gap
         leftLabelTextFieldGrid.setHgap(15);
@@ -523,7 +562,7 @@ public class SettingsPane extends BorderPane
         this.setTop(menuElements);
 
         //Creating Vertical Box for fullscreen checkbox, authentication checkbox, vertical and start menuElements
-        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenCheckBox, startButton);
+        VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenBox, startButton);
         leftControlVb.setSpacing(10);
         this.setLeft(leftControlVb);
 

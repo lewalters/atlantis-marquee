@@ -1,3 +1,4 @@
+/*
 package test;
 
 import static org.junit.Assert.*;
@@ -30,14 +31,16 @@ public class DotMatrixTest {
         dm.set(new Dot("9B16B8", 1), 1, 1);
     }
 
-    /*@Test
+    */
+/*@Test
     public void testSet()
     {
         Dot d;
         matrix[row][col] = d;
 
         //assertArrayEquals(d, );
-    }*/
+    }*//*
+
 
     @Test
     public void testIteratorLeft()
@@ -79,3 +82,4 @@ public class DotMatrixTest {
         assertArrayEquals(d, direction.next());
     }
 }
+*/
