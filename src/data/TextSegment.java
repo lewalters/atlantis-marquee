@@ -344,6 +344,28 @@ public class TextSegment extends Segment
     @Override
     public boolean isValid()
     {
-        return super.isValid() && !text.isEmpty();
+        if (super.isValid() && !text.isEmpty())
+        {
+            if (hasSubsegments())
+            {
+                for (TextSegment segment : getSubsegments())
+                {
+                    if (!segment.isValid())
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else // No subsegments
+            {
+                return hLength <= TEXT_COLS;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 }

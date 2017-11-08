@@ -3,7 +3,6 @@ package gui;
 import data.*;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import util.*;
 
 import javafx.animation.*;
@@ -49,6 +48,7 @@ public class MarqueeController
         });
     }
 
+    // Return the marquee anchored within the enclosing window based on its screen position value
     public Pane getMarqueePane()
     {
         BorderPane frame = new BorderPane();

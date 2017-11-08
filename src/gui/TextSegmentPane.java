@@ -70,19 +70,20 @@ public class TextSegmentPane extends SegmentPane
         Label textLabel = new Label("Text:");
         textLabelElementsGrid.add(textLabel, 0, 1);
 
-        textLabelElementsGrid.add(durSpeedLabels, 0, 4);
+        textLabelElementsGrid.add(durationLabel, 0, 4);
+        textLabelElementsGrid.add(speedLabel, 0, 5);
 
         Label borderColor = new Label("Border Color(s):");
-        textLabelElementsGrid.add(borderColor, 0, 5);
+        textLabelElementsGrid.add(borderColor, 0, 6);
 
         Label paddingColor = new Label("Padding Color:");
-        textLabelElementsGrid.add(paddingColor, 0, 7);
+        textLabelElementsGrid.add(paddingColor, 0, 8);
 
         Label borderEffect = new Label("Border Effect:");
-        textLabelElementsGrid.add(borderEffect, 0, 8);
+        textLabelElementsGrid.add(borderEffect, 0, 9);
 
         Label borderSpeed = new Label("Border Speed:");
-        textLabelElementsGrid.add(borderSpeed, 0, 9);
+        textLabelElementsGrid.add(borderSpeed, 0, 10);
 
         //Setting text Label Font
         textLabel.setFont(new Font("TEXT_FONT", 15));
@@ -94,9 +95,10 @@ public class TextSegmentPane extends SegmentPane
         /*Adding TextFields*/
         textTextField = new TextField();
         textLabelElementsGrid.add(textTextField, 1, 1);
-        textLabelElementsGrid.add(durSpeedFields, 1, 4);
+        textLabelElementsGrid.add(durationTextField, 1, 4);
+        textLabelElementsGrid.add(speedTextField, 1, 5);
         borderSpeedTextField = new TextField();
-        textLabelElementsGrid.add(borderSpeedTextField, 1, 9);
+        textLabelElementsGrid.add(borderSpeedTextField, 1, 10);
 
         //Setting text Field Font
         textTextField.setFont(new Font("TEXT_FONT", 15));
@@ -125,6 +127,7 @@ public class TextSegmentPane extends SegmentPane
         textColorPicker.visibleProperty().bind(textColorSingle.selectedProperty());
         TextColorsPicker textColorsPicker = new TextColorsPicker(segment);
         ScrollPane colorsScroll = new ScrollPane(textColorsPicker);
+        textColorsPicker.minWidthProperty().bind(colorsScroll.widthProperty());
         colorsScroll.setPrefViewportWidth(200);
         colorsScroll.setPrefViewportHeight(60);
         colorsScroll.visibleProperty().bindBidirectional(colorsScroll.managedProperty());
@@ -164,8 +167,8 @@ public class TextSegmentPane extends SegmentPane
         HBox borderColorsBox = new HBox(borderColorPickers.get(0));
         borderColorsBox.visibleProperty().bindBidirectional(borderColorsBox.managedProperty());
         borderColorsBox.visibleProperty().bind(borderColorCustom.selectedProperty());
-        textLabelElementsGrid.add(borderChoicesBox, 1, 5);
-        textLabelElementsGrid.add(borderColorsBox, 1, 6);
+        textLabelElementsGrid.add(borderChoicesBox, 1, 6);
+        textLabelElementsGrid.add(borderColorsBox, 1, 7);
 
         // Set the border color to the off color if "none" is selected
         borderColorNone.setOnAction(e -> segment.setBorderColors(new Color[]{OFF_COLOR}));
@@ -244,7 +247,7 @@ public class TextSegmentPane extends SegmentPane
         paddingColorPicker.visibleProperty().bind(paddingColorCustom.selectedProperty());
         HBox paddingColorChoices = new HBox(paddingColorNone, paddingColorCustom, paddingColorPicker);
         paddingColorChoices.setSpacing(2);
-        textLabelElementsGrid.add(paddingColorChoices, 1, 7);
+        textLabelElementsGrid.add(paddingColorChoices, 1, 8);
 
         // Set padding color when picker is changed
         paddingColorPicker.setOnAction(e -> segment.setPaddingColor(paddingColorPicker.getValue()));
@@ -254,7 +257,13 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox.getItems().addAll(BorderEffect.values());
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.getSelectionModel().selectFirst();
-        textLabelElementsGrid.add(borderEffectComboBox, 1, 8);
+        textLabelElementsGrid.add(borderEffectComboBox, 1, 9);
+
+        // Disallow the user from choosing a border effect if no color is selected
+        borderEffectComboBox.disableProperty().bind(borderColorNone.selectedProperty());
+
+        // Disallow the user from setting a border speed if no effect is selected
+        borderSpeedTextField.disableProperty().bind(Bindings.equal(borderEffectComboBox.getSelectionModel().selectedItemProperty(), BorderEffect.NONE));
 
         // Set the border effect on the segment if the combo box value is changed
         borderEffectComboBox.setOnAction(e -> segment.setBorderEffect(borderEffectComboBox.getValue()));

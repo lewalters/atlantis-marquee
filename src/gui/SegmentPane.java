@@ -16,10 +16,8 @@ public abstract class SegmentPane extends BorderPane
 {
     private Segment segment;
 
-    protected Label titleLabel;
     private VBox scrollVBox;
     private VBox effectsVBox;
-    private TextField durationTextField, speedTextField;
     private RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     private ComboBox<EntranceEffect> entranceComboBox;
     protected ComboBox<MiddleEffect> middleComboBox;
@@ -28,7 +26,8 @@ public abstract class SegmentPane extends BorderPane
     private Button continueButton;
     private Button cancelButton;
 
-    protected VBox durSpeedLabels, durSpeedFields;
+    protected Label titleLabel, durationLabel, speedLabel;
+    protected TextField durationTextField, speedTextField;
 
     public SegmentPane(Segment segment)
     {
@@ -45,16 +44,16 @@ public abstract class SegmentPane extends BorderPane
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 440);
+        this.setPrefSize(640, 500);
         this.setPadding(new Insets(30));
 
-        Label durationLabel = new Label("Duration:");
+        durationLabel = new Label("Duration:");
         durationLabel.setFont(new Font(TEXT_FONT, 15));
 
         durationTextField = new TextField();
         durationTextField.setFont(new Font(TEXT_FONT, 15));
         durationTextField.setMaxWidth(45);
-        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Text Will Be Displayed On The Screen"));
+        durationTextField.setTooltip(new Tooltip("How long the marquee will display on the screen"));
 
         //Setting durationTextField Character Length
         durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -87,7 +86,7 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        Label speedLabel = new Label("Scroll Speed:");
+        speedLabel = new Label("Scroll Speed:");
         speedLabel.setFont(new Font(TEXT_FONT, 15));
 
         speedTextField = new TextField();
@@ -125,11 +124,6 @@ public abstract class SegmentPane extends BorderPane
                 }
             }
         }));
-
-        durSpeedLabels = new VBox(durationLabel, speedLabel);
-        durSpeedLabels.setAlignment(Pos.CENTER_LEFT);
-        durSpeedFields = new VBox(durationTextField, speedTextField);
-        durSpeedFields.setAlignment(Pos.CENTER_LEFT);
 
         /*Adding Creating Buttons and Setting Font/Size*/
         continueButton = new Button("Continue");
@@ -219,14 +213,14 @@ public abstract class SegmentPane extends BorderPane
         exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
 
         // Swapping between duration and speed labels / boxes
-        durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
+/*        durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
         durationLabel.visibleProperty().bind(speedLabel.visibleProperty().not());
         durationTextField.visibleProperty().bindBidirectional(durationTextField.managedProperty());
         durationTextField.visibleProperty().bind(durationLabel.visibleProperty());
         speedLabel.visibleProperty().bindBidirectional(speedLabel.managedProperty());
         speedLabel.visibleProperty().bind(scrollRadioBtn.selectedProperty());
         speedTextField.visibleProperty().bindBidirectional(speedTextField.managedProperty());
-        speedTextField.visibleProperty().bind(speedLabel.visibleProperty());
+        speedTextField.visibleProperty().bind(speedLabel.visibleProperty());*/
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));

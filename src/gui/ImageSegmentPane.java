@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -44,8 +45,13 @@ public class ImageSegmentPane extends SegmentPane
 
         VBox leftSide = new VBox();
 
-        HBox durSpeedBox = new HBox(durSpeedLabels, durSpeedFields);
-        durSpeedBox.setSpacing(10);
+        GridPane grid = new GridPane();
+        grid.add(durationLabel, 0, 0);
+        grid.add(durationTextField, 1, 0);
+        grid.add(speedLabel, 0, 1);
+        grid.add(speedTextField, 1, 1);
+        grid.setHgap(10);
+        grid.setVgap(5);
 
         imageChooser = new FileChooser();
         imageChooser.setTitle("Select Source Image");
@@ -68,7 +74,7 @@ public class ImageSegmentPane extends SegmentPane
         placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
         imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
 
-        leftSide.getChildren().addAll(durSpeedBox, imageBox);
+        leftSide.getChildren().addAll(grid, imageBox);
         leftSide.setSpacing(10);
         this.setLeft(leftSide);
     }

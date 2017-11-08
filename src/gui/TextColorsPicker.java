@@ -31,81 +31,55 @@ public class TextColorsPicker extends VBox
         this.getChildren().clear();
         pickers.clear();
 
+        // Either draw the single segment or draw the subsegments on separate lines
         if (!segment.hasSubsegments())
         {
-            HBox textBox = new HBox();
-            this.getChildren().add(textBox);
-
-            String text = segment.getText();
-
-            for(int i = 0; i < text.length(); i++)
-            {
-                char ch = Character.toUpperCase(text.charAt(i));
-
-                VBox charBox = new VBox();
-
-                if (ch != ' ')
-                {
-                    charBox.getChildren().add(new Label(String.valueOf(ch)));
-
-                    ColorPicker picker = new ColorPicker(DEFAULT_TEXT_COLOR);
-                    picker.getStyleClass().add("button");
-                    picker.setStyle("-fx-color-label-visible: false;");
-                    pickers.add(picker);
-
-                    picker.setOnAction(e -> segment.setTextColors(pickers.stream().map(ColorPicker::getValue).toArray(Color[]::new)));
-                    charBox.getChildren().add(picker);
-                }
-                else
-                {
-                    Separator separator = new Separator(Orientation.VERTICAL);
-                    separator.setOpacity(0);
-                    charBox.getChildren().add(separator);
-                }
-
-                charBox.setSpacing(2);
-                charBox.setAlignment(Pos.CENTER);
-                textBox.getChildren().add(charBox);
-            }
+            draw(segment.getText());
         }
         else
         {
             for (String subtext : segment.getSubtexts())
             {
-                HBox textBox = new HBox();
-                this.getChildren().add(textBox);
+                draw(subtext);
                 this.getChildren().add(new Separator());
-
-                for(int i = 0; i < subtext.length(); i++)
-                {
-                    char ch = Character.toUpperCase(subtext.charAt(i));
-
-                    VBox charBox = new VBox();
-
-                    if (ch != ' ')
-                    {
-                        charBox.getChildren().add(new Label(String.valueOf(ch)));
-
-                        ColorPicker picker = new ColorPicker(DEFAULT_TEXT_COLOR);
-                        picker.getStyleClass().add("button");
-                        picker.setStyle("-fx-color-label-visible: false;");
-                        pickers.add(picker);
-
-                        picker.setOnAction(e -> segment.setTextColors(pickers.stream().map(ColorPicker::getValue).toArray(Color[]::new)));
-                        charBox.getChildren().add(picker);
-                    }
-                    else
-                    {
-                        Separator separator = new Separator(Orientation.VERTICAL);
-                        separator.setOpacity(0);
-                        charBox.getChildren().add(separator);
-                    }
-
-                    charBox.setSpacing(2);
-                    charBox.setAlignment(Pos.CENTER);
-                    textBox.getChildren().add(charBox);
-                }
             }
+        }
+    }
+
+    // Draw a box with each character of the string sitting above a corresponding color picker
+    private void draw(String text)
+    {
+        HBox textBox = new HBox();
+        textBox.setAlignment(Pos.CENTER);
+        this.getChildren().add(textBox);
+
+        for(int i = 0; i < text.length(); i++)
+        {
+            char ch = Character.toUpperCase(text.charAt(i));
+
+            VBox charBox = new VBox();
+
+            if (ch != ' ')
+            {
+                charBox.getChildren().add(new Label(String.valueOf(ch)));
+
+                ColorPicker picker = new ColorPicker(DEFAULT_TEXT_COLOR);
+                picker.getStyleClass().add("button");
+                picker.setStyle("-fx-color-label-visible: false;");
+                pickers.add(picker);
+
+                picker.setOnAction(e -> segment.setTextColors(pickers.stream().map(ColorPicker::getValue).toArray(Color[]::new)));
+                charBox.getChildren().add(picker);
+            }
+            else
+            {
+                Separator separator = new Separator(Orientation.VERTICAL);
+                separator.setOpacity(0);
+                charBox.getChildren().add(separator);
+            }
+
+            charBox.setSpacing(2);
+            textBox.getChildren().add(charBox);
         }
     }
 }

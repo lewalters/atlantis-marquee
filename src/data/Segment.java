@@ -123,7 +123,15 @@ public abstract class Segment
     {
         if (scrollDirection == ScrollDirection.STATIC)
         {
-            return duration > 0;
+            if (effectEn instanceof ScrollDirection || effectEn instanceof ScrollEffect ||
+                    effectEx instanceof ScrollDirection || effectEx instanceof ScrollEffect)
+            {
+                return duration > 0 && speed > 0;
+            }
+            else
+            {
+                return duration > 0;
+            }
         }
         else
         {

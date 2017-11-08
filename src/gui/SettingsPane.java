@@ -45,7 +45,7 @@ public class SettingsPane extends BorderPane
     private Button imageSegmentButton;
     private Button reorderButton;
     private SegmentListView segmentListView;
-    private TextField widthTextField, heightTextField, nameTextField, delayTextField, repeatTextField;
+    private TextField widthTextField, heightTextField, ledGapTextField, nameTextField, delayTextField, repeatTextField;
     private TextArea commentsTextArea;
     private ComboBox<Pos> screenPosition;
 
@@ -70,35 +70,40 @@ public class SettingsPane extends BorderPane
         setHeightLabel.setFont(new Font("TEXT_FONT", 15));
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
+        // LED Gap Label
+        Label ledGapLabel = new Label("LED Gap:");
+        ledGapLabel.setFont(new Font(TEXT_FONT, 15));
+        leftLabelTextFieldGrid.add(ledGapLabel, 0, 2);
+
         //Creating Name Label
         Label setNameLabel = new Label("Name");
         setNameLabel.setFont(new Font("TEXT_FONT", 15));
-        leftLabelTextFieldGrid.add(setNameLabel,0,2);
+        leftLabelTextFieldGrid.add(setNameLabel,0,3);
 
         //Setting Delay Label
         Label setDelayLabel = new Label("Delay:");
         setDelayLabel.setFont(new Font("Helvetica", 15));
-        leftLabelTextFieldGrid.add(setDelayLabel,0,3);
+        leftLabelTextFieldGrid.add(setDelayLabel,0,4);
 
         // Repeat Factor Label
         Label setRepeatLabel = new Label("Repeat:");
         setRepeatLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(setRepeatLabel, 0, 4);
+        leftLabelTextFieldGrid.add(setRepeatLabel, 0, 5);
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
         setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
-        leftLabelTextFieldGrid.add(setCommentsLabel,0,5);
+        leftLabelTextFieldGrid.add(setCommentsLabel,0,6);
 
         // Screen position label
         Label screenPositionLabel = new Label("Screen Position");
         screenPositionLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(screenPositionLabel, 0, 6);
+        leftLabelTextFieldGrid.add(screenPositionLabel, 0, 7);
 
         // Start Time Label
         Label startTimeLabel = new Label("Start Time:");
         startTimeLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(startTimeLabel, 0, 7);
+        leftLabelTextFieldGrid.add(startTimeLabel, 0, 8);
 
         /*Adding TextFields*/
         //Creating Label TextFields
@@ -106,21 +111,23 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.add(widthTextField, 1,0);
         heightTextField = new TextField();
         leftLabelTextFieldGrid.add(heightTextField,1,1);
+        ledGapTextField = new TextField();
+        leftLabelTextFieldGrid.add(ledGapTextField, 1, 2);
         nameTextField = new TextField();
         nameTextField.setPromptText("Only 23 Characters Allowed");
-        leftLabelTextFieldGrid.add(nameTextField,1,2);
+        leftLabelTextFieldGrid.add(nameTextField,1,3);
         delayTextField = new TextField();
-        leftLabelTextFieldGrid.add(delayTextField,1,3);
+        leftLabelTextFieldGrid.add(delayTextField,1,4);
         repeatTextField = new TextField();
-        leftLabelTextFieldGrid.add(repeatTextField, 1, 4);
+        leftLabelTextFieldGrid.add(repeatTextField, 1, 5);
         commentsTextArea = new TextArea();
         commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
         commentsTextArea.setWrapText(true);
-        leftLabelTextFieldGrid.add(commentsTextArea,1,5);
+        leftLabelTextFieldGrid.add(commentsTextArea,1,6);
 
         // Screen position combo box using Pos with modified string values
         screenPosition = new ComboBox<>();
-        screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 9));
+        screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 10));
         screenPosition.getSelectionModel().select(Pos.CENTER);
         screenPosition.setConverter(new StringConverter<>()
         {
@@ -142,7 +149,7 @@ public class SettingsPane extends BorderPane
                 return map.get(string);
             }
         });
-        leftLabelTextFieldGrid.add(screenPosition, 1, 6);
+        leftLabelTextFieldGrid.add(screenPosition, 1, 7);
 
         // Radio buttons to decide between start time = now or a custom start time
         ToggleGroup timeGroup = new ToggleGroup();
@@ -208,7 +215,7 @@ public class SettingsPane extends BorderPane
 
         VBox timeBox = new VBox(timeChoices, timeSpinner);
         timeBox.setSpacing(5);
-        leftLabelTextFieldGrid.add(timeBox, 1, 7);
+        leftLabelTextFieldGrid.add(timeBox, 1, 8);
 
         /*Adding Checkboxes*/
         //Creating Checkboxes
@@ -284,8 +291,9 @@ public class SettingsPane extends BorderPane
 
         /*Setting Width/Height*/
         //Setting TextFields Width
-        widthTextField.setMaxWidth(40);
-        heightTextField.setMaxWidth(40);
+        widthTextField.setMaxWidth(50);
+        heightTextField.setMaxWidth(50);
+        ledGapTextField.setMaxWidth(40);
         nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
         repeatTextField.setMaxWidth(40);
@@ -303,6 +311,7 @@ public class SettingsPane extends BorderPane
         //Adding ToolTip Hints for TextSegment Elements
         widthTextField.setTooltip(new Tooltip("This Sets The Width For A Marquee"));
         heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
+        ledGapTextField.setTooltip(new Tooltip("This sets the gap between LED elements"));
         nameTextField.setTooltip(new Tooltip("This Assigns A Descriptive Name For A Marquee"));
         delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
         repeatTextField.setTooltip(new Tooltip("This sets the repeat factor for the message"));
@@ -319,9 +328,9 @@ public class SettingsPane extends BorderPane
         widthTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue())
             {
-                if(widthTextField.getText().length() > 3)
+                if(widthTextField.getText().length() > 4)
                 {
-                    widthTextField.setText(widthTextField.getText().substring(0,3));
+                    widthTextField.setText(widthTextField.getText().substring(0,4));
                 }
             }
         });
@@ -333,6 +342,17 @@ public class SettingsPane extends BorderPane
                 if(heightTextField.getText().length() > 3)
                 {
                     heightTextField.setText(heightTextField.getText().substring(0,3));
+                }
+            }
+        });
+
+        // Restricting the ledGapTextField to a length of 1
+        ledGapTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(ledGapTextField.getText().length() > 1)
+                {
+                    ledGapTextField.setText(ledGapTextField.getText().substring(0,1));
                 }
             }
         });
@@ -397,6 +417,14 @@ public class SettingsPane extends BorderPane
             }
         });
 
+        // Restrict the ledGapTextField to accept only numeric values
+        ledGapTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+            {
+                ledGapTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
         //Making DelayTextField To Accept only Numeric Values
         delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*"))
@@ -447,6 +475,21 @@ public class SettingsPane extends BorderPane
                 if (height >= 50)
                 {
                     marquee.setHeight(height);
+                }
+            }
+        }));
+
+        // Set the LED gap of the marquee or warn if the LED gap is invalid
+        ledGapTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String ledGapText = ledGapTextField.getText();
+
+                int ledGap = ledGapText.isEmpty() ? 0 : Integer.valueOf(ledGapText);
+
+                if (ledGap >= 0 && ledGap <= 9)
+                {
+                    marquee.setLedGap(ledGap);
                 }
             }
         }));
