@@ -44,6 +44,8 @@ public class TextColorsPicker extends VBox
                 this.getChildren().add(new Separator());
             }
         }
+
+        segment.setTextColors(pickers.stream().map(ColorPicker::getValue).toArray(Color[]::new));
     }
 
     // Draw a box with each character of the string sitting above a corresponding color picker

@@ -1,6 +1,7 @@
 package gui;
 
 import data.Segment;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -33,6 +34,9 @@ public abstract class SegmentPane extends BorderPane
     {
         this.segment = segment;
 
+        // Take the focus off of the active node if the dead space is clicked
+        this.setOnMouseClicked(e -> requestFocus());
+
         titleLabel = new Label("Segment Settings");
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
@@ -40,11 +44,25 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
                 + "-fx-font-weight: bold;");
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 10,0));
-        this.setTop(titleLabel);
+
+        // Create a preview marquee below the title that executes when clicked
+        MarqueeController controller = new MarqueeController(segment, false);
+        MarqueePane marqueePane = controller.getPreviewMarqueePane();
+        marqueePane.setOnMouseClicked(e ->
+        {
+            if (segment.isValid())
+            {
+                controller.preview();
+            }
+        });
+
+        VBox topBox = new VBox(titleLabel, marqueePane);
+        topBox.setSpacing(10);
+        this.setTop(topBox);
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 500);
+        this.setPrefSize(640, 600);
         this.setPadding(new Insets(30));
 
         durationLabel = new Label("Duration:");
@@ -212,15 +230,16 @@ public abstract class SegmentPane extends BorderPane
         middleComboBox.setOnAction(e -> segment.setMiddleEffect(middleComboBox.getValue()));
         exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
 
-        // Swapping between duration and speed labels / boxes
-/*        durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
-        durationLabel.visibleProperty().bind(speedLabel.visibleProperty().not());
-        durationTextField.visibleProperty().bindBidirectional(durationTextField.managedProperty());
-        durationTextField.visibleProperty().bind(durationLabel.visibleProperty());
-        speedLabel.visibleProperty().bindBidirectional(speedLabel.managedProperty());
-        speedLabel.visibleProperty().bind(scrollRadioBtn.selectedProperty());
-        speedTextField.visibleProperty().bindBidirectional(speedTextField.managedProperty());
-        speedTextField.visibleProperty().bind(speedLabel.visibleProperty());*/
+        // Disable duration input if the user has selected continuous scrolling
+        durationTextField.disableProperty().bind(scrollRadioBtn.selectedProperty());
+
+        // Disable scroll speed input if the user has not selected any effects that involve scrolling
+        speedTextField.disableProperty().bind(
+                statikRadioBtn.selectedProperty().or(
+                effectsRadioBtn.selectedProperty().and(Bindings.and(
+                (Bindings.createBooleanBinding(() -> entranceComboBox.getValue() instanceof EntranceTransition, entranceComboBox.valueProperty())),
+                 Bindings.createBooleanBinding(() -> exitComboBox.getValue() instanceof ExitTransition, exitComboBox.valueProperty())))
+        ));
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));

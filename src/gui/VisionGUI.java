@@ -45,7 +45,7 @@ public class VisionGUI extends Application
             MarqueeController marqueeController = new MarqueeController(settingsController.getMarquee());
             Marquee marquee = settingsController.getMarquee();
             Stage marqueeStage = new Stage();
-            marqueeStage.setScene(new Scene(marqueeController.getMarqueePane()));
+            marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));
 
             if (marquee.isFullscreen())
             {

@@ -27,6 +27,9 @@ public class MarqueeController
     private MarqueePane marqueePane;
     private Marquee marquee;
 
+    private Segment previewSegment;
+    private SequentialTransition preview = new SequentialTransition();
+
     private MenuItem restart;
 
     public MarqueeController(Marquee marquee)
@@ -49,8 +52,16 @@ public class MarqueeController
         });
     }
 
+    public MarqueeController(Segment segment, boolean list)
+    {
+        previewSegment = segment;
+        marqueePane = new MarqueePane(list ? 300 : 500, 1);
+        preview = new SequentialTransition();
+        preview.setCycleCount(list ? Animation.INDEFINITE : 1);
+    }
+
     // Return the marquee anchored within the enclosing window based on its screen position value
-    public Pane getMarqueePane()
+    public Pane getFullMarqueePane()
     {
         BorderPane frame = new BorderPane();
         Pos position = marquee.getScreenPos();
@@ -89,6 +100,20 @@ public class MarqueeController
         }
 
         return frame;
+    }
+
+    public MarqueePane getPreviewMarqueePane()
+    {
+        return marqueePane;
+    }
+
+    public void preview()
+    {
+        preview.stop();
+        preview.getChildren().clear();
+        marqueePane.reset();
+        addSegment(previewSegment, preview);
+        preview.play();
     }
 
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat

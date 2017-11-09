@@ -360,7 +360,7 @@ public class TextSegment extends Segment
             }
             else // No subsegments
             {
-                return hLength <= TEXT_COLS;
+                return getScrollDirection() != ScrollDirection.STATIC || hLength <= TEXT_COLS;
             }
         }
         else
