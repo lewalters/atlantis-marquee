@@ -28,6 +28,15 @@ public class Message
         this.comments = comments;
     }
 
+    public Message()
+    {
+        name = "";
+        contents = new LinkedList<>();
+        repeatFactor = 0;
+        delay = 0;
+        comments = "";
+    }
+
     public String getName()
     {
         return name;

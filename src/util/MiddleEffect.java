@@ -1,12 +1,12 @@
 package util;
 
-public enum BorderEffect
+public enum MiddleEffect
 {
-    NONE("None"), BLINK("Blinking"), CLOCKWISE("Clockwise"), COUNTERCLOCKWISE("Counterclockwise");
+    NONE("None"), BLINK("Blinking"), RANDOM_COLOR("Random Colors");
 
     private String description;
 
-    BorderEffect(String description)
+    MiddleEffect(String description)
     {
         this.description = description;
     }

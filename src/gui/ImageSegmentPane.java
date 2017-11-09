@@ -14,16 +14,33 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import static util.Global.TEXT_FONT;
+
 import static util.Validation.validImage;
+
 public class ImageSegmentPane extends SegmentPane
 {
-    private TextField durationTextField;
+    private ImageSegment segment;
+
     private FileChooser imageChooser;
     private ImageView sourceImageView;
     private HBox imageBox;
 
-    ImageSegmentPane()
+    public ImageSegmentPane(ImageSegment segment)
+    {
+        super(new ImageSegment(segment));
+        this.segment = (ImageSegment) getSegment();
+        construct();
+        populate();
+    }
+
+    public ImageSegmentPane()
+    {
+        super(new ImageSegment());
+        this.segment = (ImageSegment) getSegment();
+        construct();
+    }
+
+    private void construct()
     {
         titleLabel.setText("Image Segment Settings");
 
@@ -36,6 +53,13 @@ public class ImageSegmentPane extends SegmentPane
         HBox durationBox = new HBox(durationLabel, durationTextField);
         durationBox.setSpacing(10);
         durationBox.setAlignment(Pos.CENTER_LEFT);
+        GridPane grid = new GridPane();
+        grid.add(durationLabel, 0, 0);
+        grid.add(durationTextField, 1, 0);
+        grid.add(speedLabel, 0, 1);
+        grid.add(speedTextField, 1, 1);
+        grid.setHgap(10);
+        grid.setVgap(5);
 
         imageChooser = new FileChooser();
         imageChooser.setTitle("Select Source Image");
@@ -59,6 +83,7 @@ public class ImageSegmentPane extends SegmentPane
         placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
         imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
 
+        leftSide.getChildren().addAll(grid, imageBox);
         //Setting text Field Font
         durationTextField.setFont(new Font(TEXT_FONT, 15));
 
@@ -106,32 +131,44 @@ public class ImageSegmentPane extends SegmentPane
         return imageBox;
     }
 
-    public void getSourceImage(Stage stage)
+    // Opens a file chooser as a dialog to select a source image
+    public void chooseSourceImage(Stage stage)
     {
         File imageFile = imageChooser.showOpenDialog(stage);
 
         if (imageFile != null)
         {
-            String imagePath = imageFile.toURI().toString();
+            setSourceImageView(imageFile.toURI().toString());
+        }
+    }
 
-            if (validImage(imagePath))
+    // Fill in the pane's cells with information from the given segment (for segment editing)
+    private void populate()
+    {
+        super.populate(segment);
+        setSourceImageView(segment.getSource());
+    }
+
+    private void setSourceImageView(String path)
+    {
+        if (validImage(path))
+        {
+            Image image = new Image(path);
+
+            sourceImageView.setImage(image);
+
+            if (image.getWidth() > imageBox.getPrefWidth())
             {
-                Image image = new Image(imagePath);
-
-                sourceImageView.setImage(image);
-
-                if (image.getWidth() > imageBox.getPrefWidth())
-                {
-                    sourceImageView.setFitWidth(imageBox.getPrefWidth());
-                }
-
-                if (image.getHeight() > imageBox.getPrefHeight())
-                {
-                    sourceImageView.setFitHeight(imageBox.getPrefHeight());
-                }
-
-                sourceImageView.setVisible(true);
+                sourceImageView.setFitWidth(imageBox.getPrefWidth());
             }
+
+            if (image.getHeight() > imageBox.getPrefHeight())
+            {
+                sourceImageView.setFitHeight(imageBox.getPrefHeight());
+            }
+
+            sourceImageView.setVisible(true);
+            segment.setSource(path);
         }
     }
 }

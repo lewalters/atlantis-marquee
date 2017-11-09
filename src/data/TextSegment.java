@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static util.Global.BREAK_CHAR;
-import static util.Global.TEXT_ROWS;
+import static util.Global.*;
 
 /**
  * (Insert a brief comment that describes
@@ -27,10 +26,10 @@ public class TextSegment extends Segment
     private Color[] borderColors;
     private BorderEffect borderEffect;
     private Color paddingColor;
-    private String textColor;
+    private Color[] textColors;
 
-    public TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
-                       MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String textColor, String text)
+    private TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
+                       EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, Color[] textColors, String text)
     {
         super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
@@ -39,18 +38,35 @@ public class TextSegment extends Segment
         this.borderColors = borderColors;
         this.borderEffect = borderEffect;
         this.paddingColor = paddingColor;
-        this.textColor = textColor;
+        this.textColors = textColors;
         vLength = TEXT_ROWS;
 
         border = borderColors != null;
         padding = paddingColor != null;
 
         setContents();
+    }
 
-        if (hasSubsegments())
-        {
-            setSubtexts();
-        }
+    // Copy constructor
+    public TextSegment(TextSegment segment)
+    {
+        this(segment.getDuration(), segment.getSpeed(), segment.getScrollDirection(),
+                segment.borderColors.clone(), segment.borderEffect, segment.paddingColor, segment.getEntranceEffect(),
+                segment.getMiddleEffect(), segment.getExitEffect(), segment.textColors, segment.text);
+    }
+
+    public TextSegment()
+    {
+        text = "";
+        contents = new ArrayList<>();
+        subtexts = new ArrayList<>();
+        borderColors = new Color[]{OFF_COLOR};
+        borderEffect = BorderEffect.NONE;
+        paddingColor = OFF_COLOR;
+        textColors = new Color[]{DEFAULT_TEXT_COLOR};
+
+        border = false;
+        padding = false;
     }
 
     public boolean hasBorder()
@@ -77,7 +93,7 @@ public class TextSegment extends Segment
     {
         ArrayList<TextSegment> subsegments = new ArrayList<>();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getSpeed(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), (StaticEffect) getMiddleEffect(), getExitEffect(), textColor, subtext)));
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getSpeed(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
 
         return subsegments;
     }
@@ -102,9 +118,9 @@ public class TextSegment extends Segment
         return paddingColor;
     }
 
-    public String getTextColor()
+    public Color[] getTextColors()
     {
-        return textColor;
+        return textColors;
     }
 
     public void setText(String text)
@@ -115,6 +131,11 @@ public class TextSegment extends Segment
 
     private void setContents()
     {
+        contents.clear();
+        subtexts.clear();
+        hLength = 0;
+        size = 0;
+
         String textUp = text.toUpperCase();
 
         for (int i = 0; i < text.length(); i++)
@@ -123,7 +144,21 @@ public class TextSegment extends Segment
 
             if (Validation.validCharacter(ch))
             {
-                contents.add(new CharDot(textUp.charAt(i), textColor));
+                if (textColors[0] == Color.TRANSPARENT)
+                {
+                    double red = Math.random() * 0.8 + 0.2;
+                    double green = Math.random() * 0.8 + 0.2;
+                    double blue = Math.random() * 0.8 + 0.2;
+                    contents.add(new CharDot(textUp.charAt(i), Color.color(red, green, blue)));
+                }
+                else if (textColors.length == 1)
+                {
+                    contents.add(new CharDot(textUp.charAt(i), textColors[0]));
+                }
+                else
+                {
+                    contents.add(new CharDot(textUp.charAt(i), textColors[i]));
+                }
 
                 // Add spaces between characters
                 if (i < text.length() - 1)
@@ -135,7 +170,7 @@ public class TextSegment extends Segment
             // Ignore the break character for the contents
             if (ch == BREAK_CHAR)
             {
-                contents.add(new CharDot(' ', textColor));
+                contents.add(new CharDot(' ', OFF_COLOR));
                 contents.add(new CharDot());
             }
         }
@@ -144,6 +179,11 @@ public class TextSegment extends Segment
         {
             hLength += cd.getHLength();
             size += cd.getSize();
+        }
+
+        if (hasSubsegments())
+        {
+            setSubtexts();
         }
     }
 
@@ -172,6 +212,7 @@ public class TextSegment extends Segment
     public void setBorderColors(Color[] borderColors)
     {
         this.borderColors = borderColors;
+        border = borderColors[0] != OFF_COLOR;
     }
 
     public void setBorderEffect(BorderEffect borderEffect)
@@ -182,11 +223,13 @@ public class TextSegment extends Segment
     public void setPaddingColor(Color paddingColor)
     {
         this.paddingColor = paddingColor;
+        padding = paddingColor != OFF_COLOR;
     }
 
-    public void setTextColor(String textColor)
+    public void setTextColors(Color[] textColors)
     {
-        this.textColor = textColor;
+        this.textColors = textColors;
+        setContents();
     }
 
     @Override
@@ -295,6 +338,34 @@ public class TextSegment extends Segment
                     return charDots.stream().map(Iterator::next).flatMap(Arrays::stream).toArray(Dot[]::new);
                 }
             };
+        }
+    }
+
+    @Override
+    public boolean isValid()
+    {
+        if (super.isValid() && !text.isEmpty())
+        {
+            if (hasSubsegments())
+            {
+                for (TextSegment segment : getSubsegments())
+                {
+                    if (!segment.isValid())
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else // No subsegments
+            {
+                return hLength <= TEXT_COLS;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 }

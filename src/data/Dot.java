@@ -1,5 +1,7 @@
 package data;
 
+import javafx.scene.paint.Color;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -10,16 +12,16 @@ package data;
  */
 public class Dot
 {
-    private String color;
+    private Color color;
     private int intensity;
 
-    public Dot(String color, int intensity)
+    public Dot(Color color, int intensity)
     {
         this.color = color;
         this.intensity = intensity;
     }
 
-    public String getColor()
+    public Color getColor()
     {
         return color;
     }
@@ -29,7 +31,7 @@ public class Dot
         return intensity;
     }
 
-    public void setColor(String color)
+    public void setColor(Color color)
     {
         this.color = color;
     }

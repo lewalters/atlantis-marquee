@@ -25,10 +25,6 @@ public final class Utility
 {
     private Utility() {}
 
-    public static void saveData(String fileName) {}
-
-    public static void loadData(String fileName) {}
-
     public static DotMatrix convertImage(String source) throws IOException
     {
         Image image;
@@ -43,6 +39,8 @@ public final class Utility
             throw new IOException("Image not usable");
         }
 
+        // Get the width and height in pixels from the image and use them to set the width and height of
+        // the image in dots, scaling if the width would be larger than the number of dots on the marquee
         PixelReader pixelReader = image.getPixelReader();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
@@ -58,17 +56,20 @@ public final class Utility
         RGB[][] rgbs = new RGB[dotHeight][dotWidth];
         matrix = new DotMatrix(dotHeight, dotWidth);
 
+        // Calculate the width and height of each dot in terms of pixels in the original image
+        int dotHeightPx = (int) Math.ceil((height * 1.0) / dotHeight);
+        int dotWidthPx = (int) Math.ceil((width * 1.0) / dotWidth);
+
+        // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)
             {
-                rgbs[r][c] = new RGB();
+                rgbs[r][c] = new RGB(dotHeightPx, dotWidthPx);
             }
         }
 
-        int dotHeightPx = height / dotHeight;
-        int dotWidthPx = width / dotWidth;
-
+        // Sum the red, green, blue, and opacity values for all pixels in the "area" of each dot
         for (int r = 0; r < height; r++)
         {
             for (int c = 0; c < width; c++)
@@ -76,22 +77,25 @@ public final class Utility
                 int row = r / dotHeightPx;
                 int col = c / dotWidthPx;
                 Color pixel = pixelReader.getColor(c, r);
-                rgbs[row][col].r += pixel.getRed();
-                rgbs[row][col].g += pixel.getGreen();
-                rgbs[row][col].b += pixel.getBlue();
-                rgbs[row][col].o += pixel.getOpacity();
+                rgbs[row][col].addRed(pixel.getRed());
+                rgbs[row][col].addGreen(pixel.getGreen());
+                rgbs[row][col].addBlue(pixel.getBlue());
+                rgbs[row][col].addOpacity(pixel.getOpacity());
             }
         }
 
+        // Calculate the area of each dot in terms of pixels in the original image
         int tgbArea = dotHeightPx * dotWidthPx;
 
+        // Set the color and opacity of each dot based on the average of its pixels,
+        // using a min_opacity to sharpen the final image
         for (int r = 0; r < dotHeight; r++)
         {
             for (int c = 0; c < dotWidth; c++)
             {
-                Color color = Color.color(rgbs[r][c].r / tgbArea, rgbs[r][c].g / tgbArea, rgbs[r][c].b / tgbArea, rgbs[r][c].o / tgbArea);
+                Color color = Color.color(rgbs[r][c].getRed(), rgbs[r][c].getGreen(), rgbs[r][c].getBlue(), rgbs[r][c].getOpacity());
                 int opacity = (int)(color.getOpacity() * 100);
-                matrix.set(new Dot(color.toString(), opacity > MIN_OPACITY ? opacity : 0), r, c);
+                matrix.set(new Dot(color, opacity > MIN_OPACITY ? opacity : 0), r, c);
             }
         }
 

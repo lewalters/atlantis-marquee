@@ -1,8 +1,6 @@
 package data;
 
-import util.MarqueeEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
+import util.*;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -22,11 +20,23 @@ public class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    public ImageSegment(int duration, int speed, ScrollDirection scrollDirection, MarqueeEffect effectEn, StaticEffect effectMi, MarqueeEffect effectEx, String source)
+    private ImageSegment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String source)
     {
         super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
         setContents();
+    }
+
+    // Copy constructor
+    public ImageSegment(ImageSegment segment)
+    {
+        this(segment.getDuration(), segment.getSpeed(), segment.getScrollDirection(), segment.getEntranceEffect(),
+                segment.getMiddleEffect(), segment.getExitEffect(), segment.source);
+    }
+
+    public ImageSegment()
+    {
+        source = "";
     }
     
     public String getSource() {
@@ -59,5 +69,11 @@ public class ImageSegment extends Segment
     public Iterator<Dot[]> iterator(ScrollDirection direction)
     {
         return contents.iterator(direction);
+    }
+
+    @Override
+    public boolean isValid()
+    {
+        return super.isValid() && !source.isEmpty();
     }
 }

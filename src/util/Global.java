@@ -2,6 +2,7 @@ package util;
 
 import data.CharDot;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 public final class Global
 {
@@ -9,6 +10,9 @@ public final class Global
     public static char BREAK_CHAR = '|';
 
     // Marquee
+    public static int MAX_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
+    public static int MAX_HEIGHT = 1;
+    public static int MIN_WIDTH = 200;
     public static int NUM_COLS = 96;
     public static int NUM_ROWS = 16;
     private static int BORDER_WIDTH = 1;
@@ -24,20 +28,16 @@ public final class Global
 
     // GUI
     public static Color OFF_COLOR = Color.BLACK;
-    public static String TITLE_FONT = "Helvetica";
-    public static String APP_FONT = "Helvetica";
+    public static Color DEFAULT_TEXT_COLOR = Color.WHITE;
+    public static String TITLE_FONT = "Onyx";
+    public static String APP_FONT = "Onyx";
     public static String TEXT_FONT = "Helvetica";
 
     // Validation
-    public static int MAX_IMAGE_HEIGHT = 200;
+    public static int MAX_IMAGE_HEIGHT = 300;
     public static int MAX_IMAGE_WIDTH = 1200;
     public static int MIN_OPACITY = 90;
     public static int MAX_BORDER_COLORS = 4;
 
     private Global() {}
-
-    public static void init()
-    {
-        CharDot.initMap();
-    }
 }

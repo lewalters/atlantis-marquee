@@ -1,3 +1,4 @@
+
 package test;
 
 import data.Marquee;
@@ -8,6 +9,7 @@ import org.junit.Test;
 
 import java.time.LocalTime;
 
+import static javafx.geometry.Pos.TOP_LEFT;
 import static org.junit.Assert.assertEquals;
 
 
@@ -54,15 +56,16 @@ public class MarqueeTest {
 
     @Test
     public void testGetPosition() {
-        m.setScreenPosition("abc");
-        assertEquals("data.Message Test: getScreenPos", "abc", m.getScreenPos());
+        m.setScreenPosition(TOP_LEFT);
+        assertEquals("data.Message Test: getScreenPos", TOP_LEFT, m.getScreenPos());
 
     }
 
     @Test
     public void testSetScreenPosition() {
-        m.setScreenPosition("Position");
-        assertEquals("data.Message Test: getScreenPos", "Position", m.getScreenPos());
+        m.setScreenPosition(TOP_LEFT);
+        assertEquals("data.Message Test: getScreenPos", TOP_LEFT, m.getScreenPos());
+
     }
 
     @Test

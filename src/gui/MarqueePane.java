@@ -4,7 +4,9 @@ import data.Dot;
 import data.Segment;
 import data.TextSegment;
 import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -13,7 +15,6 @@ import util.ScrollDirection;
 
 import java.util.*;
 
-import static util.Global.*;
 import static util.Global.*;
 
 /**
@@ -31,7 +32,7 @@ public class MarqueePane extends StackPane
     private List<LED> border;
     private List<LED> padding;
 
-    MarqueePane(int width, int ledGap)
+    public MarqueePane(int width, int ledGap)
     {
         // Determine the radius based on the provided width
         int ledRadius = ((width - (NUM_COLS - 1) * ledGap) / (NUM_COLS)) / 2;
@@ -94,7 +95,7 @@ public class MarqueePane extends StackPane
         }
 
         // Center the grid and add it to the pane
-        ledGrid.setAlignment(Pos.CENTER);
+        ledGrid.alignmentProperty().bind(this.alignmentProperty());
         this.getChildren().add(ledGrid);
 
         // Add gaps between all of the LEDs
@@ -102,11 +103,10 @@ public class MarqueePane extends StackPane
         ledGrid.setVgap(ledGap);
     }
 
+    // Create a marquee with a single segment (used to preview in the list view)
     public MarqueePane(Segment segment)
     {
         this(300, 1);
-
-        set(segment, true);
 
         if (segment instanceof TextSegment)
         {
@@ -114,6 +114,19 @@ public class MarqueePane extends StackPane
 
             setBorderColor(textSegment.getBorderColors());
             setPaddingColor(textSegment.getPaddingColor());
+
+            if (textSegment.hasSubsegments())
+            {
+                set(textSegment.getSubsegments().get(0), true);
+            }
+            else
+            {
+                set(textSegment, true);
+            }
+        }
+        else
+        {
+            set(segment, true);
         }
     }
 

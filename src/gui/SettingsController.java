@@ -1,53 +1,32 @@
 package gui;
 
 import data.*;
+
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import util.BorderEffect;
-import util.ScrollDirection;
-import util.StaticEffect;
-import util.TransitionEffect;
+
+import java.io.File;
 
 public class SettingsController
 {
     private Marquee marquee;
     private SettingsPane settingsPane;
+    private Stage segmentStage;
 
     public SettingsController()
     {
-        // FOR TESTING
-        marquee = new Marquee(1200, 200, 2);
-        Message message = new Message("Test", 2, 10,"");
-        marquee.setMessage(message);
-        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
-        Segment segment1 = new TextSegment(10, 10, ScrollDirection.STATIC, colorList, BorderEffect.COUNTERCLOCKWISE, Color.WHITE, TransitionEffect.FADE, StaticEffect.RANDOM_COLOR, TransitionEffect.RANDOM_LIGHT, "5F9EA0", "Wake Tech");
-        Segment segment2 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
-        Segment segment3 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment4 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment5 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        Segment segment6 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-        message.addSegment(0, segment1);
-        message.addSegment(1, segment2);
-        message.addSegment(2, segment3);
-        message.addSegment(3, segment4);
-        message.addSegment(4, segment5);
-        message.addSegment(5, segment6);
+        marquee = new Marquee();
 
-        settingsPane = new SettingsPane(message.getContents());
+        settingsPane = new SettingsPane(this, marquee);
 
-        //Creating Text Segment Pane
-        Stage textSegmentStage = new Stage();
-        textSegmentStage.setTitle("Text Segment Settings");
-        textSegmentStage.setResizable(false);
-        textSegmentStage.initModality(Modality.APPLICATION_MODAL);
-
-        //Creating Image Segment Pane
-        Stage imgSegStage = new Stage();
-        imgSegStage.setTitle("Image Segment Settings");
-        imgSegStage.setResizable(false);
-        imgSegStage.initModality(Modality.APPLICATION_MODAL);
+        //Creating Segment Stage
+        segmentStage = new Stage();
+        segmentStage.setTitle("Segment Settings");
+        segmentStage.setResizable(false);
+        segmentStage.initModality(Modality.APPLICATION_MODAL);
 
         //Event Handler for TextSegmentButton to display Text Segment Pane
         settingsPane.getTextSegmentButton().setOnAction(e -> {
@@ -59,6 +38,7 @@ public class SettingsController
             //Applying CSS to TextSegmentPane Skin
             textSegmentPane.setStyle("-fx-background:#383838;");
         });
+        settingsPane.getTextSegmentButton().setOnAction(e -> createSegmentPane(null, true));
 
         //Event Handler for ImageSegmentButton to display Image Segment Pane
         settingsPane.getImageSegmentButton().setOnAction(e -> {
@@ -66,7 +46,7 @@ public class SettingsController
 
           // Event handler for imageSourceButton in the imageSegmentPane
         imageSegmentPane.getImageBox().setOnMouseClicked(event -> imageSegmentPane.getSourceImage(imgSegStage));
-            
+
         // Event handler for Cancel Buttons on ImageSegment Pane
         imageSegmentPane.getCancelButton().setOnAction(event -> imgSegStage.close());
 
@@ -76,6 +56,7 @@ public class SettingsController
             //Applying CSS to ImageSegmentPane Skin
             imageSegmentPane.setStyle("-fx-background:#383838;");
         });
+        settingsPane.getImageSegmentButton().setOnAction(e -> createSegmentPane(null, false));
 
         // Event handler for reorder segments button
         settingsPane.getReorderButton().setOnAction(e -> {
@@ -98,9 +79,41 @@ public class SettingsController
             }
         });
 
-        // Event handlers for segment edit buttons
-        for (int i = 0; i < message.getContents().size(); i++)
+        // Event handler for file menu new
+        settingsPane.getNew().setOnAction(e ->
         {
+            marquee = new Marquee();
+            settingsPane.reset();
+        });
+
+        //Event handler for file menu save
+        settingsPane.getSave().setOnAction(e ->
+        {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+          	fileChooser.setTitle("Save XML File");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if(file != null)
+            {
+                XMLParser xmlp = new XMLParser(file);
+                xmlp.XMLWriter(marquee);
+            }
+        });
+
+        //Event handler for file menu load
+        settingsPane.getLoad().setOnAction(e ->
+        {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+            fileChooser.setTitle("Load XML File");
+            File file = fileChooser.showOpenDialog(new Stage());
+            if(file != null)
+            {
+                XMLParser xmlp = new XMLParser(file);
+                marquee = xmlp.XMLReader();
+                settingsPane.populate();
+            }
+        });
             Segment segment = message.getContents().get(i);
 
             settingsPane.getSegmentListView().getEditButtons().get(i).setOnAction(e -> {
@@ -129,5 +142,67 @@ public class SettingsController
     public SettingsPane getSettingsPane()
     {
         return settingsPane;
+    }
+
+    public Marquee getMarquee()
+    {
+        return marquee;
+    }
+
+    public void createSegmentPane(Segment segment)
+    {
+        createSegmentPane(segment, segment instanceof TextSegment);
+    }
+
+    private void createSegmentPane(Segment segment, boolean text)
+    {
+        SegmentPane segmentPane;
+
+        if (segment != null)
+        {
+            segmentPane = text ? new TextSegmentPane((TextSegment) segment) : new ImageSegmentPane((ImageSegment) segment);
+        }
+        else
+        {
+            segmentPane = text ? new TextSegmentPane() : new ImageSegmentPane();
+        }
+
+        if (!text)
+        {
+            ImageSegmentPane imageSegmentPane = (ImageSegmentPane) segmentPane;
+
+            // Event handler for imageSourceButton in the imageSegmentPane
+            imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.chooseSourceImage(segmentStage));
+        }
+
+        segmentPane.getCancelButton().setOnAction(e -> segmentStage.close());
+
+        segmentPane.getContinueButton().setOnAction(e -> {
+
+            int index = marquee.getMessage().getContents().indexOf(segment);
+            Segment newSegment = segmentPane.getSegment();
+
+            if (newSegment.isValid())
+            {
+                if (index < 0)
+                {
+                    marquee.getMessage().getContents().add(segmentPane.getSegment());
+                }
+                else
+                {
+                    marquee.getMessage().getContents().set(index, segmentPane.getSegment());
+                }
+
+                settingsPane.getSegmentListView().refresh();
+                segmentStage.close();
+            }
+            else
+            {
+                System.out.println("INVALID SEGMENT");
+            }
+        });
+
+        segmentStage.setScene(new Scene(segmentPane));
+        segmentStage.show();
     }
 }

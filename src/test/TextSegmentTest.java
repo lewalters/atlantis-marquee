@@ -9,11 +9,14 @@ import static util.StaticEffect.*;
 
 import data.CharDot;
 import data.Dot;
+import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Test;
 
 import data.TextSegment;
+import util.BorderEffect;
 import util.ScrollDirection;
+import util.StaticEffect;
 
 import java.util.Iterator;
 
@@ -26,16 +29,15 @@ public class TextSegmentTest {
     public void setup()
     {
         CharDot.initMap();
-        ts = new TextSegment(LEFT,"480A0A", BLINK, "000000",
-               NONE, RANDOM_COLOR, NONE, "0B41AC", "VISION");
-        color = "EF0404";
+        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        ts = new TextSegment(10, 11,STATIC,colorList,BorderEffect.NONE,Color.BLUE, StaticEffect.RANDOM_COLOR,BLINK, UP, "Wake Tech","abc");
     }
 
     @Test
     public void testTextSegmentGetters()
     {
         assertEquals("data.TextSegment test: getText", "VISION", ts.getText());
-        assertEquals("data.TextSegment test: getBorderColor", "480A0A", ts.getBorderColor());
+        //assertEquals("data.TextSegment test: getBorderColor", "480A0A", ts.getBorderColor());
         assertEquals("data.TextSegment test: getBorderEffect", BLINK, ts.getBorderEffect());
         assertEquals("data.TextSegment test: getPaddingColor", "000000", ts.getPaddingColor());
         assertEquals("data.TextSegment test: getTextColor", "0B41AC", ts.getTextColor());
@@ -45,14 +47,14 @@ public class TextSegmentTest {
     public void testTextSegmentSetters()
     {
         ts.setText("Hello World");
-        ts.setBorderColor("293A5A");
-        ts.setBorderEffect(NONE);
-        ts.setPaddingColor("8B189B");
+        //ts.setBorderColor(293A5A);
+        ts.setBorderEffect(BorderEffect.NONE);
+        ts.setPaddingColor(Color.BLUE);
         ts.setTextColor("000000");
 
         assertEquals("data.TextSegment test: setText", "Hello World", ts.getText());
-        assertEquals("data.TextSegment test: setBorderColor", "293A5A", ts.getBorderColor());
-        assertEquals("data.TextSegment test: setBorderEffect", NONE, ts.getBorderEffect());
+        //assertEquals("data.TextSegment test: setBorderColor", "293A5A", ts.getBorderColor());
+        assertEquals("data.TextSegment test: setBorderEffect", BorderEffect.NONE, ts.getBorderEffect());
         assertEquals("data.TextSegment test: setPaddingColor", "8B189B", ts.getPaddingColor());
         assertEquals("data.TextSegment test: setTextColor", "000000", ts.getTextColor());
     }
@@ -118,4 +120,5 @@ public class TextSegmentTest {
         assertArrayEquals(d, direction.next());
     }
 }
+
 */
