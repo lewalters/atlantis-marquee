@@ -14,6 +14,7 @@ import javafx.util.converter.LocalTimeStringConverter;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +39,11 @@ public class SettingsPane extends BorderPane
     private MenuItem newMarq, save, load, exit;
     private MenuItem undo, redo;
     private MenuItem userGuide, about;
+    private RadioButton timeImmediate;
     private CheckBox fullScreenCheckBox, maxSizeCheckBox;
     //private CheckBox authenticationCheckBox;
     private Button startButton;
-    private Button textSegmentButton;
-    private Button imageSegmentButton;
+    private Button textSegmentButton, imageSegmentButton;
     private Button reorderButton;
     private SegmentListView segmentListView;
     private TextField widthTextField, heightTextField, ledGapTextField, nameTextField, delayTextField, repeatTextField;
@@ -153,7 +154,7 @@ public class SettingsPane extends BorderPane
 
         // Radio buttons to decide between start time = now or a custom start time
         ToggleGroup timeGroup = new ToggleGroup();
-        RadioButton timeImmediate = new RadioButton("Immediate");
+        timeImmediate = new RadioButton("Immediate");
         timeImmediate.setToggleGroup(timeGroup);
         timeImmediate.setSelected(true);
         RadioButton timeCustom = new RadioButton("Custom");
@@ -196,7 +197,7 @@ public class SettingsPane extends BorderPane
                 }
                 catch (DateTimeParseException ex)
                 {
-                    return LocalTime.now();
+                    return LocalTime.now().plusMinutes(1).truncatedTo(ChronoUnit.MINUTES);
                 }
             }
         });
@@ -209,8 +210,8 @@ public class SettingsPane extends BorderPane
             marquee.setStartTime(null);
         });
         timeCustom.setOnAction(e -> {
-            timeValueFactory.setValue(LocalTime.now());
-            marquee.setStartTime(LocalTime.now());
+            timeValueFactory.setValue(LocalTime.now().plusMinutes(1).truncatedTo(ChronoUnit.MINUTES));
+            marquee.setStartTime(LocalTime.now().plusMinutes(1).truncatedTo(ChronoUnit.MINUTES));
         });
 
         VBox timeBox = new VBox(timeChoices, timeSpinner);
@@ -560,14 +561,11 @@ public class SettingsPane extends BorderPane
         fullScreenCheckBox.setOnAction(e -> marquee.setFullscreen(fullScreenCheckBox.isSelected()));
 
         // Set the marquee to the maximum display size if max size is checked
-        maxSizeCheckBox.setOnAction(e -> {
-            if (maxSizeCheckBox.isSelected())
-            {
-                Rectangle2D bounds = Screen.getPrimary().getBounds();
-                marquee.setWidth((int) bounds.getWidth());
-                marquee.setHeight((int) bounds.getHeight());
-            }
-            else
+        maxSizeCheckBox.setOnAction(e ->
+        {
+            marquee.setMaxSize(maxSizeCheckBox.isSelected());
+
+            if (!maxSizeCheckBox.isSelected())
             {
                 String widthText = widthTextField.getText();
 
@@ -726,12 +724,15 @@ public class SettingsPane extends BorderPane
     {
         widthTextField.clear();
         heightTextField.clear();
+        ledGapTextField.clear();
         nameTextField.clear();
         delayTextField.clear();
         repeatTextField.clear();
         commentsTextArea.clear();
         screenPosition.getSelectionModel().select(Pos.CENTER);
+        timeImmediate.setSelected(true);
         fullScreenCheckBox.setSelected(false);
+        maxSizeCheckBox.setSelected(false);
         segmentListView.setSegments(marquee.getMessage().getContents());
         segmentListView.refresh();
     }

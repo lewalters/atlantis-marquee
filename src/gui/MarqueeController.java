@@ -3,6 +3,7 @@ package gui;
 import data.*;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import util.*;
 
 import javafx.animation.*;
@@ -31,7 +32,7 @@ public class MarqueeController
     public MarqueeController(Marquee marquee)
     {
         this.marquee = marquee;
-        marqueePane = new MarqueePane(marquee.getWidth(), marquee.getLedGap());
+        marqueePane = new MarqueePane(marquee.isMaxSize() ? (int) Screen.getPrimary().getBounds().getWidth() : marquee.getWidth(), marquee.getLedGap());
 
         restart = new MenuItem("Restart");
         restart.setOnAction(e -> play());
@@ -141,6 +142,7 @@ public class MarqueeController
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
             long waitTime = java.time.Duration.between(LocalTime.now(), marquee.getStartTime()).toMillis();
             scheduler.schedule(messageAnimation::play, waitTime, TimeUnit.MILLISECONDS);
+            scheduler.shutdown();
         }
 
         restart.setDisable(true);
