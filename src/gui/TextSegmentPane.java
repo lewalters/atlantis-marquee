@@ -291,7 +291,10 @@ public class TextSegmentPane extends SegmentPane
                     segment.setText(text);
                 }
 
-                textColorsPicker.refresh();
+                if (textColorCustom.isSelected())
+                {
+                    textColorsPicker.refresh();
+                }
             }
         }));
 

@@ -215,15 +215,17 @@ public abstract class SegmentPane extends BorderPane
             resetEffects();
         });
 
-        // Set the scroll direction to the initial / selected direction and remove effects if "scroll" is chosen
+        // Set the scroll direction to the initial direction and remove effects if "scroll" is chosen
         scrollRadioBtn.setOnAction(e -> {
             segment.setScrollDirection(scrollComboBox.getValue());
             resetEffects();
         });
-        scrollComboBox.setOnAction(e -> {
-            segment.setScrollDirection(scrollComboBox.getValue());
-            resetEffects();
-        });
+
+        // Set the scroll direction if the direction is changed
+        scrollComboBox.setOnAction(e -> segment.setScrollDirection(scrollComboBox.getValue()));
+
+        // Set the scroll direction to STATIC if "effects" is chosen
+        effectsRadioBtn.setOnAction(e -> segment.setScrollDirection(ScrollDirection.STATIC));
 
         // Set the effects as changed if "effects" is chosen
         entranceComboBox.setOnAction(e -> segment.setEntranceEffect(entranceComboBox.getValue()));
