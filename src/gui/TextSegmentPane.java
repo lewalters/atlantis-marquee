@@ -71,7 +71,7 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(textLabel, 0, 1);
 
         textLabelElementsGrid.add(durationLabel, 0, 4);
-        textLabelElementsGrid.add(speedLabel, 0, 5);
+        textLabelElementsGrid.add(repeatLabel, 0, 5);
 
         Label borderColor = new Label("Border Color(s):");
         textLabelElementsGrid.add(borderColor, 0, 6);
@@ -96,7 +96,7 @@ public class TextSegmentPane extends SegmentPane
         textTextField = new TextField();
         textLabelElementsGrid.add(textTextField, 1, 1);
         textLabelElementsGrid.add(durationTextField, 1, 4);
-        textLabelElementsGrid.add(speedTextField, 1, 5);
+        textLabelElementsGrid.add(repeatTextField, 1, 5);
         borderSpeedTextField = new TextField();
         textLabelElementsGrid.add(borderSpeedTextField, 1, 10);
 

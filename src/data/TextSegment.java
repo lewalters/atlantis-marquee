@@ -50,7 +50,7 @@ public class TextSegment extends Segment
     // Copy constructor
     public TextSegment(TextSegment segment)
     {
-        this(segment.getDuration(), segment.getSpeed(), segment.getScrollDirection(),
+        this(segment.getDuration(), segment.getRepeat(), segment.getScrollDirection(),
                 segment.borderColors.clone(), segment.borderEffect, segment.paddingColor, segment.getEntranceEffect(),
                 segment.getMiddleEffect(), segment.getExitEffect(), segment.textColors, segment.text);
     }
@@ -93,7 +93,7 @@ public class TextSegment extends Segment
     {
         ArrayList<TextSegment> subsegments = new ArrayList<>();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getSpeed(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getRepeat(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
 
         return subsegments;
     }

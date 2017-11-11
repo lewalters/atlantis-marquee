@@ -48,8 +48,8 @@ public class ImageSegmentPane extends SegmentPane
         GridPane grid = new GridPane();
         grid.add(durationLabel, 0, 0);
         grid.add(durationTextField, 1, 0);
-        grid.add(speedLabel, 0, 1);
-        grid.add(speedTextField, 1, 1);
+        grid.add(repeatLabel, 0, 1);
+        grid.add(repeatTextField, 1, 1);
         grid.setHgap(10);
         grid.setVgap(5);
 

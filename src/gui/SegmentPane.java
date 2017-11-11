@@ -27,8 +27,8 @@ public abstract class SegmentPane extends BorderPane
     private Button continueButton;
     private Button cancelButton;
 
-    protected Label titleLabel, durationLabel, speedLabel;
-    protected TextField durationTextField, speedTextField;
+    protected Label titleLabel, durationLabel, repeatLabel;
+    protected TextField durationTextField, repeatTextField;
 
     public SegmentPane(Segment segment)
     {
@@ -104,41 +104,41 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        speedLabel = new Label("Scroll Speed:");
-        speedLabel.setFont(new Font(TEXT_FONT, 15));
+        repeatLabel = new Label("Repeat:");
+        repeatLabel.setFont(new Font(TEXT_FONT, 15));
 
-        speedTextField = new TextField();
-        speedTextField.setFont(new Font(TEXT_FONT, 15));
-        speedTextField.setMaxWidth(45);
-        speedTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
+        repeatTextField = new TextField();
+        repeatTextField.setFont(new Font(TEXT_FONT, 15));
+        repeatTextField.setMaxWidth(45);
+        repeatTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
 
-        //Setting speedTextField Character Length
-        speedTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        //Setting repeatTextField Character Length
+        repeatTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue()){
-                if(speedTextField.getText().length() > 3){
-                    speedTextField.setText(speedTextField.getText().substring(0,3));
+                if(repeatTextField.getText().length() > 3){
+                    repeatTextField.setText(repeatTextField.getText().substring(0,3));
                 }
             }
         });
 
-        //Making speedTextField Accept Only Numeric Values
-        speedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        //Making repeatTextField Accept Only Numeric Values
+        repeatTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
-                speedTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                repeatTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
-        // Set the speed in the segment or warn if the speed is invalid
-        speedTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+        // Set the repeat factor in the segment or warn if the speed is invalid
+        repeatTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                String speedText = speedTextField.getText();
+                String repeatText = repeatTextField.getText();
 
-                int speed = speedText.isEmpty() ? 0 : Integer.valueOf(speedText);
+                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
 
-                if (speed > 0)
+                if (repeat > 0)
                 {
-                    segment.setSpeed(speed);
+                    segment.setRepeat(repeat);
                 }
             }
         }));
@@ -235,13 +235,13 @@ public abstract class SegmentPane extends BorderPane
         // Disable duration input if the user has selected continuous scrolling
         durationTextField.disableProperty().bind(scrollRadioBtn.selectedProperty());
 
-        // Disable scroll speed input if the user has not selected any effects that involve scrolling
-        speedTextField.disableProperty().bind(
+/*        // Disable repeat factor input if the user has not selected any effects that involve scrolling
+        repeatTextField.disableProperty().bind(
                 statikRadioBtn.selectedProperty().or(
                 effectsRadioBtn.selectedProperty().and(Bindings.and(
                 (Bindings.createBooleanBinding(() -> entranceComboBox.getValue() instanceof EntranceTransition, entranceComboBox.valueProperty())),
                  Bindings.createBooleanBinding(() -> exitComboBox.getValue() instanceof ExitTransition, exitComboBox.valueProperty())))
-        ));
+        ));*/
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
@@ -284,7 +284,7 @@ public abstract class SegmentPane extends BorderPane
     protected void populate(Segment segment)
     {
         durationTextField.setText(Integer.toString(segment.getDuration()));
-        speedTextField.setText(Integer.toString(segment.getSpeed()));
+        repeatTextField.setText(Integer.toString(segment.getRepeat()));
 
         // Set display type radio button choice
         if (segment.getScrollDirection() != ScrollDirection.STATIC)

@@ -30,7 +30,7 @@ public class ImageSegment extends Segment
     // Copy constructor
     public ImageSegment(ImageSegment segment)
     {
-        this(segment.getDuration(), segment.getSpeed(), segment.getScrollDirection(), segment.getEntranceEffect(),
+        this(segment.getDuration(), segment.getRepeat(), segment.getScrollDirection(), segment.getEntranceEffect(),
                 segment.getMiddleEffect(), segment.getExitEffect(), segment.source);
     }
 

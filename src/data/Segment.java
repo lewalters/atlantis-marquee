@@ -15,17 +15,17 @@ import java.util.Iterator;
 public abstract class Segment
 {
     private int duration;
-    private int speed;
+    private int repeat;
     private ScrollDirection scrollDirection;
     private EntranceEffect effectEn;
     private MiddleEffect effectMi;
     private ExitEffect effectEx;
     protected int hLength, vLength, size;
 
-    protected Segment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
+    protected Segment(int duration, int repeat, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
     {
         this.duration = duration;
-        this.speed = speed;
+        this.repeat = repeat;
         this.scrollDirection = scrollDirection;
         this.effectEn = effectEn;
         this.effectMi = effectMi;
@@ -35,7 +35,7 @@ public abstract class Segment
     protected Segment()
     {
         duration = 0;
-        speed = 0;
+        repeat = 0;
         scrollDirection = ScrollDirection.STATIC;
         effectEn = EntranceTransition.NONE;
         effectMi = MiddleEffect.NONE;
@@ -47,9 +47,9 @@ public abstract class Segment
         return duration;
     }
 
-    public int getSpeed()
+    public int getRepeat()
     {
-        return speed;
+        return repeat;
     }
 
     public ScrollDirection getScrollDirection()
@@ -92,9 +92,9 @@ public abstract class Segment
         this.duration = duration;
     }
 
-    public void setSpeed(int speed)
+    public void setRepeat(int repeat)
     {
-        this.speed = speed;
+        this.repeat = repeat;
     }
 
     public void setScrollDirection(ScrollDirection scroll)
@@ -126,7 +126,7 @@ public abstract class Segment
             if (effectEn instanceof ScrollDirection || effectEn instanceof ScrollEffect ||
                     effectEx instanceof ScrollDirection || effectEx instanceof ScrollEffect)
             {
-                return duration > 0 && speed > 0;
+                return duration > 0 && repeat > 0;
             }
             else
             {
@@ -135,7 +135,7 @@ public abstract class Segment
         }
         else
         {
-            return speed > 0;
+            return repeat > 0;
         }
     }
 }

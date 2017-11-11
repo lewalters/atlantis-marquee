@@ -1,4 +1,4 @@
-/**
+/*
  * XML Parsing class
  * 
  * Bugs: None known
@@ -127,7 +127,7 @@ public class XMLParser
 //                      segment.setDuration(Integer.parseInt(segChildNode.getTextContent()));
                     }
                     break;
-                    case "speed":
+                    case "repeat":
                     {
 //                      segment.setSpeed(Integer.parseInt(segChildNode.getTextContent()));
                     }
@@ -218,9 +218,9 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString(textSegment.getDuration())));
 
-      	  Element speed = doc.createElement("speed");
+      	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getSpeed())));
+      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getRepeat())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);
@@ -247,9 +247,9 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString(imageSegment.getDuration())));
 
-      	  Element speed = doc.createElement("speed");
+      	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getSpeed())));
+      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getRepeat())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);

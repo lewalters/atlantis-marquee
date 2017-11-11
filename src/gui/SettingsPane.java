@@ -55,7 +55,7 @@ public class SettingsPane extends BorderPane
         this.marquee = marquee;
 
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(760, 400);
+        this.setPrefSize(760, 500);
 
         /*Creating GridPanes*/
         // Creating Width label
