@@ -17,9 +17,18 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javafx.scene.paint.Color;
+import util.BorderEffect;
 import util.ScrollDirection;
 import org.w3c.dom.Node;
+
+import static util.Global.DEFAULT_TEXT_COLOR;
+import static util.Global.OFF_COLOR;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class XMLParser 
 {
@@ -237,6 +246,26 @@ public class XMLParser
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
       	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getExitEffect()).name()));
+
+      	  Element text = doc.createElement("text");
+      	  seg.appendChild(text);
+      	  text.appendChild(doc.createTextNode(textSegment.getText()));
+
+      	  Element borderColors = doc.createElement("borderColors");
+      	  seg.appendChild(borderColors);
+      	  borderColors.appendChild(doc.createTextNode(Arrays.toString(textSegment.getBorderColors())));
+
+      	  Element borderEffect = doc.createElement("borderEffect");
+      	  seg.appendChild(borderEffect);
+      	  borderEffect.appendChild(doc.createTextNode(textSegment.getBorderEffect().name()));
+
+      	  Element paddingColor = doc.createElement("paddingColor");
+      	  seg.appendChild(paddingColor);
+      	  paddingColor.appendChild(doc.createTextNode(textSegment.getPaddingColor().toString()));
+
+      	  Element textColors = doc.createElement("textColors");
+      	  seg.appendChild(textColors);
+      	  textColors.appendChild(doc.createTextNode(Arrays.toString(textSegment.getTextColors())));
         }
         else
         {
