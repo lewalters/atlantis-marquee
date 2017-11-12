@@ -54,6 +54,9 @@ public class SettingsPane extends BorderPane
     {
         this.marquee = marquee;
 
+        // Take the focus off of the active node if the dead space is clicked
+        this.setOnMouseClicked(e -> requestFocus());
+
         // Setting SettingsPane Width/Height/Padding
         this.setPrefSize(760, 500);
 

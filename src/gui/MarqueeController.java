@@ -122,32 +122,7 @@ public class MarqueeController
         Message message = marquee.getMessage();
         SequentialTransition messageAnimation = new SequentialTransition();
 
-        message.getContents().forEach(segment -> {
-            if (segment instanceof TextSegment)
-            {
-                TextSegment textSegment = (TextSegment) segment;
-
-                if (textSegment.hasSubsegments())
-                {
-                    if (textSegment.getScrollDirection() == ScrollDirection.STATIC || (textSegment.getScrollDirection() == ScrollDirection.UP || textSegment.getScrollDirection() == ScrollDirection.DOWN))
-                    {
-                        textSegment.getSubsegments().forEach(subsegment -> addSegment(subsegment, messageAnimation));
-                    }
-                    else
-                    {
-                        addSegment(segment, messageAnimation);
-                    }
-                }
-                else
-                {
-                    addSegment(segment, messageAnimation);
-                }
-            }
-            else
-            {
-                addSegment(segment, messageAnimation);
-            }
-        });
+        message.getContents().forEach(segment -> addSegment(segment, messageAnimation));
 
         int delay = message.getDelay();
         if (delay > 0)
@@ -174,8 +149,29 @@ public class MarqueeController
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
 
-    // Add an animation that encompasses the given segment to the full animation
+    // TODO: subsegments + segment repetitions will shift border colors / restart animation
+    // Add a segment, breaking a TextSegment into its subsegments if necessary
     private void addSegment(Segment segment, SequentialTransition transition)
+    {
+        if (segment instanceof TextSegment && ((TextSegment)segment).hasSubsegments() &&
+                (segment.getScrollDirection() == ScrollDirection.STATIC || segment.getScrollDirection() == ScrollDirection.UP || segment.getScrollDirection() == ScrollDirection.DOWN))
+        {
+            for (int i = 0; i < segment.getRepeat(); i++)
+            {
+                ((TextSegment)segment).getSubsegments().forEach(subsegment -> addSegmentAnimation(subsegment, transition));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < segment.getRepeat(); i++)
+            {
+                addSegmentAnimation(segment, transition);
+            }
+        }
+    }
+
+    // Add an animation that encompasses the given segment to the full animation
+    private void addSegmentAnimation(Segment segment, SequentialTransition transition)
     {
         SequentialTransition segmentTransition = new SequentialTransition();
         ParallelTransition borderedTransition = new ParallelTransition();
@@ -354,7 +350,7 @@ public class MarqueeController
         Timeline timeline = new Timeline();
         ScrollDirection direction;
         int cycles;
-        int speed = 1000 / 500; // TODO: recalculate
+        int speed = 5; // TODO: recalculate
 
         switch (time)
         {

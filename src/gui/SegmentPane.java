@@ -70,6 +70,7 @@ public abstract class SegmentPane extends BorderPane
 
         durationTextField = new TextField();
         durationTextField.setFont(new Font(TEXT_FONT, 15));
+        durationTextField.setAlignment(Pos.CENTER);
         durationTextField.setMaxWidth(45);
         durationTextField.setTooltip(new Tooltip("How long the marquee will display on the screen"));
 
@@ -104,11 +105,12 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        repeatLabel = new Label("Repeat:");
+        repeatLabel = new Label("Repetitions:");
         repeatLabel.setFont(new Font(TEXT_FONT, 15));
 
-        repeatTextField = new TextField();
+        repeatTextField = new TextField("1");
         repeatTextField.setFont(new Font(TEXT_FONT, 15));
+        repeatTextField.setAlignment(Pos.CENTER);
         repeatTextField.setMaxWidth(45);
         repeatTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
 
@@ -231,17 +233,6 @@ public abstract class SegmentPane extends BorderPane
         entranceComboBox.setOnAction(e -> segment.setEntranceEffect(entranceComboBox.getValue()));
         middleComboBox.setOnAction(e -> segment.setMiddleEffect(middleComboBox.getValue()));
         exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
-
-        // Disable duration input if the user has selected continuous scrolling
-        durationTextField.disableProperty().bind(scrollRadioBtn.selectedProperty());
-
-/*        // Disable repeat factor input if the user has not selected any effects that involve scrolling
-        repeatTextField.disableProperty().bind(
-                statikRadioBtn.selectedProperty().or(
-                effectsRadioBtn.selectedProperty().and(Bindings.and(
-                (Bindings.createBooleanBinding(() -> entranceComboBox.getValue() instanceof EntranceTransition, entranceComboBox.valueProperty())),
-                 Bindings.createBooleanBinding(() -> exitComboBox.getValue() instanceof ExitTransition, exitComboBox.valueProperty())))
-        ));*/
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
