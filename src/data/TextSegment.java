@@ -28,10 +28,10 @@ public class TextSegment extends Segment
     private Color paddingColor;
     private Color[] textColors;
 
-    private TextSegment(int duration, int speed, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
+    private TextSegment(int duration, int repeat, int delay, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
                        EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, Color[] textColors, String text)
     {
-        super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
+        super(duration, repeat, delay, scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
         contents = new ArrayList<>();
         subtexts = new ArrayList<>();
@@ -50,7 +50,7 @@ public class TextSegment extends Segment
     // Copy constructor
     public TextSegment(TextSegment segment)
     {
-        this(segment.getDuration(), segment.getRepeat(), segment.getScrollDirection(),
+        this(segment.getDuration(), segment.getRepeat(), segment.getDelay(), segment.getScrollDirection(),
                 segment.borderColors.clone(), segment.borderEffect, segment.paddingColor, segment.getEntranceEffect(),
                 segment.getMiddleEffect(), segment.getExitEffect(), segment.textColors, segment.text);
     }
@@ -93,7 +93,7 @@ public class TextSegment extends Segment
     {
         ArrayList<TextSegment> subsegments = new ArrayList<>();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getRepeat(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getRepeat(), getDelay(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
 
         return subsegments;
     }

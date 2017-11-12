@@ -25,13 +25,6 @@ public class Marquee
     private int ledGap;
     private LocalTime startTime;
 
-    public Marquee(int width, int height, int ledGap)
-    {
-        this.width = width;
-        this.height = height;
-        this.ledGap = ledGap;
-    }
-
     public Marquee()
     {
         message = new Message();
