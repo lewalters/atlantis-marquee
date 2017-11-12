@@ -295,6 +295,10 @@ public class XMLParser
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
       	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getExitEffect()).name()));
+      	  
+      	  Element source = doc.createElement("source");
+      	  seg.appendChild(source);
+      	  source.appendChild(doc.createTextNode(imageSegment.getSource()));
         }
       });
   	  // write the content into xml file
