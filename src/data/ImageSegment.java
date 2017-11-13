@@ -20,9 +20,9 @@ public class ImageSegment extends Segment
     private String source;
     private DotMatrix contents;
 
-    private ImageSegment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String source)
+    private ImageSegment(int duration, int repeat, int delay, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, String source)
     {
-        super(duration, speed, scrollDirection, effectEn, effectMi, effectEx);
+        super(duration, repeat, delay, scrollDirection, effectEn, effectMi, effectEx);
         this.source = source;
         setContents();
     }
@@ -30,7 +30,7 @@ public class ImageSegment extends Segment
     // Copy constructor
     public ImageSegment(ImageSegment segment)
     {
-        this(segment.getDuration(), segment.getRepeat(), segment.getScrollDirection(), segment.getEntranceEffect(),
+        this(segment.getDuration(), segment.getRepeat(), segment.getDelay(), segment.getScrollDirection(), segment.getEntranceEffect(),
                 segment.getMiddleEffect(), segment.getExitEffect(), segment.source);
     }
 

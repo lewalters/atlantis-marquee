@@ -50,6 +50,8 @@ public class ImageSegmentPane extends SegmentPane
         grid.add(durationTextField, 1, 0);
         grid.add(repeatLabel, 0, 1);
         grid.add(repeatTextField, 1, 1);
+        grid.add(delayLabel, 0, 2);
+        grid.add(delayTextField, 1, 2);
         grid.setHgap(10);
         grid.setVgap(5);
 
@@ -102,6 +104,7 @@ public class ImageSegmentPane extends SegmentPane
         setSourceImageView(segment.getSource());
     }
 
+    // Create ImageView to preview the chosen image
     private void setSourceImageView(String path)
     {
         if (validImage(path))

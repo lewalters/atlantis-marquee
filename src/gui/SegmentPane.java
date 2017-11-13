@@ -27,8 +27,8 @@ public abstract class SegmentPane extends BorderPane
     private Button continueButton;
     private Button cancelButton;
 
-    protected Label titleLabel, durationLabel, repeatLabel;
-    protected TextField durationTextField, repeatTextField;
+    protected Label titleLabel, durationLabel, repeatLabel, delayLabel;
+    protected TextField durationTextField, repeatTextField, delayTextField;
 
     public SegmentPane(Segment segment)
     {
@@ -43,7 +43,6 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
                 + "-fx-font-weight: bold;");
-        BorderPane.setMargin(titleLabel, new Insets(0, 0, 10,0));
 
         // Create a preview marquee below the title that executes when clicked
         MarqueeController controller = new MarqueeController(segment, false);
@@ -62,7 +61,7 @@ public abstract class SegmentPane extends BorderPane
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 600);
+        this.setPrefSize(700, 600);
         this.setPadding(new Insets(30));
 
         durationLabel = new Label("Duration:");
@@ -108,7 +107,7 @@ public abstract class SegmentPane extends BorderPane
         repeatLabel = new Label("Repetitions:");
         repeatLabel.setFont(new Font(TEXT_FONT, 15));
 
-        repeatTextField = new TextField("1");
+        repeatTextField = new TextField();
         repeatTextField.setFont(new Font(TEXT_FONT, 15));
         repeatTextField.setAlignment(Pos.CENTER);
         repeatTextField.setMaxWidth(45);
@@ -130,7 +129,7 @@ public abstract class SegmentPane extends BorderPane
             }
         });
 
-        // Set the repeat factor in the segment or warn if the speed is invalid
+        // Set the repeat factor in the segment or warn if the repeat is invalid
         repeatTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
@@ -141,6 +140,46 @@ public abstract class SegmentPane extends BorderPane
                 if (repeat > 0)
                 {
                     segment.setRepeat(repeat);
+                }
+            }
+        }));
+
+        delayLabel = new Label("Delay:");
+        delayLabel.setFont(new Font(TEXT_FONT, 15));
+
+        delayTextField = new TextField();
+        delayTextField.setFont(new Font(TEXT_FONT, 15));
+        delayTextField.setAlignment(Pos.CENTER);
+        delayTextField.setMaxWidth(45);
+        delayTextField.setTooltip(new Tooltip("The delay between repetitions of this segment"));
+
+        //Setting delayTextField Character Length
+        delayTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(delayTextField.getText().length() > 3){
+                    delayTextField.setText(delayTextField.getText().substring(0,3));
+                }
+            }
+        });
+
+        //Making delayTextField Accept Only Numeric Values
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                delayTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // Set the delay in the segment or warn if the delay is invalid
+        delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String delayText = delayTextField.getText();
+
+                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
+
+                if (delay >= 0)
+                {
+                    segment.setDelay(delay);
                 }
             }
         }));
@@ -256,6 +295,8 @@ public abstract class SegmentPane extends BorderPane
         cancelButton.setStyle("-fx-background-insets: 0,1,2,3,0;"
                               +"-fx-font-weight: bold;"
                               +"-fx-padding: 10 20 10 20;");
+
+        populate(segment);
     }
 
     public Segment getSegment()
@@ -274,8 +315,9 @@ public abstract class SegmentPane extends BorderPane
     // Fill in the pane's cells with information from the given segment (for segment editing)
     protected void populate(Segment segment)
     {
-        durationTextField.setText(Integer.toString(segment.getDuration()));
-        repeatTextField.setText(Integer.toString(segment.getRepeat()));
+        durationTextField.setText(String.valueOf(segment.getDuration()));
+        repeatTextField.setText(String.valueOf(segment.getRepeat()));
+        delayTextField.setText(String.valueOf(segment.getDelay()));
 
         // Set display type radio button choice
         if (segment.getScrollDirection() != ScrollDirection.STATIC)

@@ -2,6 +2,8 @@ package gui;
 
 import data.*;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -12,15 +14,15 @@ import java.io.File;
 
 public class SettingsController
 {
-    private Marquee marquee;
+    private ObjectProperty<Marquee> marquee;
     private SettingsPane settingsPane;
     private Stage segmentStage;
 
     public SettingsController()
     {
-        marquee = new Marquee();
+        marquee = new SimpleObjectProperty<>(new Marquee());
 
-        settingsPane = new SettingsPane(this, marquee);
+        settingsPane = new SettingsPane(this);
 
         //Creating Segment Stage
         segmentStage = new Stage();
@@ -50,7 +52,7 @@ public class SettingsController
 
             if (!isSorted)
             {
-                marquee.getMessage().changeOrder(ranks);
+                marquee.get().getMessage().changeOrder(ranks);
                 settingsPane.getSegmentListView().refresh();
             }
         });
@@ -58,8 +60,8 @@ public class SettingsController
         // Event handler for file menu new
         settingsPane.getNew().setOnAction(e ->
         {
-            marquee = new Marquee();
-            settingsPane.reset();
+            marquee.setValue(new Marquee());
+            settingsPane.populate();
         });
         
         //Event handler for file menu save
@@ -72,7 +74,7 @@ public class SettingsController
             if(file != null) 
             {
                 XMLParser xmlp = new XMLParser(file);
-                xmlp.XMLWriter(marquee);
+                xmlp.XMLWriter(marquee.get());
             }
         });        
 
@@ -86,7 +88,7 @@ public class SettingsController
             if(file != null)
             {
                 XMLParser xmlp = new XMLParser(file);
-                marquee = xmlp.XMLReader();
+                marquee.setValue(xmlp.XMLReader());
                 settingsPane.populate();
             }
         });
@@ -98,6 +100,11 @@ public class SettingsController
     }
 
     public Marquee getMarquee()
+    {
+        return marquee.getValue();
+    }
+
+    public ObjectProperty<Marquee> marqueeProperty()
     {
         return marquee;
     }
@@ -132,18 +139,18 @@ public class SettingsController
 
         segmentPane.getContinueButton().setOnAction(e -> {
 
-            int index = marquee.getMessage().getContents().indexOf(segment);
+            int index = marquee.get().getMessage().getContents().indexOf(segment);
             Segment newSegment = segmentPane.getSegment();
 
             if (newSegment.isValid())
             {
                 if (index < 0)
                 {
-                    marquee.getMessage().getContents().add(segmentPane.getSegment());
+                    marquee.get().getMessage().getContents().add(segmentPane.getSegment());
                 }
                 else
                 {
-                    marquee.getMessage().getContents().set(index, segmentPane.getSegment());
+                    marquee.get().getMessage().getContents().set(index, segmentPane.getSegment());
                 }
 
                 settingsPane.getSegmentListView().refresh();
