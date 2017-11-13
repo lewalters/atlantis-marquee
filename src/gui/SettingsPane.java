@@ -6,11 +6,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.stage.Screen;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalTimeStringConverter;
 
@@ -757,24 +755,6 @@ public class SettingsPane extends BorderPane
             timeCustom.setSelected(true);
             timeSpinner.getValueFactory().setValue(marquee.get().getStartTime());
         }
-        segmentListView.setSegments(marquee.get().getMessage().getContents());
-        segmentListView.refresh();
-    }
-
-    // Resets the pane to its original state and refreshes the segment list view
-    public void reset()
-    {
-        widthTextField.clear();
-        heightTextField.clear();
-        ledGapTextField.clear();
-        nameTextField.clear();
-        delayTextField.clear();
-        repeatTextField.clear();
-        commentsTextArea.clear();
-        screenPosition.getSelectionModel().select(Pos.CENTER);
-        timeImmediate.setSelected(true);
-        fullScreenCheckBox.setSelected(false);
-        maxSizeCheckBox.setSelected(false);
         segmentListView.setSegments(marquee.get().getMessage().getContents());
         segmentListView.refresh();
     }

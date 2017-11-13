@@ -16,8 +16,6 @@ public abstract class SegmentPane extends BorderPane
 {
     private Segment segment;
 
-    private VBox scrollVBox;
-    private VBox effectsVBox;
     private RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     private ComboBox<EntranceEffect> entranceComboBox;
     protected ComboBox<MiddleEffect> middleComboBox;
@@ -221,7 +219,7 @@ public abstract class SegmentPane extends BorderPane
         scrollComboBox.setEditable(false);
         scrollComboBox.getItems().addAll(ScrollDirection.LEFT, ScrollDirection.RIGHT, ScrollDirection.UP, ScrollDirection.DOWN);
         scrollComboBox.getSelectionModel().selectFirst();
-        scrollVBox = new VBox(scrollComboBox);
+        VBox scrollVBox = new VBox(scrollComboBox);
         scrollVBox.visibleProperty().bindBidirectional(scrollVBox.managedProperty());
         scrollVBox.visibleProperty().bind(scrollRadioBtn.selectedProperty());
         scrollVBox.setStyle("-fx-padding: 15");
@@ -245,7 +243,7 @@ public abstract class SegmentPane extends BorderPane
         exitComboBox.setEditable(false);
         exitComboBox.getSelectionModel().selectFirst();
 
-        effectsVBox = new VBox(entranceComboBox, middleComboBox, exitComboBox);
+        VBox effectsVBox = new VBox(entranceComboBox, middleComboBox, exitComboBox);
         effectsVBox.visibleProperty().bindBidirectional(effectsVBox.managedProperty());
         effectsVBox.visibleProperty().bind(effectsRadioBtn.selectedProperty());
         effectsVBox.setSpacing(5);

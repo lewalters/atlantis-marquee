@@ -73,7 +73,7 @@ public class XMLParser
 	  e.printStackTrace();
 	}
 	doc.getDocumentElement().normalize();
-    Marquee marquee = new Marquee(0, 0, 0);
+    Marquee marquee = new Marquee();
 	NodeList msgList = doc.getElementsByTagName("message");
 	for (int m = 0; m < msgList.getLength(); m++) 
 	{   	
