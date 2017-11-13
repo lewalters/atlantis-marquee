@@ -209,7 +209,6 @@ public class MarqueeController
 
         // Add either the borderedTransition or the bodyTransition to the animation set
         segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition, resetTimeline);
-        segmentTransition.setCycleCount(segment.getRepeat());
         transition.getChildren().add(segmentTransition);
     }
 
@@ -350,7 +349,16 @@ public class MarqueeController
         Timeline timeline = new Timeline();
         ScrollDirection direction;
         int cycles;
-        int speed = 5; // TODO: recalculate
+        int speed;
+
+        if (time == CONTINUOUS)
+        {
+            speed = (int) (((segment.getDuration() - (segment.getDelay() * segment.getRepeat())) / (segment.getRepeat() * 1.0) * 1000) / (segment.getHlength() + (segment instanceof TextSegment ? TEXT_COLS : NUM_COLS)));
+        }
+        else
+        {
+            speed = 50;
+        }
 
         switch (time)
         {

@@ -26,6 +26,11 @@ public class TextColorsPicker extends VBox
         this.setSpacing(3);
     }
 
+    public void setSegment(TextSegment segment)
+    {
+        this.segment = segment;
+    }
+
     public void refresh()
     {
         this.getChildren().clear();

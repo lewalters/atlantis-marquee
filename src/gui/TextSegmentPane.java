@@ -29,13 +29,13 @@ public class TextSegmentPane extends SegmentPane
     private TextSegment segment;
 
     private TextArea textTextArea;
+    private TextColorsPicker textColorsPicker;
     private RadioButton textColorSingle, textColorRandom, textColorCustom;
     private RadioButton borderColorNone, borderColorRandom, borderColorCustom;
     private RadioButton paddingColorNone, paddingColorCustom;
     private TextField borderSpeedTextField;
-    private ObservableList<ColorPicker> textColorPickers;
     private ObservableList<ColorPicker> borderColorPickers;
-    private ColorPicker paddingColorPicker;
+    private ColorPicker textColorPicker, paddingColorPicker;
     private ComboBox<BorderEffect> borderEffectComboBox;
     private Button addBorderColorButton;
 
@@ -129,10 +129,10 @@ public class TextSegmentPane extends SegmentPane
         textColorCustom.setToggleGroup(textGroup);
         HBox textChoicesBox = new HBox(textColorSingle, textColorRandom, textColorCustom);
         textChoicesBox.setSpacing(2);
-        ColorPicker textColorPicker = new ColorPicker(DEFAULT_TEXT_COLOR);
+        textColorPicker = new ColorPicker(DEFAULT_TEXT_COLOR);
         textColorPicker.visibleProperty().bindBidirectional(textColorPicker.managedProperty());
         textColorPicker.visibleProperty().bind(textColorSingle.selectedProperty());
-        TextColorsPicker textColorsPicker = new TextColorsPicker(segment);
+        textColorsPicker = new TextColorsPicker(segment);
         ScrollPane colorsScroll = new ScrollPane(textColorsPicker);
         textColorsPicker.minWidthProperty().bind(colorsScroll.widthProperty());
         colorsScroll.setPrefViewportWidth(200);
@@ -332,13 +332,33 @@ public class TextSegmentPane extends SegmentPane
         return borderSpeedTextField;
     }
 
-    // TODO: Update all populate methods to reflect current data / display
     // Fill in the pane's cells with information from the given segment (for segment editing)
     private void populate()
     {
         super.populate(segment);
 
         textTextArea.setText(segment.getText());
+
+        Color[] textColors = segment.getTextColors();
+
+        if (textColors.length == 1)
+        {
+            if (textColors[0] == Color.TRANSPARENT)
+            {
+                textColorRandom.setSelected(true);
+            }
+            else
+            {
+                textColorSingle.setSelected(true);
+                textColorPicker.setValue(textColors[0]);
+            }
+        }
+        else
+        {
+            textColorCustom.setSelected(true);
+            textColorsPicker.setSegment(segment);
+            textColorsPicker.refresh();
+        }
 
         Color[] borderColors = segment.getBorderColors();
 
