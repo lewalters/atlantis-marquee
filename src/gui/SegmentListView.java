@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,10 @@ public class SegmentListView extends GridPane
             this.add(rank, 0, i);
             orderFields.add(rank);
 
-            MarqueePane pane = new MarqueePane(segment);
+            MarqueeController controller = new MarqueeController(segment, true);
+            Pane pane = controller.getPreviewMarqueePane();
             this.add(pane, 1, i);
+            controller.preview();
 
             Button edit = new Button("E");
             this.add(edit, 2, i);

@@ -21,15 +21,9 @@ public class Marquee
     private int width, height;
     private Pos screenPos;
     private boolean fullscreen;
+    private boolean maxSize;
     private int ledGap;
     private LocalTime startTime;
-
-    public Marquee(int width, int height, int ledGap)
-    {
-        this.width = width;
-        this.height = height;
-        this.ledGap = ledGap;
-    }
 
     public Marquee()
     {
@@ -66,6 +60,11 @@ public class Marquee
         return fullscreen;
     }
 
+    public boolean isMaxSize()
+    {
+        return maxSize;
+    }
+
     public int getLedGap()
     {
         return ledGap;
@@ -99,6 +98,11 @@ public class Marquee
     public void setFullscreen(boolean fullscreen)
     {
         this.fullscreen = fullscreen;
+    }
+
+    public void setMaxSize(boolean maxSize)
+    {
+        this.maxSize = maxSize;
     }
 
     public void setLedGap(int ledGap)

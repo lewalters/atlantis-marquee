@@ -15,17 +15,19 @@ import java.util.Iterator;
 public abstract class Segment
 {
     private int duration;
-    private int speed;
+    private int repeat;
+    private int delay;
     private ScrollDirection scrollDirection;
     private EntranceEffect effectEn;
     private MiddleEffect effectMi;
     private ExitEffect effectEx;
     protected int hLength, vLength, size;
 
-    protected Segment(int duration, int speed, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
+    protected Segment(int duration, int repeat, int delay, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
     {
         this.duration = duration;
-        this.speed = speed;
+        this.repeat = repeat;
+        this.delay = delay;
         this.scrollDirection = scrollDirection;
         this.effectEn = effectEn;
         this.effectMi = effectMi;
@@ -34,8 +36,9 @@ public abstract class Segment
 
     protected Segment()
     {
-        duration = 0;
-        speed = 0;
+        duration = 1;
+        repeat = 1;
+        delay = 0;
         scrollDirection = ScrollDirection.STATIC;
         effectEn = EntranceTransition.NONE;
         effectMi = MiddleEffect.NONE;
@@ -47,9 +50,14 @@ public abstract class Segment
         return duration;
     }
 
-    public int getSpeed()
+    public int getRepeat()
     {
-        return speed;
+        return repeat;
+    }
+
+    public int getDelay()
+    {
+        return delay;
     }
 
     public ScrollDirection getScrollDirection()
@@ -92,9 +100,14 @@ public abstract class Segment
         this.duration = duration;
     }
 
-    public void setSpeed(int speed)
+    public void setRepeat(int repeat)
     {
-        this.speed = speed;
+        this.repeat = repeat;
+    }
+
+    public void setDelay(int delay)
+    {
+        this.delay = delay;
     }
 
     public void setScrollDirection(ScrollDirection scroll)
@@ -121,21 +134,6 @@ public abstract class Segment
 
     public boolean isValid()
     {
-        if (scrollDirection == ScrollDirection.STATIC)
-        {
-            if (effectEn instanceof ScrollDirection || effectEn instanceof ScrollEffect ||
-                    effectEx instanceof ScrollDirection || effectEx instanceof ScrollEffect)
-            {
-                return duration > 0 && speed > 0;
-            }
-            else
-            {
-                return duration > 0;
-            }
-        }
-        else
-        {
-            return speed > 0;
-        }
+        return duration > 0 && repeat > 0 && delay >= 0;
     }
 }

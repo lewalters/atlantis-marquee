@@ -44,6 +44,16 @@ public class TextColorsPicker extends VBox
                 this.getChildren().add(new Separator());
             }
         }
+
+        // If there is no text in the text field, set default
+        if (pickers.size() > 0)
+        {
+            segment.setTextColors(pickers.stream().map(ColorPicker::getValue).toArray(Color[]::new));
+        }
+        else
+        {
+            segment.setTextColors(new Color[]{DEFAULT_TEXT_COLOR});
+        }
     }
 
     // Draw a box with each character of the string sitting above a corresponding color picker

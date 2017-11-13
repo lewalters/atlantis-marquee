@@ -3,6 +3,7 @@ package gui;
 import data.*;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import util.*;
 
 import javafx.animation.*;
@@ -26,12 +27,15 @@ public class MarqueeController
     private MarqueePane marqueePane;
     private Marquee marquee;
 
+    private Segment previewSegment;
+    private SequentialTransition preview = new SequentialTransition();
+
     private MenuItem restart;
 
     public MarqueeController(Marquee marquee)
     {
         this.marquee = marquee;
-        marqueePane = new MarqueePane(marquee.getWidth(), marquee.getLedGap());
+        marqueePane = new MarqueePane(marquee.isMaxSize() ? (int) Screen.getPrimary().getBounds().getWidth() : marquee.getWidth(), marquee.getLedGap());
 
         restart = new MenuItem("Restart");
         restart.setOnAction(e -> play());
@@ -48,8 +52,16 @@ public class MarqueeController
         });
     }
 
+    public MarqueeController(Segment segment, boolean list)
+    {
+        previewSegment = segment;
+        marqueePane = new MarqueePane(list ? 300 : 500, 1);
+        preview = new SequentialTransition();
+        preview.setCycleCount(list ? Animation.INDEFINITE : 1);
+    }
+
     // Return the marquee anchored within the enclosing window based on its screen position value
-    public Pane getMarqueePane()
+    public Pane getFullMarqueePane()
     {
         BorderPane frame = new BorderPane();
         Pos position = marquee.getScreenPos();
@@ -90,38 +102,27 @@ public class MarqueeController
         return frame;
     }
 
+    public MarqueePane getPreviewMarqueePane()
+    {
+        return marqueePane;
+    }
+
+    public void preview()
+    {
+        preview.stop();
+        preview.getChildren().clear();
+        marqueePane.reset();
+        addSegment(previewSegment, preview);
+        preview.play();
+    }
+
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat
     public void play()
     {
         Message message = marquee.getMessage();
         SequentialTransition messageAnimation = new SequentialTransition();
 
-        message.getContents().forEach(segment -> {
-            if (segment instanceof TextSegment)
-            {
-                TextSegment textSegment = (TextSegment) segment;
-
-                if (textSegment.hasSubsegments())
-                {
-                    if (textSegment.getScrollDirection() == ScrollDirection.STATIC || (textSegment.getScrollDirection() == ScrollDirection.UP || textSegment.getScrollDirection() == ScrollDirection.DOWN))
-                    {
-                        textSegment.getSubsegments().forEach(subsegment -> addSegment(subsegment, messageAnimation));
-                    }
-                    else
-                    {
-                        addSegment(segment, messageAnimation);
-                    }
-                }
-                else
-                {
-                    addSegment(segment, messageAnimation);
-                }
-            }
-            else
-            {
-                addSegment(segment, messageAnimation);
-            }
-        });
+        message.getContents().forEach(segment -> addSegment(segment, messageAnimation));
 
         int delay = message.getDelay();
         if (delay > 0)
@@ -141,14 +142,36 @@ public class MarqueeController
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
             long waitTime = java.time.Duration.between(LocalTime.now(), marquee.getStartTime()).toMillis();
             scheduler.schedule(messageAnimation::play, waitTime, TimeUnit.MILLISECONDS);
+            scheduler.shutdown();
         }
 
         restart.setDisable(true);
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
 
-    // Add an animation that encompasses the given segment to the full animation
+    // TODO: subsegments + segment repetitions will shift border colors / restart animation
+    // Add a segment, breaking a TextSegment into its subsegments if necessary
     private void addSegment(Segment segment, SequentialTransition transition)
+    {
+        if (segment instanceof TextSegment && ((TextSegment)segment).hasSubsegments() &&
+                (segment.getScrollDirection() == ScrollDirection.STATIC || segment.getScrollDirection() == ScrollDirection.UP || segment.getScrollDirection() == ScrollDirection.DOWN))
+        {
+            for (int i = 0; i < segment.getRepeat(); i++)
+            {
+                ((TextSegment)segment).getSubsegments().forEach(subsegment -> addSegmentAnimation(subsegment, transition));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < segment.getRepeat(); i++)
+            {
+                addSegmentAnimation(segment, transition);
+            }
+        }
+    }
+
+    // Add an animation that encompasses the given segment to the full animation
+    private void addSegmentAnimation(Segment segment, SequentialTransition transition)
     {
         SequentialTransition segmentTransition = new SequentialTransition();
         ParallelTransition borderedTransition = new ParallelTransition();
@@ -186,6 +209,7 @@ public class MarqueeController
 
         // Add either the borderedTransition or the bodyTransition to the animation set
         segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition, resetTimeline);
+        segmentTransition.setCycleCount(segment.getRepeat());
         transition.getChildren().add(segmentTransition);
     }
 
@@ -326,7 +350,7 @@ public class MarqueeController
         Timeline timeline = new Timeline();
         ScrollDirection direction;
         int cycles;
-        int speed = 1000 / segment.getSpeed();
+        int speed = 5; // TODO: recalculate
 
         switch (time)
         {

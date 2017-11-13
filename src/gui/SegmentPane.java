@@ -26,24 +26,44 @@ public abstract class SegmentPane extends BorderPane
     private Button continueButton;
     private Button cancelButton;
 
-    protected Label titleLabel, durationLabel, speedLabel;
-    protected TextField durationTextField, speedTextField;
+    protected Label titleLabel, durationLabel, repeatLabel, delayLabel;
+    protected TextField durationTextField, repeatTextField, delayTextField;
 
     public SegmentPane(Segment segment)
     {
         this.segment = segment;
 
+        // Take the focus off of the active node if the dead space is clicked
+        this.setOnMouseClicked(e -> requestFocus());
+
         titleLabel = new Label("Segment Settings");
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
+                + "-fx-font-weight: bold;");
+
+        // Create a preview marquee below the title that executes when clicked
+        MarqueeController controller = new MarqueeController(segment, false);
+        MarqueePane marqueePane = controller.getPreviewMarqueePane();
+        marqueePane.setOnMouseClicked(e ->
+        {
+            if (segment.isValid())
+            {
+                controller.preview();
+            }
+        });
+
+        VBox topBox = new VBox(titleLabel, marqueePane);
+        topBox.setSpacing(10);
+        this.setTop(topBox);
 
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 10,0));
         this.setTop(titleLabel);
 
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(640, 500);
+        this.setPrefSize(700, 600);
         this.setPadding(new Insets(30));
 
         durationLabel = new Label("Duration:");
@@ -85,41 +105,82 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        speedLabel = new Label("Scroll Speed:");
-        speedLabel.setFont(new Font(TEXT_FONT, 15));
+        repeatLabel = new Label("Repetitions:");
+        repeatLabel.setFont(new Font(TEXT_FONT, 15));
 
-        speedTextField = new TextField();
-        speedTextField.setFont(new Font(TEXT_FONT, 15));
-        speedTextField.setMaxWidth(45);
-        speedTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
+        repeatTextField = new TextField();
+        repeatTextField.setFont(new Font(TEXT_FONT, 15));
+        repeatTextField.setAlignment(Pos.CENTER);
+        repeatTextField.setMaxWidth(45);
+        repeatTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
 
-        //Setting speedTextField Character Length
-        speedTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        //Setting repeatTextField Character Length
+        repeatTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue()){
-                if(speedTextField.getText().length() > 3){
-                    speedTextField.setText(speedTextField.getText().substring(0,3));
+                if(repeatTextField.getText().length() > 3){
+                    repeatTextField.setText(repeatTextField.getText().substring(0,3));
                 }
             }
         });
 
-        //Making speedTextField Accept Only Numeric Values
-        speedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        //Making repeatTextField Accept Only Numeric Values
+        repeatTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
-                speedTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                repeatTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
-        // Set the speed in the segment or warn if the speed is invalid
-        speedTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+        // Set the repeat factor in the segment or warn if the repeat is invalid
+        repeatTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                String speedText = speedTextField.getText();
+                String repeatText = repeatTextField.getText();
 
-                int speed = speedText.isEmpty() ? 0 : Integer.valueOf(speedText);
+                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
 
-                if (speed > 0)
+                if (repeat > 0)
                 {
-                    segment.setSpeed(speed);
+                    segment.setRepeat(repeat);
+                }
+            }
+        }));
+
+        delayLabel = new Label("Delay:");
+        delayLabel.setFont(new Font(TEXT_FONT, 15));
+
+        delayTextField = new TextField();
+        delayTextField.setFont(new Font(TEXT_FONT, 15));
+        delayTextField.setAlignment(Pos.CENTER);
+        delayTextField.setMaxWidth(45);
+        delayTextField.setTooltip(new Tooltip("The delay between repetitions of this segment"));
+
+        //Setting delayTextField Character Length
+        delayTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue()){
+                if(delayTextField.getText().length() > 3){
+                    delayTextField.setText(delayTextField.getText().substring(0,3));
+                }
+            }
+        });
+
+        //Making delayTextField Accept Only Numeric Values
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                delayTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // Set the delay in the segment or warn if the delay is invalid
+        delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) // Lost focus
+            {
+                String delayText = delayTextField.getText();
+
+                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
+
+                if (delay >= 0)
+                {
+                    segment.setDelay(delay);
                 }
             }
         }));
@@ -196,30 +257,22 @@ public abstract class SegmentPane extends BorderPane
             resetEffects();
         });
 
-        // Set the scroll direction to the initial / selected direction and remove effects if "scroll" is chosen
+        // Set the scroll direction to the initial direction and remove effects if "scroll" is chosen
         scrollRadioBtn.setOnAction(e -> {
             segment.setScrollDirection(scrollComboBox.getValue());
             resetEffects();
         });
-        scrollComboBox.setOnAction(e -> {
-            segment.setScrollDirection(scrollComboBox.getValue());
-            resetEffects();
-        });
+
+        // Set the scroll direction if the direction is changed
+        scrollComboBox.setOnAction(e -> segment.setScrollDirection(scrollComboBox.getValue()));
+
+        // Set the scroll direction to STATIC if "effects" is chosen
+        effectsRadioBtn.setOnAction(e -> segment.setScrollDirection(ScrollDirection.STATIC));
 
         // Set the effects as changed if "effects" is chosen
         entranceComboBox.setOnAction(e -> segment.setEntranceEffect(entranceComboBox.getValue()));
         middleComboBox.setOnAction(e -> segment.setMiddleEffect(middleComboBox.getValue()));
         exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
-
-        // Swapping between duration and speed labels / boxes
-/*        durationLabel.visibleProperty().bindBidirectional(durationLabel.managedProperty());
-        durationLabel.visibleProperty().bind(speedLabel.visibleProperty().not());
-        durationTextField.visibleProperty().bindBidirectional(durationTextField.managedProperty());
-        durationTextField.visibleProperty().bind(durationLabel.visibleProperty());
-        speedLabel.visibleProperty().bindBidirectional(speedLabel.managedProperty());
-        speedLabel.visibleProperty().bind(scrollRadioBtn.selectedProperty());
-        speedTextField.visibleProperty().bindBidirectional(speedTextField.managedProperty());
-        speedTextField.visibleProperty().bind(speedLabel.visibleProperty());*/
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
@@ -238,20 +291,13 @@ public abstract class SegmentPane extends BorderPane
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
         /*CSS*/
-        //Title
-        titleLabel.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-font-weight: bold;");
-        //Segment Pane Buttons
-        continueButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;-fx-font-weight: bold;");
-        cancelButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;-fx-font-weight: bold;");
-        //continueButton.setStyle("-fx-font-weight: bold;-fx-padding: 10 20 10 20; -fx-font: 22 helvetica;-fx-base:#E8E8E8; -fx-background-radius: 6");
-        //cancelButton.setStyle("-fx-font-weight: bold;-fx-padding: 10 20 10 20; -fx-font: 22 helvetica;-fx-base:#E8E8E8; -fx-background-radius: 6");
-        //ComboBox Buttons
-        entranceComboBox.setStyle( "-fx-pref-width: 110;");
-        middleComboBox.setStyle("-fx-pref-width: 110;");
-        exitComboBox.setStyle("-fx-pref-width: 110;");
-        scrollComboBox.setStyle("-fx-pref-width: 110;");
-        //radioBox Buttons
-        radioBox.setStyle("-fx-font-weight: bold;");
+        continueButton.setStyle("-fx-font-weight: bold;"
+                                +"-fx-padding: 10 20 10 20;");
+        cancelButton.setStyle("-fx-background-insets: 0,1,2,3,0;"
+                              +"-fx-font-weight: bold;"
+                              +"-fx-padding: 10 20 10 20;");
+
+        populate(segment);
     }
 
     public Segment getSegment()
@@ -270,8 +316,9 @@ public abstract class SegmentPane extends BorderPane
     // Fill in the pane's cells with information from the given segment (for segment editing)
     protected void populate(Segment segment)
     {
-        durationTextField.setText(Integer.toString(segment.getDuration()));
-        speedTextField.setText(Integer.toString(segment.getSpeed()));
+        durationTextField.setText(String.valueOf(segment.getDuration()));
+        repeatTextField.setText(String.valueOf(segment.getRepeat()));
+        delayTextField.setText(String.valueOf(segment.getDelay()));
 
         // Set display type radio button choice
         if (segment.getScrollDirection() != ScrollDirection.STATIC)

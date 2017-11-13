@@ -103,33 +103,6 @@ public class MarqueePane extends StackPane
         ledGrid.setVgap(ledGap);
     }
 
-    // Create a marquee with a single segment (used to preview in the list view)
-    public MarqueePane(Segment segment)
-    {
-        this(300, 1);
-
-        if (segment instanceof TextSegment)
-        {
-            TextSegment textSegment = (TextSegment) segment;
-
-            setBorderColor(textSegment.getBorderColors());
-            setPaddingColor(textSegment.getPaddingColor());
-
-            if (textSegment.hasSubsegments())
-            {
-                set(textSegment.getSubsegments().get(0), true);
-            }
-            else
-            {
-                set(textSegment, true);
-            }
-        }
-        else
-        {
-            set(segment, true);
-        }
-    }
-
     // Set the border to the provided colors or randomly
     public void setBorderColor(Color[] colors)
     {

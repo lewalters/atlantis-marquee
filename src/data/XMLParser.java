@@ -1,4 +1,4 @@
-/**
+/*
  * XML Parsing class
  * 
  * Bugs: None known
@@ -17,9 +17,23 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javafx.scene.paint.Color;
+import util.BorderEffect;
+import util.EntranceEffect;
+import util.EntranceTransition;
+import util.ExitEffect;
+import util.ExitTransition;
+import util.MiddleEffect;
 import util.ScrollDirection;
 import org.w3c.dom.Node;
+
+import static util.Global.DEFAULT_TEXT_COLOR;
+import static util.Global.OFF_COLOR;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class XMLParser 
 {
@@ -49,6 +63,7 @@ public class XMLParser
   
   public Marquee XMLReader() 
   {
+	int segNum = 0;
     try 
     {
 	  doc = dBuilder.parse(XMLFile);
@@ -59,8 +74,6 @@ public class XMLParser
 	}
 	doc.getDocumentElement().normalize();
     Marquee marquee = new Marquee(0, 0, 0);
-//  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
-
 	NodeList msgList = doc.getElementsByTagName("message");
 	for (int m = 0; m < msgList.getLength(); m++) 
 	{   	
@@ -72,7 +85,6 @@ public class XMLParser
         Node msgChildNode = msgChildList.item(i);
         if(msgChildNode.getNodeType() == Node.ELEMENT_NODE) 
         {
-          System.out.println(msgChildNode.getNodeName() + ":" + msgChildNode.getTextContent().trim());
           switch(msgChildNode.getNodeName()) 
           {
             case "marqueeWidth":
@@ -112,54 +124,128 @@ public class XMLParser
             break;
             case "textSegment":
             {
-              System.out.println("Child: found textSegment");
+              TextSegment segment = new TextSegment();
               NodeList segChildList = msgChildNode.getChildNodes();
               for (int j = 0; j < segChildList.getLength(); j++) 
               {
                 Node segChildNode = segChildList.item(j);
                 if(segChildNode.getNodeType() == Node.ELEMENT_NODE) 
                 {
-                  System.out.println(segChildNode.getNodeName() + ":" + segChildNode.getTextContent().trim());
                   switch(segChildNode.getNodeName()) 
                   { 
                     case "duration":
                     {
-//                      segment.setDuration(Integer.parseInt(segChildNode.getTextContent()));
+                      segment.setDuration(Integer.parseInt(segChildNode.getTextContent()));
                     }
                     break;
-                    case "speed":
+                    case "repeat":
                     {
-//                      segment.setSpeed(Integer.parseInt(segChildNode.getTextContent()));
+                      segment.setRepeat(Integer.parseInt(segChildNode.getTextContent()));
                     }
                     break;
                     case "scrollDirection":
                     {
-//                      segment.setScrollDirection(ScrollDirection.valueOf(segChildNode.getTextContent()));
+                      segment.setScrollDirection(ScrollDirection.valueOf(segChildNode.getTextContent()));
                     }
                     break;
-// Color[] borderColors, BorderEffect borderEffect, 
-// Color paddingColor, MarqueeEffect effectEn, StaticEffect effectMi, 
-// MarqueeEffect effectEx, String textColor, String text)
-
                     case "effectEn":
+                    {
+                      segment.setEntranceEffect(EntranceTransition.valueOf(segChildNode.getTextContent()));
+                    }
                     break;
                     case "effectMi":
-                    break;
+                    {
+                      segment.setMiddleEffect(MiddleEffect.valueOf(segChildNode.getTextContent()));
+                    }
+                   	break;
                     case "effectEx":
-                    break;
-                    case "hLength":
-                    break;
-                    case "vLength":
-                    break;
-                    case "size":
-                    break;
+                    {
+                      segment.setExitEffect(ExitTransition.valueOf(segChildNode.getTextContent()));
+                    }
+                  	break;
+                    case "text":
+                    {
+                      segment.setText(segChildNode.getTextContent());
+                    }
+                  	break;
+                    case "borderColors":
+                    {
+//                      segment.setBorderColors(segChildNode.getTextContent());
+                    }
+                  	break;
+                    case "borderEffect":
+                    {
+                      segment.setBorderEffect(BorderEffect.valueOf(segChildNode.getTextContent()));
+                    }
+                  	break;
+                    case "paddingColor":
+                    {
+                      segment.setPaddingColor(Color.valueOf(segChildNode.getTextContent()));
+                    }
+                  	break;
+                    case "textColors":
+                    {
+//                     segment.setTextColors(segChildNode.getTextContent());
+                    }
+                  	break;
                   }
                 }
               }
-//            Segment segment1 = new TextSegment(5, 10, ScrollDirection.STATIC, colorList, BorderEffect.NONE, Color.WHITE, ScrollDirection.LEFT, StaticEffect.NONE, TransitionEffect.RANDOM_LIGHT, "DA70D6", "abcdef");
-//            Segment segment2 = new ImageSegment(5, 12, ScrollDirection.STATIC, TransitionEffect.FADE, StaticEffect.BLINK, TransitionEffect.FADE, "gbf.png");
-//            message.addSegment(0, segment1);
-//            message.addSegment(1, segment2);
+              message.addSegment(segNum, segment);
+              segNum++;
+            }           
+            break;
+            case "imageSegment":
+            {
+              ImageSegment segment = new ImageSegment();
+              NodeList segChildList = msgChildNode.getChildNodes();
+              for (int j = 0; j < segChildList.getLength(); j++) 
+              {
+                Node segChildNode = segChildList.item(j);
+                if(segChildNode.getNodeType() == Node.ELEMENT_NODE) 
+                {
+                  switch(segChildNode.getNodeName()) 
+                  { 
+                    case "duration":
+                    {
+                      segment.setDuration(Integer.parseInt(segChildNode.getTextContent()));
+                    }
+                    break;
+                    case "repeat":
+                    {
+                      segment.setRepeat(Integer.parseInt(segChildNode.getTextContent()));
+                    }
+                    break;
+                    case "scrollDirection":
+                    {
+                      segment.setScrollDirection(ScrollDirection.valueOf(segChildNode.getTextContent()));
+                    }
+                    break;
+                    case "effectEn":
+                    {
+                      segment.setEntranceEffect(EntranceTransition.valueOf(segChildNode.getTextContent()));
+                    }
+                    break;
+                    case "effectMi":
+                    {
+                      segment.setMiddleEffect(MiddleEffect.valueOf(segChildNode.getTextContent()));
+                    }
+                   	break;
+                    case "effectEx":
+                    {
+                      segment.setExitEffect(ExitTransition.valueOf(segChildNode.getTextContent()));
+                    }
+                  	break;
+                    case "source":
+                    {
+                      segment.setSource(segChildNode.getTextContent());
+                    }
+                  	break;
+                  }
+                }
+              }
+              message.addSegment(segNum, segment);
+              segNum++;
             }           
             break;
           }
@@ -218,9 +304,9 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString(textSegment.getDuration())));
 
-      	  Element speed = doc.createElement("speed");
+      	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getSpeed())));
+      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getRepeat())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);
@@ -237,6 +323,26 @@ public class XMLParser
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
       	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getExitEffect()).name()));
+
+      	  Element text = doc.createElement("text");
+      	  seg.appendChild(text);
+      	  text.appendChild(doc.createTextNode(textSegment.getText()));
+
+      	  Element borderColors = doc.createElement("borderColors");
+      	  seg.appendChild(borderColors);
+      	  borderColors.appendChild(doc.createTextNode(Arrays.toString(textSegment.getBorderColors())));
+
+      	  Element borderEffect = doc.createElement("borderEffect");
+      	  seg.appendChild(borderEffect);
+      	  borderEffect.appendChild(doc.createTextNode(textSegment.getBorderEffect().name()));
+
+      	  Element paddingColor = doc.createElement("paddingColor");
+      	  seg.appendChild(paddingColor);
+      	  paddingColor.appendChild(doc.createTextNode(textSegment.getPaddingColor().toString()));
+
+      	  Element textColors = doc.createElement("textColors");
+      	  seg.appendChild(textColors);
+      	  textColors.appendChild(doc.createTextNode(Arrays.toString(textSegment.getTextColors())));
         }
         else
         {
@@ -247,9 +353,9 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString(imageSegment.getDuration())));
 
-      	  Element speed = doc.createElement("speed");
+      	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getSpeed())));
+      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getRepeat())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);
@@ -266,6 +372,10 @@ public class XMLParser
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
       	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getExitEffect()).name()));
+      	  
+      	  Element source = doc.createElement("source");
+      	  seg.appendChild(source);
+      	  source.appendChild(doc.createTextNode(imageSegment.getSource()));
         }
       });
   	  // write the content into xml file
