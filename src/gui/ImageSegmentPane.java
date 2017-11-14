@@ -1,15 +1,14 @@
 package gui;
 
+import data.ImageSegment;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -46,13 +45,6 @@ public class ImageSegmentPane extends SegmentPane
 
         VBox leftSide = new VBox();
 
-        Label durationLabel = new Label("Duration:");
-        durationLabel.setFont(new Font(TEXT_FONT, 15));
-        durationTextField = new TextField();
-
-        HBox durationBox = new HBox(durationLabel, durationTextField);
-        durationBox.setSpacing(10);
-        durationBox.setAlignment(Pos.CENTER_LEFT);
         GridPane grid = new GridPane();
         grid.add(durationLabel, 0, 0);
         grid.add(durationTextField, 1, 0);
@@ -79,53 +71,21 @@ public class ImageSegmentPane extends SegmentPane
         sourceImageView.visibleProperty().bindBidirectional(sourceImageView.managedProperty());
         sourceImageView.setVisible(false);
 
-        Label placeholderLabel = new Label("Please Click To Select An Image");
-        placeholderLabel.setFont(new Font(TEXT_FONT, 15));
+        Label placeholderLabel = new Label("Click here to choose an image");
         placeholderLabel.visibleProperty().bindBidirectional(placeholderLabel.managedProperty());
         placeholderLabel.visibleProperty().bind(sourceImageView.visibleProperty().not());
         imageBox.getChildren().addAll(sourceImageView, placeholderLabel);
 
         leftSide.getChildren().addAll(grid, imageBox);
-        //Setting text Field Font
-        durationTextField.setFont(new Font(TEXT_FONT, 15));
-
-        //Setting text field's width
-        durationTextField.setMaxWidth(45);
-
-        //Adding ToolTip Hints for ImageSegment Elements
-        durationTextField.setTooltip(new Tooltip("This Sets How Long A Marquee Image Will Be Displayed On The Screen"));
-
-        //this.setLeft(imgSegLeftElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
-        leftSide.getChildren().addAll(durationBox, imageBox);
         leftSide.setSpacing(10);
         this.setLeft(leftSide);
 
-        /*Setting Character Limit in TextFields*/
-        //Setting durationTextField Character Length
-        durationTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue()){
-                if(durationTextField.getText().length() > 3){
-                    durationTextField.setText(durationTextField.getText().substring(0,3));
-                }
-            }
-        });
+        //Applying CSS
+        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
+        durationLabel.getStylesheets().add("VisionStyleSheet.css");
+        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
+        delayLabel.getStylesheets().add("VisionStyleSheet.css");
 
-        //Making imageSegmentDurationTextField accept only numeric values
-        durationTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                durationTextField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-
-        //Applying CSS to Title Label
-       titleLabel.setStyle("-fx-border-style: solid; -fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:4");
-       durationLabel.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-       placeholderLabel.setStyle("-fx-font-weight: bold;");
-
-    }
-
-    public TextField getDurationTextField(){
-        return durationTextField;
     }
 
     public HBox getImageBox()

@@ -31,33 +31,9 @@ public class SettingsController
         segmentStage.initModality(Modality.APPLICATION_MODAL);
 
         //Event Handler for TextSegmentButton to display Text Segment Pane
-        settingsPane.getTextSegmentButton().setOnAction(e -> {
-            TextSegmentPane textSegmentPane = new TextSegmentPane();
-            textSegmentPane.getCancelButton().setOnAction(event -> textSegmentStage.close());
-            textSegmentStage.setScene(new Scene(textSegmentPane));
-            textSegmentStage.show();
-
-            //Applying CSS to TextSegmentPane Skin
-            textSegmentPane.setStyle("-fx-background:#383838;");
-        });
         settingsPane.getTextSegmentButton().setOnAction(e -> createSegmentPane(null, true));
 
         //Event Handler for ImageSegmentButton to display Image Segment Pane
-        settingsPane.getImageSegmentButton().setOnAction(e -> {
-            ImageSegmentPane imageSegmentPane = new ImageSegmentPane();
-
-          // Event handler for imageSourceButton in the imageSegmentPane
-        imageSegmentPane.getImageBox().setOnMouseClicked(event -> imageSegmentPane.getSourceImage(imgSegStage));
-
-        // Event handler for Cancel Buttons on ImageSegment Pane
-        imageSegmentPane.getCancelButton().setOnAction(event -> imgSegStage.close());
-
-            imgSegStage.setScene(new Scene(imageSegmentPane));
-            imgSegStage.show();
-
-            //Applying CSS to ImageSegmentPane Skin
-            imageSegmentPane.setStyle("-fx-background:#383838;");
-        });
         settingsPane.getImageSegmentButton().setOnAction(e -> createSegmentPane(null, false));
 
         // Event handler for reorder segments button
@@ -87,7 +63,7 @@ public class SettingsController
             marquee.setValue(new Marquee());
             settingsPane.populate();
         });
-
+        
         //Event handler for file menu save
         settingsPane.getSave().setOnAction(e ->
         {
@@ -95,12 +71,12 @@ public class SettingsController
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
           	fileChooser.setTitle("Save XML File");
             File file = fileChooser.showSaveDialog(new Stage());
-            if(file != null)
+            if(file != null) 
             {
                 XMLParser xmlp = new XMLParser(file);
                 xmlp.XMLWriter(marquee.get());
             }
-        });
+        });        
 
         //Event handler for file menu load
         settingsPane.getLoad().setOnAction(e ->
@@ -116,29 +92,6 @@ public class SettingsController
                 settingsPane.populate();
             }
         });
-            Segment segment = message.getContents().get(i);
-
-            settingsPane.getSegmentListView().getEditButtons().get(i).setOnAction(e -> {
-                if (segment instanceof TextSegment)
-                {
-                    TextSegmentPane textSegmentPane = new TextSegmentPane();
-                    textSegmentStage.setScene(new Scene(textSegmentPane));
-                    textSegmentStage.show();
-
-                }
-                else // ImageSegment
-                {
-                    ImageSegmentPane imageSegmentPane = new ImageSegmentPane();
-
-                    // Event handler for imageSourceButton in the imageSegmentPane
-                    imageSegmentPane.getImageBox().setOnMouseClicked(e2 -> imageSegmentPane.getSourceImage(imgSegStage));
-
-                    imgSegStage.setScene(new Scene(imageSegmentPane));
-                    imgSegStage.show();
-
-                }
-            });
-        }
     }
 
     public SettingsPane getSettingsPane()
@@ -183,7 +136,6 @@ public class SettingsController
         }
 
         segmentPane.getCancelButton().setOnAction(e -> segmentStage.close());
-
         segmentPane.getContinueButton().setOnAction(e -> {
 
             int index = marquee.get().getMessage().getContents().indexOf(segment);
@@ -208,8 +160,11 @@ public class SettingsController
                 System.out.println("INVALID SEGMENT");
             }
         });
-
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();
+
+        //Applying inline CSS to TextSegment and ImageSegment
+        segmentPane.setStyle("-fx-base:#181818;");
+
     }
 }

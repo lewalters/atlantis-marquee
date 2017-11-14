@@ -1,35 +1,23 @@
 package gui;
 
-import data.Segment;
 import data.TextSegment;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import util.BorderEffect;
 import util.MiddleEffect;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import static util.Global.DEFAULT_TEXT_COLOR;
-import static util.Global.MAX_BORDER_COLORS;
-import static util.Global.OFF_COLOR;
+import static util.Global.*;
 
 public class TextSegmentPane extends SegmentPane
 {
     private TextSegment segment;
-
     private TextArea textTextArea;
     private TextColorsPicker textColorsPicker;
     private RadioButton textColorSingle, textColorRandom, textColorCustom;
@@ -47,6 +35,7 @@ public class TextSegmentPane extends SegmentPane
         this.segment = (TextSegment) getSegment();
         construct();
         populate();
+
     }
 
     public TextSegmentPane()
@@ -91,26 +80,13 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeed, 0, 11);
 
         //Setting text Label Font
-        textLabel.setFont(new Font("TEXT_FONT", 15));
+        textLabel.setFont(new Font(TEXT_FONT, 15));
         textColorLabel.setFont(new Font(TEXT_FONT, 15));
-        borderColor.setFont(new Font("TEXT_FONT", 15));
-        paddingColor.setFont(new Font("TEXT_FONT", 15));
-        borderEffect.setFont(new Font("TEXT_FONT", 15));
-        borderSpeed.setFont(new Font("TEXT_FONT", 15));
-
-        durationLabel.setFont(new Font(TEXT_FONT, 15));
-        enterText.setFont(new Font(TEXT_FONT, 15));
-        borderColor.setFont(new Font(TEXT_FONT, 15));
-        paddingColor.setFont(new Font(TEXT_FONT, 15));
-        borderEffect.setFont(new Font(TEXT_FONT, 15));
-
-        //Setting text Label Font
-        durationLabel.setFont(new Font(TEXT_FONT, 15));
-        enterText.setFont(new Font(TEXT_FONT, 15));
         borderColor.setFont(new Font(TEXT_FONT, 15));
         paddingColor.setFont(new Font(TEXT_FONT, 15));
         borderEffect.setFont(new Font(TEXT_FONT, 15));
         borderSpeed.setFont(new Font(TEXT_FONT, 15));
+
         /*Adding TextFields*/
         textTextArea = new TextArea();
         textTextArea.setFont(new Font(TEXT_FONT, 15));
@@ -125,9 +101,6 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(borderSpeedTextField, 1, 11);
 
         //Setting text Field Font
-        borderSpeedTextField.setFont(new Font("TEXT_FONT", 15));
-        durationTextField.setFont(new Font(TEXT_FONT, 15));
-        enterTextField.setFont(new Font(TEXT_FONT, 15));
         borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));
         //Setting text field's width
         borderSpeedTextField.setMaxWidth(45);
@@ -295,6 +268,19 @@ public class TextSegmentPane extends SegmentPane
         
         this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
 
+        //Setting commentsTextArea Character Length
+        textTextArea.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+            {
+                if(textTextArea.getText().length() > 100)
+                {
+                    textTextArea.setText(textTextArea.getText(0, 100));
+                }
+            }
+        });
+
+
+
         // Set the text in the segment or warn if the text is invalid
         textTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
@@ -329,21 +315,25 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        //Applying CSS To TitleLabel
-        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
-        //Applying CSS to Labels
-        durationLabel.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-        enterText.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-        borderColor.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-        paddingColor.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-        borderEffect.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-        borderSpeed.setStyle("-fx-border-width: 2px;-fx-font-weight: bold;-fx-padding:2");
-
-         //Setting horizontal/vertical gaps for GridPanes
+        /*SETTING HGAP/VGAP */
+        //Setting horizontal/vertical gaps for GridPanes
         textLabelElementsGrid.setHgap(10);
         textLabelElementsGrid.setVgap(5);
         buttonElementsGrid.setHgap(25);
         buttonElementsGrid.setVgap(5);
+
+        //Applying CSS
+        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
+        //titleLabel.getStyleClass().add("customTitleLabel");
+        textLabel.getStylesheets().add("VisionStyleSheet.css");
+        textColorLabel.getStylesheets().add("VisionStyleSheet.css");
+        durationLabel.getStylesheets().add("VisionStyleSheet.css");
+        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
+        delayLabel.getStylesheets().add("VisionStyleSheet.css");
+        borderColor.getStylesheets().add("VisionStyleSheet.css");
+        paddingColor.getStylesheets().add("VisionStyleSheet.css");
+        borderEffect.getStylesheets().add("VisionStyleSheet.css");
+        borderSpeed.getStylesheets().add("VisionStyleSheet.css");
     }
 
     public TextArea getTextTextArea()

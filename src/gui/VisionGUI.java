@@ -1,15 +1,12 @@
 package gui;
 
-import data.*;
+import data.Marquee;
 import javafx.application.Application;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import util.*;
 
 public class VisionGUI extends Application
 {
@@ -25,10 +22,13 @@ public class VisionGUI extends Application
         WelcomePane welcomePane = new WelcomePane();
         //AuthPane authPane = new AuthPane();
 
+
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
+
+
 
         //Creating the settingsController to handle all events on the settingsPane
         SettingsController settingsController = new SettingsController();
@@ -99,18 +99,11 @@ public class VisionGUI extends Application
             marqueeController.play();
         });
 
-        marqueeStage.setOnCloseRequest(e -> primaryStage.show());
-
-        //Event Handler for MenuBar "Exit" item
-        settingsPane.getExit().setOnAction(e -> Platform.exit());
-
-        // Event Handler for AuthPane Cancel Button
-        //authPane.getCancelButton().setOnAction(event -> authStage.close());
-
-        //CSS for Skin
-        welcomePane.setStyle("-fx-background:#383838; -fx-text-fill: #FFFFFF;");
-        settingsPane.setStyle("-fx-background:#383838; -fx-text-fill: #FFFFFF;");
         //Creating Event Handler for AuthPane Cancel Button
         //authPane.getCancelButton().setOnAction(event -> authStage.close());
+
+        //CSS
+        welcomePane.getStylesheets().add("VisionStyleSheet.css");
+        settingsPane.getStylesheets().add("VisionStyleSheet.css");
     }
 }

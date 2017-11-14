@@ -1,0 +1,38 @@
+.root{
+    -fx-base:#181818;
+}
+
+.customBackground {
+  -fx-control-inner-background: white;
+}
+
+
+.label{
+   -fx-border-width:2px;
+   -fx-font-weight:bold;
+   -fx-padding:2;
+}
+
+.button{
+    -fx-border-radius:6;
+    -fx-base:#585858;
+    -fx-border-color:grey;
+}
+
+.customMenuBar{
+-fx-font-family:Helvetica;
+-fx-border-width:1;
+-fx-border-style:solid;
+-fx-border-color:grey;
+-fx-color:#585858;
+}
+.customGridControl{
+ -fx-padding:15;
+}
+
+.customTitleLabel{
+  -fx-border-style: solid;
+  -fx-border-width: 5px;
+  -fx-font-weight: bold;
+  -fx-padding:3;
+}

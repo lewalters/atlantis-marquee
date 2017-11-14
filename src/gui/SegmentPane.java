@@ -38,8 +38,7 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
-        titleLabel.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;"
-                + "-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-border-color: black;-fx-border-style: solid;-fx-font-weight: bold;");
 
         // Create a preview marquee below the title that executes when clicked
         MarqueeController controller = new MarqueeController(segment, false);
@@ -188,8 +187,8 @@ public abstract class SegmentPane extends BorderPane
         cancelButton = new Button("Cancel");
 
         //Setting Font
-        continueButton.setFont(new Font("TEXT_FONT", 15));
-        cancelButton.setFont(new Font("TEXT_FONT", 15));
+        continueButton.setFont(new Font(TEXT_FONT, 15));
+        cancelButton.setFont(new Font(TEXT_FONT, 15));
 
         //Setting Height
         cancelButton.setPrefHeight(40);
@@ -288,14 +287,13 @@ public abstract class SegmentPane extends BorderPane
         //Creating Multiple ComboBoxes
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
-        /*CSS*/
-        continueButton.setStyle("-fx-font-weight: bold;"
-                                +"-fx-padding: 10 20 10 20;");
-        cancelButton.setStyle("-fx-background-insets: 0,1,2,3,0;"
-                              +"-fx-font-weight: bold;"
-                              +"-fx-padding: 10 20 10 20;");
-
         populate(segment);
+
+        /*CSS*/
+        continueButton.getStylesheets().add("VisionStyleSheet.css");
+        cancelButton.getStylesheets().add("VisionStyleSheet.css");
+
+
     }
 
     public Segment getSegment()

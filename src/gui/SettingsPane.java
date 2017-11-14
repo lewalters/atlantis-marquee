@@ -14,8 +14,8 @@ import javafx.util.converter.LocalTimeStringConverter;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +35,6 @@ import static util.Global.TEXT_FONT;
 public class SettingsPane extends BorderPane
 {
     private ObjectProperty<Marquee> marquee;
-
     private MenuItem newMarq, save, load, exit;
     private MenuItem undo, redo;
     private MenuItem userGuide, about;
@@ -47,7 +46,7 @@ public class SettingsPane extends BorderPane
     private Button textSegmentButton, imageSegmentButton;
     private Button reorderButton;
     private SegmentListView segmentListView;
-    private TextField widthTextField, heightTextField, ledGapTextField, nameTextField, delayTextField, repeatTextField;
+    private TextField widthTextField, heightTextField, ledGapTextField, delayTextField, repeatTextField;
     private TextArea commentsTextArea;
     private ComboBox<Pos> screenPosition;
 
@@ -68,12 +67,12 @@ public class SettingsPane extends BorderPane
 
         /*Adding Labels*/
         Label setWidthLabel = new Label("Width:");
-        setWidthLabel.setFont(new Font("TEXT_FONT", 15));
+        setWidthLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setWidthLabel, 0, 0);
 
         // Creating Height label
         Label setHeightLabel = new Label("Height:");
-        setHeightLabel.setFont(new Font("TEXT_FONT", 15));
+        setHeightLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
         // LED Gap Label
@@ -81,14 +80,9 @@ public class SettingsPane extends BorderPane
         ledGapLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(ledGapLabel, 0, 2);
 
-        //Creating Name Label
-        Label setNameLabel = new Label("Name");
-        setNameLabel.setFont(new Font("TEXT_FONT", 15));
-        leftLabelTextFieldGrid.add(setNameLabel,0,3);
-
         //Setting Delay Label
         Label setDelayLabel = new Label("Delay:");
-        setDelayLabel.setFont(new Font("Helvetica", 15));
+        setDelayLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setDelayLabel,0,4);
 
         // Repeat Factor Label
@@ -98,7 +92,7 @@ public class SettingsPane extends BorderPane
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
-        setCommentsLabel.setFont(new Font("TEXT_FONT", 15));
+        setCommentsLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setCommentsLabel,0,6);
 
         // Screen position label
@@ -119,9 +113,7 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.add(heightTextField,1,1);
         ledGapTextField = new TextField();
         leftLabelTextFieldGrid.add(ledGapTextField, 1, 2);
-        nameTextField = new TextField();
-        nameTextField.setPromptText("Only 23 Characters Allowed");
-        leftLabelTextFieldGrid.add(nameTextField,1,3);
+
         delayTextField = new TextField();
         leftLabelTextFieldGrid.add(delayTextField,1,4);
         repeatTextField = new TextField();
@@ -226,7 +218,7 @@ public class SettingsPane extends BorderPane
         /*Adding Checkboxes*/
         //Creating Checkboxes
         fullScreenCheckBox = new CheckBox("Fullscreen");
-        fullScreenCheckBox.setFont(new Font("TEXT_FONT", 15));
+        fullScreenCheckBox.setFont(new Font(TEXT_FONT, 15));
         maxSizeCheckBox = new CheckBox("Max Size");
         maxSizeCheckBox.setFont(new Font(TEXT_FONT, 15));
         maxSizeCheckBox.disableProperty().bind(fullScreenCheckBox.selectedProperty().not());
@@ -300,7 +292,6 @@ public class SettingsPane extends BorderPane
         widthTextField.setMaxWidth(50);
         heightTextField.setMaxWidth(50);
         ledGapTextField.setMaxWidth(40);
-        nameTextField.setPrefWidth(160);
         delayTextField.setMaxWidth(40);
         repeatTextField.setMaxWidth(40);
         commentsTextArea.setMaxWidth(160);
@@ -318,7 +309,6 @@ public class SettingsPane extends BorderPane
         widthTextField.setTooltip(new Tooltip("This Sets The Width For A Marquee"));
         heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
         ledGapTextField.setTooltip(new Tooltip("This sets the gap between LED elements"));
-        nameTextField.setTooltip(new Tooltip("This Assigns A Descriptive Name For A Marquee"));
         delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
         repeatTextField.setTooltip(new Tooltip("This sets the repeat factor for the message"));
         commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
@@ -364,16 +354,6 @@ public class SettingsPane extends BorderPane
             }
         });
 
-        //Setting nameTextField Character Length
-        nameTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue())
-            {
-                if(nameTextField.getText().length() > 23)
-                {
-                    nameTextField.setText(nameTextField.getText().substring(0,23));
-                }
-            }
-        });
 
         //Setting delayTextField Character Length
         delayTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -381,7 +361,7 @@ public class SettingsPane extends BorderPane
             {
                 if(delayTextField.getText().length() > 3)
                 {
-                    delayTextField.setText(delayTextField.getText(0, 3));
+                    delayTextField.setText(delayTextField.getText().substring(0,3));
                 }
             }
         });
@@ -501,19 +481,6 @@ public class SettingsPane extends BorderPane
             }
         }));
 
-        // Set the name of the message or warn if the name is invalid
-        nameTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue) // Lost focus
-            {
-                String name = nameTextField.getText();
-
-                if (!name.isEmpty())
-                {
-                    marquee.get().getMessage().setName(name);
-                }
-            }
-        }));
-
         // Set the delay of the message or warn if the delay is invalid
         delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
@@ -613,29 +580,6 @@ public class SettingsPane extends BorderPane
         leftControlVb.setSpacing(10);
         this.setLeft(leftControlVb);
 
-        //setting menuBar font
-        menuBar.setStyle("-fx-font-family: Helvetica;");
-
-        //CSS for checkboxes
-        menuBar.setStyle("-fx-border-color: grey; "
-                         + "-fx-font-size: 12;"
-                         + "-fx-border-insets: -1; "
-                         + "-fx-border-radius: 1;"
-                         + "-fx-border-style: solid;"
-                         + "-fx-border-width: 1;");
-
-        leftControlVb.setStyle("-fx-border-color: grey; "
-                               + "-fx-font-size: 12;"
-                               + "-fx-border-insets: -1; "
-                               + "-fx-border-radius: 1;"
-                               + "-fx-border-style: solid;"
-                               + "-fx-border-width: 1;"
-                               + "-fx-padding: 15");
-
-        startButton.setStyle("-fx-border-radius: 15px;");
-        textSegmentButton.setStyle("-fx-border-radius: 15px;");
-        imageSegmentButton.setStyle("-fx-border-radius: 15px;");
-
         //Creating Tooltip for startButton
         startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
         //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
@@ -645,22 +589,28 @@ public class SettingsPane extends BorderPane
 
         populate();
 
-        //CSS for MenuBar -fx-base:#B8B8B8;
-        menuBar.setStyle("-fx-base:#585858;-fx-font-family:Helvetica;-fx-font-size:12;-fx-border-width:1;-fx-border-style:solid;-fx-border-color:grey; -fx-text-fill:#B8B8B8 ");
-        //CSS for VBoxes
-        leftPanelVB.setStyle("-fx-padding:15");
-        rightPanel.setStyle("-fx-padding:15");
-        //CSS for Labels
-        setWidthLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
-        setHeightLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
-        setNameLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
-        setDelayLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:2;");
-        setCommentsLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;fx-padding:2;");
-        //CSS for Buttons
-        startButton.setStyle("-fx-border-radius:6;-fx-base:#585858; -fx-border-color:grey;");
-        textSegmentButton.setStyle("-fx-base:#585858;-fx-border-radius: 6;-fx-border-color:grey;");
-        imageSegmentButton.setStyle("-fx-base:#585858; -fx-border-radius: 6; -fx-border-color:grey;");
-        reorderButton.setStyle("-fx-base:#585858;-fx-border-radius: 6;-fx-border-color:grey;");
+        /*Using StyleSheet*/
+        rightPanel.getStyleClass().add("customGridControl");
+        leftControlVb.getStyleClass().add("customGridControl");
+
+        //MenuBar
+        menuBar.getStyleClass().add("customMenuBar");
+
+        //Using Labels
+        setWidthLabel.getStylesheets().add("VisionStyleSheet.css");
+        setHeightLabel.getStylesheets().add("VisionStyleSheet.css");
+        ledGapLabel.getStylesheets().add("VisionStyleSheet.css");
+        setDelayLabel.getStylesheets().add("VisionStyleSheet.css");
+        setRepeatLabel.getStylesheets().add("VisionStyleSheet.css");
+        setCommentsLabel.getStylesheets().add("VisionStyleSheet.css");
+        screenPositionLabel.getStylesheets().add("VisionStyleSheet.css");
+        startTimeLabel.getStylesheets().add("VisionStyleSheet.css");
+
+        //Buttons
+        startButton.getStylesheets().add("VisionStyleSheet.css");
+        textSegmentButton.getStylesheets().add("VisionStyleSheet.css");
+        imageSegmentButton.getStylesheets().add("VisionStyleSheet.css");
+        reorderButton.getStylesheets().add("VisionStyleSheet.css");
     }
 
     //SettingsPane Constructors return properties
@@ -740,7 +690,6 @@ public class SettingsPane extends BorderPane
         widthTextField.setText(String.valueOf(marquee.get().getWidth()));
         heightTextField.setText(String.valueOf(marquee.get().getHeight()));
         ledGapTextField.setText(String.valueOf(marquee.get().getLedGap()));
-        nameTextField.setText(marquee.get().getMessage().getName());
         delayTextField.setText(Integer.toString(marquee.get().getMessage().getDelay()));
         repeatTextField.setText(Integer.toString(marquee.get().getMessage().getRepeatFactor()));
         commentsTextArea.setText(marquee.get().getMessage().getComments());
