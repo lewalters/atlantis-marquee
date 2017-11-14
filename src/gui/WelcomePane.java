@@ -1,10 +1,15 @@
 package gui;
 
+import data.Message;
+import data.TextSegment;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import util.ScrollDirection;
+
 import static util.Global.TEXT_FONT;
 /**
  * (Insert a brief comment that describes
@@ -18,16 +23,26 @@ public class WelcomePane extends BorderPane
 {
     WelcomePane()
     {
-        // Welcome message in the middle of the screen
+/*        // Welcome message in the middle of the screen
         Label welcomeLabel = new Label("Welcome to VISION");
         welcomeLabel.setFont(new Font(TEXT_FONT, 60));
         welcomeLabel.setStyle("-fx-border-width:2px;-fx-font-weight:bold;-fx-padding:5;");
         welcomeLabel.setMaxWidth(Double.MAX_VALUE);
         welcomeLabel.setAlignment(Pos.CENTER);
-        this.setCenter(welcomeLabel);
+        this.setCenter(welcomeLabel);*/
+
+        // Welcome message on marquee without background
+        TextSegment welcomeText = new TextSegment();
+        welcomeText.setText("Welcome to VISION");
+        welcomeText.setScrollDirection(ScrollDirection.LEFT);
+        welcomeText.setDuration(10);
+        welcomeText.setTextColors(new Color[]{Color.web("#DAF7A6")});
+        Message welcomeMessage = new Message();
+        welcomeMessage.addSegment(0, welcomeText);
+        MarqueeController controller = new MarqueeController(welcomeMessage);
+        this.setCenter(controller.getPreviewMarqueePane());
 
         // Start message at the bottom of the screen
-
         Label startLabel = new Label("Click anywhere to start...");
         startLabel.setFont(new Font(TEXT_FONT, 32));
         startLabel.setMaxWidth(Double.MAX_VALUE);

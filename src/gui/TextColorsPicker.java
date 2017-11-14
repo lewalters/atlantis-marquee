@@ -73,6 +73,7 @@ public class TextColorsPicker extends VBox
             char ch = Character.toUpperCase(text.charAt(i));
 
             VBox charBox = new VBox();
+            charBox.setAlignment(Pos.CENTER);
 
             if (ch != ' ')
             {

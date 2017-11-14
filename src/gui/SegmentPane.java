@@ -16,7 +16,7 @@ public abstract class SegmentPane extends BorderPane
 {
     private Segment segment;
 
-    private RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
+    protected RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     private ComboBox<EntranceEffect> entranceComboBox;
     protected ComboBox<MiddleEffect> middleComboBox;
     private ComboBox<ExitEffect> exitComboBox;
@@ -38,7 +38,7 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setFont(new Font("Helvetica", 32));
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
-        titleLabel.setStyle("-fx-border-color: black;-fx-border-style: solid;-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-border-color: black;-fx-border-style: solid;-fx-font-weight: bold;-fx-border-width: 5px;-fx-padding:3");
 
         // Create a preview marquee below the title that executes when clicked
         MarqueeController controller = new MarqueeController(segment, false);
@@ -55,19 +55,18 @@ public abstract class SegmentPane extends BorderPane
         topBox.setSpacing(10);
         this.setTop(topBox);
 
-        BorderPane.setMargin(titleLabel, new Insets(0, 0, 10,0));
-        this.setTop(titleLabel);
-
         /*Setting TextSegmentPane Size and Padding*/
         //This sets the TextSegment Pane size and padding
-        this.setPrefSize(700, 600);
+        this.setPrefSize(700, 700);
         this.setPadding(new Insets(30));
 
         durationLabel = new Label("Duration:");
         durationLabel.setFont(new Font(TEXT_FONT, 15));
+        durationLabel.getStylesheets().add("VisionStyleSheet.css");
 
         durationTextField = new TextField();
         durationTextField.setFont(new Font(TEXT_FONT, 15));
+        durationTextField.setAlignment(Pos.CENTER);
         durationTextField.setMaxWidth(45);
         durationTextField.setTooltip(new Tooltip("How long the marquee will display on the screen"));
 
@@ -104,6 +103,7 @@ public abstract class SegmentPane extends BorderPane
 
         repeatLabel = new Label("Repetitions:");
         repeatLabel.setFont(new Font(TEXT_FONT, 15));
+        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
 
         repeatTextField = new TextField();
         repeatTextField.setFont(new Font(TEXT_FONT, 15));
@@ -144,6 +144,7 @@ public abstract class SegmentPane extends BorderPane
 
         delayLabel = new Label("Delay:");
         delayLabel.setFont(new Font(TEXT_FONT, 15));
+        delayLabel.getStylesheets().add("VisionStyleSheet.css");
 
         delayTextField = new TextField();
         delayTextField.setFont(new Font(TEXT_FONT, 15));

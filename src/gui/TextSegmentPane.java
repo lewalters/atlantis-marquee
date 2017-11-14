@@ -296,6 +296,12 @@ public class TextSegmentPane extends SegmentPane
                 {
                     textColorsPicker.refresh();
                 }
+
+                if (segment.getHlength() > TEXT_COLS && !segment.hasSubsegments())
+                {
+                    statikRadioBtn.setDisable(true);
+                    effectsRadioBtn.setDisable(true);
+                }
             }
         }));
 
@@ -323,30 +329,12 @@ public class TextSegmentPane extends SegmentPane
         buttonElementsGrid.setVgap(5);
 
         //Applying CSS
-        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
-        //titleLabel.getStyleClass().add("customTitleLabel");
         textLabel.getStylesheets().add("VisionStyleSheet.css");
         textColorLabel.getStylesheets().add("VisionStyleSheet.css");
-        durationLabel.getStylesheets().add("VisionStyleSheet.css");
-        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
-        delayLabel.getStylesheets().add("VisionStyleSheet.css");
         borderColor.getStylesheets().add("VisionStyleSheet.css");
         paddingColor.getStylesheets().add("VisionStyleSheet.css");
         borderEffect.getStylesheets().add("VisionStyleSheet.css");
         borderSpeed.getStylesheets().add("VisionStyleSheet.css");
-    }
-
-    public TextArea getTextTextArea()
-    {
-        return textTextArea;
-    }
-
-    public ComboBox getBorderEffectComboBox() {
-        return borderEffectComboBox;
-    }
-
-    public TextField getBorderSpeedTextField() {
-        return borderSpeedTextField;
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)

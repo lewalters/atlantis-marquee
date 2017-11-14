@@ -29,7 +29,7 @@ public class MarqueePane extends StackPane
     private List<LED> border;
     private List<LED> padding;
 
-    public MarqueePane(int width, int ledGap)
+    public MarqueePane(int width, int ledGap, boolean background)
     {
         // Determine the radius based on the provided width
         int ledRadius = ((width - (NUM_COLS - 1) * ledGap) / (NUM_COLS)) / 2;
@@ -38,10 +38,13 @@ public class MarqueePane extends StackPane
         int trueWidth = NUM_COLS * ledGap + NUM_COLS * ledRadius * 2;
         int trueHeight = NUM_ROWS * ledGap + NUM_ROWS * ledRadius * 2;
 
-        // Set the background for all elements
-        Rectangle marquee = new Rectangle(trueWidth, trueHeight);
-        marquee.setFill(OFF_COLOR);
-        this.getChildren().add(marquee);
+        // Set the background for all elements, if called
+        if (background)
+        {
+            Rectangle marquee = new Rectangle(trueWidth, trueHeight);
+            marquee.setFill(OFF_COLOR);
+            this.getChildren().add(marquee);
+        }
 
         // Initialize the grids
         GridPane ledGrid = new GridPane();
@@ -55,7 +58,7 @@ public class MarqueePane extends StackPane
         {
             for (int c = 0; c < NUM_COLS; c++)
             {
-                ledMatrix[r][c] = new LED(ledRadius);
+                ledMatrix[r][c] = new LED(ledRadius, background);
                 ledGrid.add(ledMatrix[r][c], c, r);
 
                 // Add the LEDs within the padding to an ArrayList for easier referencing
@@ -98,6 +101,11 @@ public class MarqueePane extends StackPane
         // Add gaps between all of the LEDs
         ledGrid.setHgap(ledGap);
         ledGrid.setVgap(ledGap);
+    }
+
+    public MarqueePane(int width, int ledGap)
+    {
+        this(width, ledGap, true);
     }
 
     // Set the border to the provided colors or randomly

@@ -52,6 +52,15 @@ public class MarqueeController
         });
     }
 
+    public MarqueeController(Message message)
+    {
+        marqueePane = new MarqueePane(680, 1, false);
+        preview = new SequentialTransition();
+
+        message.getContents().forEach(segment -> addSegment(segment, preview));
+        preview.play();
+    }
+
     public MarqueeController(Segment segment, boolean list)
     {
         previewSegment = segment;
@@ -180,7 +189,7 @@ public class MarqueeController
         SequentialTransition entrance = new SequentialTransition();
         Timeline middleTimeline = new Timeline();
         SequentialTransition exit = new SequentialTransition();
-        Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
+        //Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
 
         // Set up body animations based on scroll choice
         if (segment.getScrollDirection() == ScrollDirection.STATIC)
@@ -208,7 +217,7 @@ public class MarqueeController
         }
 
         // Add either the borderedTransition or the bodyTransition to the animation set
-        segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition, resetTimeline);
+        segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition);
         transition.getChildren().add(segmentTransition);
     }
 
@@ -318,7 +327,7 @@ public class MarqueeController
                     fade(transition, segment, OUT);
                     break;
                 case NONE:
-                    transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE)));
+                    transition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e-> marqueePane.toggle(segment))));
             }
         }
     }

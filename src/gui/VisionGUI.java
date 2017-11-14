@@ -28,14 +28,8 @@ public class VisionGUI extends Application
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
-
-
         //Creating the settingsController to handle all events on the settingsPane
         SettingsController settingsController = new SettingsController();
-
-        //Stage authStage = new Stage();
-        //authStage.setScene(new Scene(authPane));
-
         SettingsPane settingsPane = settingsController.getSettingsPane();
 
         welcomePane.setOnMouseClicked(e -> primaryStage.setScene(new Scene(settingsPane)));
@@ -98,9 +92,6 @@ public class VisionGUI extends Application
             primaryStage.hide();
             marqueeController.play();
         });
-
-        //Creating Event Handler for AuthPane Cancel Button
-        //authPane.getCancelButton().setOnAction(event -> authStage.close());
 
         //CSS
         welcomePane.getStylesheets().add("VisionStyleSheet.css");

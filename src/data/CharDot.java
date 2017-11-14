@@ -540,6 +540,15 @@ public class CharDot
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
+    private static final int[][] QUEST = {{0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+                                          {1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1},
+                                          {1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1},
+                                          {1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+                                          {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}};
+
     public static final Map<Character, int[][]> charMap = Map.ofEntries(
         entry('A', A),
         entry('B', B),
@@ -590,9 +599,8 @@ public class CharDot
         entry('+', PLUS),
         entry('-', HYPHEN),
         entry('/', SLASH),
-        entry(' ', SPACE)
+        entry(' ', SPACE),
+        entry('?', QUEST)
     );
-
-
 }
 

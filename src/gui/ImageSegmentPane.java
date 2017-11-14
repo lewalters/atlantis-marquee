@@ -79,13 +79,6 @@ public class ImageSegmentPane extends SegmentPane
         leftSide.getChildren().addAll(grid, imageBox);
         leftSide.setSpacing(10);
         this.setLeft(leftSide);
-
-        //Applying CSS
-        titleLabel.setStyle("-fx-border-style: solid;-fx-border-width: 5px;-fx-font-weight: bold;-fx-padding:3");
-        durationLabel.getStylesheets().add("VisionStyleSheet.css");
-        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
-        delayLabel.getStylesheets().add("VisionStyleSheet.css");
-
     }
 
     public HBox getImageBox()

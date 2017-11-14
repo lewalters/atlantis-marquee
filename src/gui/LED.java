@@ -10,10 +10,22 @@ public class LED extends Circle
 {
     private boolean on;
     private Paint paint;
+    private boolean background;
 
     public LED(int radius)
     {
+        this(radius, false);
+    }
+
+    public LED(int radius, boolean background)
+    {
         super(radius, OFF_COLOR);
+
+        if (!background)
+        {
+            super.setOpacity(0);
+        }
+
         on = false;
     }
 
@@ -44,6 +56,12 @@ public class LED extends Circle
     public void turnOff()
     {
         this.setFill(OFF_COLOR);
+
+        if (!background)
+        {
+            super.setOpacity(0);
+        }
+
         on = false;
     }
 }
