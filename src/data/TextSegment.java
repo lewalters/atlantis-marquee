@@ -253,6 +253,7 @@ public class TextSegment extends Segment
                 {
                     if (charDot.hasNext())
                     {
+
                         return charDot.next();
                     }
                     else
