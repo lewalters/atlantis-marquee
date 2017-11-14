@@ -1,4 +1,5 @@
 package test;
+
 import data.*;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 public class MessageTest {
 
     private Message m;
-    private TextSegment s;
 
     @Before
     public void setUp() {
@@ -39,8 +39,8 @@ public class MessageTest {
         assertEquals("data.Message Test: setComments", "Welcome Message 2", m.getComments());
     }
 
- //    @Test
-   // public void testGetContent() {
+    //    @Test
+    // public void testGetContent() {
     //m.getContents();
     //assertEquals(message:"data.Message Test: getContents", expected);
     //}

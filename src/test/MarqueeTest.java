@@ -1,4 +1,4 @@
-/*
+
 
 package test;
 
@@ -19,15 +19,15 @@ public class MarqueeTest {
 
     @BeforeClass
     public static void setUp() {
-        m = new Marquee(1, 2, 3);
+        m = new Marquee();
 
     }
 
     @Test
     public void testMarqueeGetters() {
-        assertEquals("data.Message Test: getWidth", 1, m.getWidth());
-        assertEquals("data.Message Test: getHeight", 2, m.getHeight());
-        assertEquals("data.Message Test: getLedGap", 3, m.getLedGap());
+        assertEquals("data.Message Test: getWidth", 1200, m.getWidth());
+        assertEquals("data.Message Test: getHeight", 200, m.getHeight());
+        assertEquals("data.Message Test: getLedGap", 0, m.getLedGap());
 
     }
 
@@ -95,8 +95,8 @@ public class MarqueeTest {
 
     @Test
     public void testSetWidth() {
-        m.setWidth(1);
-        assertEquals("data.Message Test: getName", 1, m.getWidth());
+        m.setWidth(1200);
+        assertEquals("data.Message Test: getName", 1200, m.getWidth());
 
     }
 
@@ -118,4 +118,4 @@ public class MarqueeTest {
 
 
 }
-*/
+

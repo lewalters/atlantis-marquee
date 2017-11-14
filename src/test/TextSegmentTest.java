@@ -1,13 +1,13 @@
-/*
+
 package test;
 
 import static org.junit.Assert.*;
-import static util.ScrollDirection.*;
-import static util.StaticEffect.*;
+import static util.BorderEffect.BLINK;
+
 
 //import static util.
 
-import data.CharDot;
+
 import data.Dot;
 import javafx.scene.paint.Color;
 import org.junit.Before;
@@ -16,109 +16,104 @@ import org.junit.Test;
 import data.TextSegment;
 import util.BorderEffect;
 import util.ScrollDirection;
-import util.StaticEffect;
 
 import java.util.Iterator;
 
 public class TextSegmentTest {
 
     private TextSegment ts;
-    private String color;
+    // private String color;
 
     @Before
-    public void setup()
-    {
-        CharDot.initMap();
-        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
-        ts = new TextSegment(10, 11,STATIC,colorList,BorderEffect.NONE,Color.BLUE, StaticEffect.RANDOM_COLOR,BLINK, UP, "Wake Tech","abc");
+    public void setup() {
+
+        // Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        ts = new TextSegment();
     }
 
     @Test
-    public void testTextSegmentGetters()
-    {
+    public void testTextSegmentGetters() {
         assertEquals("data.TextSegment test: getText", "VISION", ts.getText());
-        //assertEquals("data.TextSegment test: getBorderColor", "480A0A", ts.getBorderColor());
+        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        assertEquals("data.TextSegment test: getBorderColor", colorList, ts.getBorderColors());
         assertEquals("data.TextSegment test: getBorderEffect", BLINK, ts.getBorderEffect());
         assertEquals("data.TextSegment test: getPaddingColor", "000000", ts.getPaddingColor());
-        assertEquals("data.TextSegment test: getTextColor", "0B41AC", ts.getTextColor());
+        Color[] colorList1 = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        assertEquals("data.TextSegment test: getTextColor", colorList1, ts.getTextColors());
     }
 
     @Test
-    public void testTextSegmentSetters()
-    {
+    public void testTextSegmentSetters() {
         ts.setText("Hello World");
-        //ts.setBorderColor(293A5A);
+        Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        ts.setBorderColors(colorList);
         ts.setBorderEffect(BorderEffect.NONE);
         ts.setPaddingColor(Color.BLUE);
-        ts.setTextColor("000000");
+        Color[] colorList1 = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+        ts.setTextColors(colorList1);
 
         assertEquals("data.TextSegment test: setText", "Hello World", ts.getText());
-        //assertEquals("data.TextSegment test: setBorderColor", "293A5A", ts.getBorderColor());
+        assertArrayEquals("data.TextSegment test: setBorderColor", colorList, ts.getBorderColors());
         assertEquals("data.TextSegment test: setBorderEffect", BorderEffect.NONE, ts.getBorderEffect());
-        assertEquals("data.TextSegment test: setPaddingColor", "8B189B", ts.getPaddingColor());
-        assertEquals("data.TextSegment test: setTextColor", "000000", ts.getTextColor());
+        assertEquals("data.TextSegment test: setPaddingColor", Color.BLUE, ts.getPaddingColor());
+        assertEquals("data.TextSegment test: setTextColor", colorList1, ts.getTextColors());
     }
 
     @Test
-    public void testTextSegmentHas()
-    {
+    public void testTextSegmentHas() {
         assertEquals("data.TextSegment test: hasBorder", true, ts.hasBorder());
         assertEquals("data.TextSegment test: hasBorder", true, ts.hasPadding());
     }
 
     @Test
-    public void testIteratorLeft()
-    {
+    public void testIteratorLeft() {
         Iterator<Dot[]> direction = ts.iterator(ScrollDirection.LEFT);
         assertTrue("data.DotMatrix test:Left Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 0), new Dot(color, 0)};
+        Dot[] d = {new Dot(Color.BLUE, 0), new Dot(Color.YELLOW, 0), new Dot(Color.YELLOWGREEN, 100),
+                new Dot(Color.BLUE, 100), new Dot(Color.YELLOW, 100), new Dot(Color.YELLOWGREEN, 100),
+                new Dot(Color.BLUE, 100), new Dot(Color.YELLOW, 100), new Dot(Color.YELLOWGREEN, 100),
+                new Dot(Color.BLUE, 100), new Dot(Color.YELLOW, 0), new Dot(Color.YELLOWGREEN, 0)};
 
         assertArrayEquals(d, direction.next());
     }
 
     @Test
-    public void testIteratorRight()
-    {
+    public void testIteratorRight() {
         Iterator<Dot[]> direction = ts.iterator(ScrollDirection.RIGHT);
         assertTrue("data.DotMatrix test:Right Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(color, 0), new Dot(color, 100), new Dot(color, 100),
-                new Dot(color, 0), new Dot(color, 0), new Dot(color, 0),
-                new Dot(color, 0), new Dot(color, 0), new Dot(color, 0),
-                new Dot(color, 100), new Dot(color, 100), new Dot(color, 0)};
+        Dot[] d = {new Dot(Color.PINK, 0), new Dot(Color.BLACK, 100), new Dot(Color.TOMATO, 100),
+                new Dot(Color.PINK, 0), new Dot(Color.BLACK, 0), new Dot(Color.TOMATO, 0),
+                new Dot(Color.PINK, 0), new Dot(Color.BLACK, 0), new Dot(Color.TOMATO, 0),
+                new Dot(Color.PINK, 100), new Dot(Color.BLACK, 100), new Dot(Color.TOMATO, 0)};
 
         assertArrayEquals(d, direction.next());
     }
 
     @Test
-    public void testIteratorUp()
-    {
+    public void testIteratorUp() {
         Iterator<Dot[]> direction = ts.iterator(ScrollDirection.UP);
         assertTrue("data.DotMatrix test:Up Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 0)};
+        Dot[] d = {new Dot(Color.BLACK, 0), new Dot(Color.PINK, 0), new Dot(Color.YELLOWGREEN, 100),
+                new Dot(Color.BLACK, 100), new Dot(Color.PINK, 100), new Dot(Color.YELLOWGREEN, 100),
+                new Dot(Color.BLACK, 100), new Dot(Color.PINK, 0)};
 
         assertArrayEquals(d, direction.next());
     }
 
     @Test
-    public void testIteratorDown()
-    {
+    public void testIteratorDown() {
         Iterator<Dot[]> direction = ts.iterator(ScrollDirection.DOWN);
         assertTrue("data.DotMatrix test:Down Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(color, 0), new Dot(color, 0), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 100), new Dot(color, 100),
-                new Dot(color, 100), new Dot(color, 0)};
+        Dot[] d = {new Dot(Color.PINK, 0), new Dot(Color.BLUE, 0), new Dot(Color.TOMATO, 100),
+                new Dot(Color.PINK, 100), new Dot(Color.BLUE, 100), new Dot(Color.TOMATO, 100),
+                new Dot(Color.PINK, 100), new Dot(Color.BLUE, 0)};
 
         assertArrayEquals(d, direction.next());
     }
 }
 
-*/
+
