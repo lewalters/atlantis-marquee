@@ -1,15 +1,15 @@
 package gui;
 
 import data.*;
-import javafx.geometry.Pos;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Screen;
 import util.*;
 
 import javafx.animation.*;
+import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import java.time.LocalTime;
@@ -30,17 +30,19 @@ public class MarqueeController
     private Segment previewSegment;
     private SequentialTransition preview = new SequentialTransition();
 
-    private MenuItem restart;
+    private MenuItem restart, exit;
 
     public MarqueeController(Marquee marquee)
     {
         this.marquee = marquee;
+
+        // Create a marquee that is either as wide as possible or the supplied width
         marqueePane = new MarqueePane(marquee.isMaxSize() ? (int) Screen.getPrimary().getBounds().getWidth() : marquee.getWidth(), marquee.getLedGap());
 
         restart = new MenuItem("Restart");
-        restart.setOnAction(e -> play());
+        exit = new MenuItem("Exit");
 
-        final ContextMenu contextMenu = new ContextMenu(restart);
+        final ContextMenu contextMenu = new ContextMenu(restart, exit);
 
         marqueePane.setOnContextMenuRequested(e -> contextMenu.show(marqueePane, e.getScreenX(), e.getScreenY()));
 
@@ -56,7 +58,8 @@ public class MarqueeController
     {
         marqueePane = new MarqueePane(680, 1, false);
         preview = new SequentialTransition();
-
+        preview.setCycleCount(Animation.INDEFINITE);
+        preview.setDelay(Duration.seconds(1));
         message.getContents().forEach(segment -> addSegment(segment, preview));
         preview.play();
     }
@@ -116,6 +119,11 @@ public class MarqueeController
         return marqueePane;
     }
 
+    public MenuItem getExit()
+    {
+        return exit;
+    }
+
     public void preview()
     {
         preview.stop();
@@ -154,6 +162,7 @@ public class MarqueeController
             scheduler.shutdown();
         }
 
+        restart.setOnAction(e -> messageAnimation.playFromStart());
         restart.setDisable(true);
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
@@ -353,21 +362,21 @@ public class MarqueeController
         timeline.setCycleCount((int)(duration.toMillis() / 250));
     }
 
+    // Helper method to allow scrolling to reset the segment iterators
     private void scroll(SequentialTransition transition, Segment segment, EffectTime time)
+    {
+        Duration duration = scrollFrame(segment, time).getTotalDuration();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ONE, e -> scrollFrame(segment, time).play()), new KeyFrame(duration));
+        transition.getChildren().add(timeline);
+    }
+
+    // Scrolls the method across the screen in the selected direction, either partially or fully
+    private Timeline scrollFrame(Segment segment, EffectTime time)
     {
         Timeline timeline = new Timeline();
         ScrollDirection direction;
+        int speed = segment.getSpeed();
         int cycles;
-        int speed;
-
-        if (time == CONTINUOUS)
-        {
-            speed = (int) (((segment.getDuration() - (segment.getDelay() * segment.getRepeat())) / (segment.getRepeat() * 1.0) * 1000) / (segment.getHlength() + (segment instanceof TextSegment ? TEXT_COLS : NUM_COLS)));
-        }
-        else
-        {
-            speed = 50;
-        }
 
         switch (time)
         {
@@ -416,7 +425,7 @@ public class MarqueeController
         }
 
         timeline.setCycleCount(cycles);
-        transition.getChildren().add(timeline);
+        return timeline;
     }
 
     private void partialScroll(SequentialTransition transition, Segment segment, EffectTime time)

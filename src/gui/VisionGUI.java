@@ -5,8 +5,10 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class VisionGUI extends Application
 {
@@ -85,9 +87,19 @@ public class VisionGUI extends Application
                         marqueeStage.setY(bounds.getHeight() - marqueeStage.getHeight());
                         break;
                 }
+
+                // Prevent the window from being resized smaller than the size of the marquee
+                marqueeStage.sizeToScene();
+                marqueeStage.setMinHeight(marqueeStage.getHeight());
+                marqueeStage.setMinWidth(marqueeStage.getWidth());
             }
 
             marqueeStage.setOnCloseRequest(exit -> primaryStage.show());
+
+            marqueeController.getExit().setOnAction(exit -> {
+                marqueeStage.close();
+                primaryStage.show();
+            });
 
             primaryStage.hide();
             marqueeController.play();
