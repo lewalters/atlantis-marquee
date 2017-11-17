@@ -133,6 +133,11 @@ public class MarqueeController
         preview.play();
     }
 
+    public void stopPreview()
+    {
+        preview.stop();
+    }
+
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat
     public void play()
     {
@@ -167,7 +172,7 @@ public class MarqueeController
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
 
-    // TODO: subsegments + segment repetitions will shift border colors / restart animation
+/*    // TODO: subsegments + segment repetitions will shift border colors / restart animation
     // Add a segment, breaking a TextSegment into its subsegments if necessary
     private void addSegment(Segment segment, SequentialTransition transition)
     {
@@ -181,36 +186,30 @@ public class MarqueeController
         }
         else
         {
-            for (int i = 0; i < segment.getRepeat(); i++)
-            {
-                addSegmentAnimation(segment, transition);
-            }
+            addSegmentAnimation(segment, transition);
         }
-    }
+    }*/
 
     // Add an animation that encompasses the given segment to the full animation
-    private void addSegmentAnimation(Segment segment, SequentialTransition transition)
+    private void addSegment(Segment segment, SequentialTransition transition)
     {
         SequentialTransition segmentTransition = new SequentialTransition();
         ParallelTransition borderedTransition = new ParallelTransition();
         SequentialTransition borderTransition = new SequentialTransition();
         SequentialTransition bodyTransition = new SequentialTransition();
-        SequentialTransition entrance = new SequentialTransition();
-        Timeline middleTimeline = new Timeline();
-        SequentialTransition exit = new SequentialTransition();
-        //Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
+        Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
 
-        // Set up body animations based on scroll choice
-        if (segment.getScrollDirection() == ScrollDirection.STATIC)
+        for (int i = 0; i < segment.getRepeat(); i++)
         {
-            entranceEffect(entrance, segment);
-            middleEffect(middleTimeline, segment);
-            exitEffect(exit, segment);
-            bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
-        }
-        else // CONTINUOUS SCROLL
-        {
-            scroll(bodyTransition, segment, EffectTime.CONTINUOUS);
+            if (segment instanceof TextSegment && ((TextSegment)segment).hasSubsegments() &&
+                    (segment.getScrollDirection() == ScrollDirection.STATIC || segment.getScrollDirection() == ScrollDirection.UP || segment.getScrollDirection() == ScrollDirection.DOWN))
+            {
+                ((TextSegment)segment).getSubsegments().forEach(subsegment -> addBodyAnimation(bodyTransition, subsegment));
+            }
+            else
+            {
+                addBodyAnimation(bodyTransition, segment);
+            }
         }
 
         // Set up an animation that accounts for border and padding if the segment has either
@@ -227,7 +226,27 @@ public class MarqueeController
 
         // Add either the borderedTransition or the bodyTransition to the animation set
         segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition);
-        transition.getChildren().add(segmentTransition);
+        transition.getChildren().addAll(segmentTransition, resetTimeline);
+    }
+
+    private void addBodyAnimation(SequentialTransition bodyTransition, Segment segment)
+    {
+        SequentialTransition entrance = new SequentialTransition();
+        Timeline middleTimeline = new Timeline();
+        SequentialTransition exit = new SequentialTransition();
+
+        // Set up body animations based on scroll choice
+        if (segment.getScrollDirection() == ScrollDirection.STATIC)
+        {
+            entranceEffect(entrance, segment);
+            middleEffect(middleTimeline, segment);
+            exitEffect(exit, segment);
+            bodyTransition.getChildren().addAll(entrance, middleTimeline, exit);
+        }
+        else // CONTINUOUS SCROLL
+        {
+            scroll(bodyTransition, segment, EffectTime.CONTINUOUS);
+        }
     }
 
     // Create the border and padding iff colors are set in the segment

@@ -12,14 +12,11 @@ public class LED extends Circle
     private Paint paint;
     private boolean background;
 
-    public LED(int radius)
-    {
-        this(radius, false);
-    }
-
     public LED(int radius, boolean background)
     {
         super(radius, OFF_COLOR);
+
+        this.background = background;
 
         if (!background)
         {

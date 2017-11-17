@@ -22,9 +22,6 @@ public class VisionGUI extends Application
     public void start(Stage primaryStage) throws Exception
     {
         WelcomePane welcomePane = new WelcomePane();
-        //AuthPane authPane = new AuthPane();
-
-
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
         primaryStage.show();
@@ -34,7 +31,10 @@ public class VisionGUI extends Application
         SettingsController settingsController = new SettingsController();
         SettingsPane settingsPane = settingsController.getSettingsPane();
 
-        welcomePane.setOnMouseClicked(e -> primaryStage.setScene(new Scene(settingsPane)));
+        welcomePane.setOnMouseClicked(e -> {
+            primaryStage.setScene(new Scene(settingsPane));
+            welcomePane.stopMessage();
+        });
 
         settingsPane.getStartButton().setOnAction(e -> {
             MarqueeController marqueeController = new MarqueeController(settingsController.getMarquee());
