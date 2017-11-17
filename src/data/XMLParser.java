@@ -9,6 +9,7 @@ package data;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -17,22 +18,14 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import javafx.scene.paint.Color;
 import util.BorderEffect;
-import util.EntranceEffect;
 import util.EntranceTransition;
-import util.ExitEffect;
 import util.ExitTransition;
 import util.MiddleEffect;
 import util.ScrollDirection;
 import org.w3c.dom.Node;
-
-import static util.Global.DEFAULT_TEXT_COLOR;
-import static util.Global.OFF_COLOR;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class XMLParser 
@@ -170,7 +163,7 @@ public class XMLParser
                   	break;
                     case "borderColors":
                     {
-//                      segment.setBorderColors(segChildNode.getTextContent());
+                      segment.setBorderColors(colorsFromString(segChildNode.getTextContent()));
                     }
                   	break;
                     case "borderEffect":
@@ -185,7 +178,7 @@ public class XMLParser
                   	break;
                     case "textColors":
                     {
-//                     segment.setTextColors(segChildNode.getTextContent());
+                      segment.setTextColors(colorsFromString(segChildNode.getTextContent()));
                     }
                   	break;
                   }
@@ -314,7 +307,7 @@ public class XMLParser
 
       	  Element effectEn = doc.createElement("effectEn");
       	  seg.appendChild(effectEn);
-      	  effectEn.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getEntranceEffect()).name()));
+      	  effectEn.appendChild(doc.createTextNode(((EntranceTransition) textSegment.getEntranceEffect()).name()));
       	  
       	  Element effectMi = doc.createElement("effectMi");
       	  seg.appendChild(effectMi);
@@ -322,7 +315,7 @@ public class XMLParser
 
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
-      	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) textSegment.getExitEffect()).name()));
+      	  effectEx.appendChild(doc.createTextNode(((ExitTransition) textSegment.getExitEffect()).name()));
 
       	  Element text = doc.createElement("text");
       	  seg.appendChild(text);
@@ -363,7 +356,7 @@ public class XMLParser
 
       	  Element effectEn = doc.createElement("effectEn");
       	  seg.appendChild(effectEn);
-      	  effectEn.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getEntranceEffect()).name()));
+      	  effectEn.appendChild(doc.createTextNode(((EntranceTransition) imageSegment.getEntranceEffect()).name()));
       	  
       	  Element effectMi = doc.createElement("effectMi");
       	  seg.appendChild(effectMi);
@@ -371,7 +364,7 @@ public class XMLParser
 
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
-      	  effectEx.appendChild(doc.createTextNode(((Enum<ScrollDirection>) imageSegment.getExitEffect()).name()));
+      	  effectEx.appendChild(doc.createTextNode(((ExitTransition) imageSegment.getExitEffect()).name()));
       	  
       	  Element source = doc.createElement("source");
       	  seg.appendChild(source);
@@ -381,6 +374,9 @@ public class XMLParser
   	  // write the content into xml file
   	  TransformerFactory transformerFactory = TransformerFactory.newInstance();
   	  Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
   	  DOMSource source = new DOMSource(doc);
   	  StreamResult result = new StreamResult(XMLFile);
   	  // Output to console for testing
@@ -391,5 +387,16 @@ public class XMLParser
  	{
   	  tfe.printStackTrace();
   	} 
+  }
+  
+  private Color[] colorsFromString(String string)
+  {
+    String[] strings = string.replace("[", "").replace("]", "").split(", ");
+    Color colors[] = new Color[strings.length];
+    for (int c = 0; c < colors.length; c++) 
+    {
+      colors[c] = Color.valueOf(strings[c]);
+    }
+    return(colors);
   }
 }
