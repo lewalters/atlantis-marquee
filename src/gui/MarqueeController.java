@@ -59,7 +59,7 @@ public class MarqueeController
         marqueePane = new MarqueePane(680, 1, false);
         preview = new SequentialTransition();
         preview.setCycleCount(Animation.INDEFINITE);
-        preview.setDelay(Duration.seconds(1));
+        //preview.setDelay(Duration.seconds(1));
         message.getContents().forEach(segment -> addSegment(segment, preview));
         preview.play();
     }
@@ -385,8 +385,8 @@ public class MarqueeController
     private void scroll(SequentialTransition transition, Segment segment, EffectTime time)
     {
         Duration duration = scrollFrame(segment, time).getTotalDuration();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ONE, e -> scrollFrame(segment, time).play()), new KeyFrame(duration));
-        transition.getChildren().add(timeline);
+        scrollFrame(segment, time).play();
+        transition.getChildren().add(new Timeline(new KeyFrame(duration, e -> scrollFrame(segment, time).play())));
     }
 
     // Scrolls the method across the screen in the selected direction, either partially or fully
