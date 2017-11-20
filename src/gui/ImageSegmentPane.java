@@ -29,7 +29,6 @@ public class ImageSegmentPane extends SegmentPane
         super(new ImageSegment(segment));
         this.segment = (ImageSegment) getSegment();
         construct();
-        populate();
     }
 
     public ImageSegmentPane()
@@ -79,6 +78,8 @@ public class ImageSegmentPane extends SegmentPane
         leftSide.getChildren().addAll(grid, imageBox);
         leftSide.setSpacing(10);
         this.setLeft(leftSide);
+
+        populate();
     }
 
     public HBox getImageBox()
@@ -98,9 +99,9 @@ public class ImageSegmentPane extends SegmentPane
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
-    private void populate()
+    protected void populate()
     {
-        super.populate(segment);
+        super.populate();
         setSourceImageView(segment.getSource());
     }
 

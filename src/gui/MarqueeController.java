@@ -59,7 +59,7 @@ public class MarqueeController
         marqueePane = new MarqueePane(680, 1, false);
         preview = new SequentialTransition();
         preview.setCycleCount(Animation.INDEFINITE);
-        //preview.setDelay(Duration.seconds(1));
+        preview.setDelay(Duration.seconds(1));
         message.getContents().forEach(segment -> addSegment(segment, preview));
         preview.play();
     }
@@ -172,24 +172,6 @@ public class MarqueeController
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
 
-/*    // TODO: subsegments + segment repetitions will shift border colors / restart animation
-    // Add a segment, breaking a TextSegment into its subsegments if necessary
-    private void addSegment(Segment segment, SequentialTransition transition)
-    {
-        if (segment instanceof TextSegment && ((TextSegment)segment).hasSubsegments() &&
-                (segment.getScrollDirection() == ScrollDirection.STATIC || segment.getScrollDirection() == ScrollDirection.UP || segment.getScrollDirection() == ScrollDirection.DOWN))
-        {
-            for (int i = 0; i < segment.getRepeat(); i++)
-            {
-                ((TextSegment)segment).getSubsegments().forEach(subsegment -> addSegmentAnimation(subsegment, transition));
-            }
-        }
-        else
-        {
-            addSegmentAnimation(segment, transition);
-        }
-    }*/
-
     // Add an animation that encompasses the given segment to the full animation
     private void addSegment(Segment segment, SequentialTransition transition)
     {
@@ -197,7 +179,6 @@ public class MarqueeController
         ParallelTransition borderedTransition = new ParallelTransition();
         SequentialTransition borderTransition = new SequentialTransition();
         SequentialTransition bodyTransition = new SequentialTransition();
-        Timeline resetTimeline = new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset()));
 
         for (int i = 0; i < segment.getRepeat(); i++)
         {
@@ -205,10 +186,16 @@ public class MarqueeController
                     (segment.getScrollDirection() == ScrollDirection.STATIC || segment.getScrollDirection() == ScrollDirection.UP || segment.getScrollDirection() == ScrollDirection.DOWN))
             {
                 ((TextSegment)segment).getSubsegments().forEach(subsegment -> addBodyAnimation(bodyTransition, subsegment));
+                bodyTransition.getChildren().add(new Timeline(new KeyFrame(Duration.seconds(((TextSegment)segment).getSubDelay()))));
             }
             else
             {
                 addBodyAnimation(bodyTransition, segment);
+            }
+
+            if (i < segment.getRepeat() - 1)
+            {
+                bodyTransition.getChildren().add(new Timeline(new KeyFrame(Duration.seconds(segment.getDelay()))));
             }
         }
 
@@ -226,7 +213,7 @@ public class MarqueeController
 
         // Add either the borderedTransition or the bodyTransition to the animation set
         segmentTransition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition);
-        transition.getChildren().addAll(segmentTransition, resetTimeline);
+        transition.getChildren().addAll(segmentTransition);
     }
 
     private void addBodyAnimation(SequentialTransition bodyTransition, Segment segment)
@@ -247,6 +234,8 @@ public class MarqueeController
         {
             scroll(bodyTransition, segment, EffectTime.CONTINUOUS);
         }
+
+        bodyTransition.getChildren().add(new Timeline(new KeyFrame(Duration.millis(100), e -> marqueePane.reset())));
     }
 
     // Create the border and padding iff colors are set in the segment
@@ -385,8 +374,7 @@ public class MarqueeController
     private void scroll(SequentialTransition transition, Segment segment, EffectTime time)
     {
         Duration duration = scrollFrame(segment, time).getTotalDuration();
-        scrollFrame(segment, time).play();
-        transition.getChildren().add(new Timeline(new KeyFrame(duration, e -> scrollFrame(segment, time).play())));
+        transition.getChildren().addAll(new Timeline(new KeyFrame(Duration.ONE), new KeyFrame(Duration.ONE, e -> scrollFrame(segment, time).play()), new KeyFrame(duration)));
     }
 
     // Scrolls the method across the screen in the selected direction, either partially or fully
@@ -452,7 +440,7 @@ public class MarqueeController
         Timeline timeline1 = new Timeline();
         Timeline timeline2 = new Timeline();
         int cycles;
-        int speed = 1000 / 5;
+        int speed = 1000 / 10;
         ScrollEffect effect = time == IN ? (ScrollEffect) segment.getEntranceEffect() : (ScrollEffect) segment.getExitEffect();
         int columns = segment instanceof TextSegment ? TEXT_COLS : NUM_COLS;
         int rows = segment instanceof TextSegment ? TEXT_ROWS : NUM_ROWS;
@@ -638,13 +626,13 @@ public class MarqueeController
     private void blink(Timeline timeline, Segment segment)
     {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.toggle(segment)));
-        timeline.setCycleCount(segment.getDuration() * 5 - 1);
+        timeline.setCycleCount((int) (segment.getDuration() * 5 - 1));
     }
 
     private void randomColorText(Timeline timeline, TextSegment segment)
     {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1), e -> marqueePane.randomColorText()));
-        timeline.setCycleCount(segment.getDuration() * 1000);
+        timeline.setCycleCount((int) (segment.getDuration() * 1000));
     }
 
     private void set(SequentialTransition transition, Segment segment, boolean opaque)
