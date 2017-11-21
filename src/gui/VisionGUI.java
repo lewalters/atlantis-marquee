@@ -5,10 +5,8 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 public class VisionGUI extends Application
 {
@@ -105,8 +103,11 @@ public class VisionGUI extends Application
             marqueeController.play();
         });
 
-        //CSS
+        //Applying StyleSheet to WelcomePane and SettingsPane
         welcomePane.getStylesheets().add("VisionStyleSheet.css");
         settingsPane.getStylesheets().add("VisionStyleSheet.css");
+
+
+
     }
 }
