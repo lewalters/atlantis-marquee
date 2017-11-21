@@ -62,7 +62,6 @@ public abstract class SegmentPane extends BorderPane
 
         durationLabel = new Label("Duration:");
         durationLabel.setFont(new Font(TEXT_FONT, 15));
-        durationLabel.getStylesheets().add("VisionStyleSheet.css");
 
         durationTextField = new TextField();
         durationTextField.setFont(new Font(TEXT_FONT, 15));
@@ -102,7 +101,6 @@ public abstract class SegmentPane extends BorderPane
 
         repeatLabel = new Label("Repetitions:");
         repeatLabel.setFont(new Font(TEXT_FONT, 15));
-        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
 
         repeatTextField = new TextField();
         repeatTextField.setFont(new Font(TEXT_FONT, 15));
@@ -142,7 +140,6 @@ public abstract class SegmentPane extends BorderPane
 
         delayLabel = new Label("Delay (segment):");
         delayLabel.setFont(new Font(TEXT_FONT, 15));
-        delayLabel.getStylesheets().add("VisionStyleSheet.css");
 
         delayTextField = new TextField();
         delayTextField.setFont(new Font(TEXT_FONT, 15));
@@ -286,8 +283,6 @@ public abstract class SegmentPane extends BorderPane
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
         /*CSS*/
-        continueButton.getStylesheets().add("VisionStyleSheet.css");
-        cancelButton.getStylesheets().add("VisionStyleSheet.css");
         this.getStylesheets().add("VisionStyleSheet.css");
     }
 

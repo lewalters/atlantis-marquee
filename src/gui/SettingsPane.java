@@ -589,28 +589,11 @@ public class SettingsPane extends BorderPane
 
         populate();
 
-        /*Using StyleSheet*/
+        //Using VisionStyleSheet
         rightPanel.getStyleClass().add("customGridControl");
         leftControlVb.getStyleClass().add("customGridControl");
-
         //MenuBar
         menuBar.getStyleClass().add("customMenuBar");
-
-        //Using Labels
-        setWidthLabel.getStylesheets().add("VisionStyleSheet.css");
-        setHeightLabel.getStylesheets().add("VisionStyleSheet.css");
-        ledGapLabel.getStylesheets().add("VisionStyleSheet.css");
-        setDelayLabel.getStylesheets().add("VisionStyleSheet.css");
-        setRepeatLabel.getStylesheets().add("VisionStyleSheet.css");
-        setCommentsLabel.getStylesheets().add("VisionStyleSheet.css");
-        screenPositionLabel.getStylesheets().add("VisionStyleSheet.css");
-        startTimeLabel.getStylesheets().add("VisionStyleSheet.css");
-
-        //Buttons
-        startButton.getStylesheets().add("VisionStyleSheet.css");
-        textSegmentButton.getStylesheets().add("VisionStyleSheet.css");
-        imageSegmentButton.getStylesheets().add("VisionStyleSheet.css");
-        reorderButton.getStylesheets().add("VisionStyleSheet.css");
     }
 
     //SettingsPane Constructors return properties
