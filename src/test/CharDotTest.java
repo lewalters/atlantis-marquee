@@ -2,6 +2,7 @@
 package test;
 
 import static org.junit.Assert.*;
+import static util.Global.DEFAULT_TEXT_COLOR;
 
 import data.CharDot;
 import data.Dot;
@@ -15,17 +16,17 @@ import java.util.Iterator;
 public class CharDotTest {
 
     private static CharDot cd;
-    private static String color;
+    // private static String color;
 
     @BeforeClass
     public static void setup() {
-        color = "EF0404";
-        cd = new CharDot('C', Color.TOMATO);
+        // color = "EF0404";
+        cd = new CharDot('C', DEFAULT_TEXT_COLOR);
     }
 
     @Test
     public void testCharDotGetters() {
-        assertEquals("data.CharDot test: getColor",Color.TOMATO, cd.getColor());
+        assertEquals("data.CharDot test: getColor", DEFAULT_TEXT_COLOR, cd.getColor());
         assertEquals("data.CharDot test: getHLength", 8, cd.getHLength());
         assertEquals("data.CharDot test: getVLength", 12, cd.getVLength());
     }
@@ -42,10 +43,10 @@ public class CharDotTest {
         Iterator<Dot[]> direction = cd.iterator(ScrollDirection.LEFT);
         assertTrue("data.CharDot test:Left Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(Color.BLACK, 0), new Dot(Color.PINK, 0), new Dot(Color.TOMATO, 100),
-                new Dot(Color.BLACK, 100), new Dot(Color.PINK, 100), new Dot(Color.YELLOWGREEN, 100),
-                new Dot(Color.BLACK, 100), new Dot(Color.PINK, 100), new Dot(Color.TOMATO, 100),
-                new Dot(Color.BLACK, 100), new Dot(Color.PINK, 0), new Dot(Color.TOMATO, 0)};
+        Dot[] d = {new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0)};
 
         assertArrayEquals(d, direction.next());
     }
@@ -55,10 +56,10 @@ public class CharDotTest {
         Iterator<Dot[]> direction = cd.iterator(ScrollDirection.RIGHT);
         assertTrue("data.CharDot test:Right Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(Color.PINK, 0), new Dot(Color.YELLOWGREEN, 100), new Dot(Color.BLACK, 100),
-                new Dot(Color.PINK, 0), new Dot(Color.YELLOWGREEN, 0), new Dot(Color.BLACK, 0),
-                new Dot(Color.PINK, 0), new Dot(Color.YELLOWGREEN, 0), new Dot(Color.BLACK, 0),
-                new Dot(Color.PINK, 100), new Dot(Color.YELLOWGREEN, 100), new Dot(Color.BLACK, 0)};
+        Dot[] d = {new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0),
+                new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 0)};
 
         assertArrayEquals(d, direction.next());
     }
@@ -68,9 +69,9 @@ public class CharDotTest {
         Iterator<Dot[]> direction = cd.iterator(ScrollDirection.UP);
         assertTrue("data.CharDot test:Up Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(Color.YELLOWGREEN, 0), new Dot(Color.BLACK, 0), new Dot(Color.TOMATO, 100),
-                new Dot(Color.YELLOWGREEN, 100), new Dot(Color.BLACK, 100), new Dot(Color.TOMATO, 100),
-                new Dot(Color.YELLOWGREEN, 100), new Dot(Color.BLACK, 0)};
+        Dot[] d = {new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 0)};
 
         assertArrayEquals(d, direction.next());
     }
@@ -80,9 +81,9 @@ public class CharDotTest {
         Iterator<Dot[]> direction = cd.iterator(ScrollDirection.DOWN);
         assertTrue("data.CharDot test:Right Iterator", direction.hasNext());
 
-        Dot[] d = {new Dot(Color.BLACK, 0), new Dot(Color.YELLOWGREEN, 0), new Dot(Color.BLUE, 100),
-                new Dot(Color.BLACK, 100), new Dot(Color.YELLOWGREEN, 100), new Dot(Color.BLUE, 100),
-                new Dot(Color.BLACK, 100), new Dot(Color.YELLOWGREEN, 0)};
+        Dot[] d = {new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 0), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 100),
+                new Dot(DEFAULT_TEXT_COLOR, 100), new Dot(DEFAULT_TEXT_COLOR, 0)};
 
         assertArrayEquals(d, direction.next());
     }
