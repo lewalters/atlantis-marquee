@@ -295,7 +295,7 @@ public class XMLParser
       	  
       	  Element duration = doc.createElement("duration");
       	  seg.appendChild(duration);
-      	  duration.appendChild(doc.createTextNode(Integer.toString(textSegment.getDuration())));
+      	  duration.appendChild(doc.createTextNode(Integer.toString((int) textSegment.getDuration())));
 
       	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);
@@ -344,7 +344,7 @@ public class XMLParser
           root.appendChild(seg);
       	  Element duration = doc.createElement("duration");
       	  seg.appendChild(duration);
-      	  duration.appendChild(doc.createTextNode(Integer.toString(imageSegment.getDuration())));
+      	  duration.appendChild(doc.createTextNode(Integer.toString((int) imageSegment.getDuration())));
 
       	  Element speed = doc.createElement("repeat");
       	  seg.appendChild(speed);

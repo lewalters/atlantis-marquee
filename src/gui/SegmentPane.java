@@ -20,7 +20,7 @@ public abstract class SegmentPane extends BorderPane
     private ComboBox<EntranceEffect> entranceComboBox;
     protected ComboBox<MiddleEffect> middleComboBox;
     private ComboBox<ExitEffect> exitComboBox;
-    private ComboBox<ScrollDirection> scrollComboBox;
+    protected ComboBox<ScrollDirection> scrollComboBox;
     private Button continueButton;
     private Button cancelButton;
 
@@ -62,11 +62,9 @@ public abstract class SegmentPane extends BorderPane
 
         durationLabel = new Label("Duration:");
         durationLabel.setFont(new Font(TEXT_FONT, 15));
-        durationLabel.getStylesheets().add("VisionStyleSheet.css");
 
         durationTextField = new TextField();
         durationTextField.setFont(new Font(TEXT_FONT, 15));
-        durationTextField.setAlignment(Pos.CENTER);
         durationTextField.setMaxWidth(45);
         durationTextField.setTooltip(new Tooltip("How long the marquee will display on the screen"));
 
@@ -103,11 +101,9 @@ public abstract class SegmentPane extends BorderPane
 
         repeatLabel = new Label("Repetitions:");
         repeatLabel.setFont(new Font(TEXT_FONT, 15));
-        repeatLabel.getStylesheets().add("VisionStyleSheet.css");
 
         repeatTextField = new TextField();
         repeatTextField.setFont(new Font(TEXT_FONT, 15));
-        repeatTextField.setAlignment(Pos.CENTER);
         repeatTextField.setMaxWidth(45);
         repeatTextField.setTooltip(new Tooltip("How fast the marquee contents will scroll across the screen"));
 
@@ -142,13 +138,11 @@ public abstract class SegmentPane extends BorderPane
             }
         }));
 
-        delayLabel = new Label("Delay:");
+        delayLabel = new Label("Delay (segment):");
         delayLabel.setFont(new Font(TEXT_FONT, 15));
-        delayLabel.getStylesheets().add("VisionStyleSheet.css");
 
         delayTextField = new TextField();
         delayTextField.setFont(new Font(TEXT_FONT, 15));
-        delayTextField.setAlignment(Pos.CENTER);
         delayTextField.setMaxWidth(45);
         delayTextField.setTooltip(new Tooltip("The delay between repetitions of this segment"));
 
@@ -288,13 +282,8 @@ public abstract class SegmentPane extends BorderPane
         //Creating Multiple ComboBoxes
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
-        populate(segment);
-
         /*CSS*/
-        continueButton.getStylesheets().add("VisionStyleSheet.css");
-        cancelButton.getStylesheets().add("VisionStyleSheet.css");
-
-
+        this.getStylesheets().add("VisionStyleSheet.css");
     }
 
     public Segment getSegment()
@@ -311,9 +300,9 @@ public abstract class SegmentPane extends BorderPane
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
-    protected void populate(Segment segment)
+    protected void populate()
     {
-        durationTextField.setText(String.valueOf(segment.getDuration()));
+        durationTextField.setText(String.valueOf((int) segment.getDuration()));
         repeatTextField.setText(String.valueOf(segment.getRepeat()));
         delayTextField.setText(String.valueOf(segment.getDelay()));
 

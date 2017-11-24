@@ -27,9 +27,11 @@ public class TextSegment extends Segment
     private BorderEffect borderEffect;
     private Color paddingColor;
     private Color[] textColors;
+    private int subDelay;
+    private boolean subsegment;
 
-    private TextSegment(int duration, int repeat, int delay, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
-                       EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, Color[] textColors, String text)
+    private TextSegment(double duration, int repeat, int delay, int subDelay, ScrollDirection scrollDirection, Color[] borderColors, BorderEffect borderEffect, Color paddingColor,
+                       EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx, Color[] textColors, String text, boolean subsegment)
     {
         super(duration, repeat, delay, scrollDirection, effectEn, effectMi, effectEx);
         this.text = text;
@@ -39,6 +41,8 @@ public class TextSegment extends Segment
         this.borderEffect = borderEffect;
         this.paddingColor = paddingColor;
         this.textColors = textColors;
+        this.subDelay = subDelay;
+        this.subsegment = subsegment;
         vLength = TEXT_ROWS;
 
         border = borderColors != null;
@@ -50,9 +54,9 @@ public class TextSegment extends Segment
     // Copy constructor
     public TextSegment(TextSegment segment)
     {
-        this(segment.getDuration(), segment.getRepeat(), segment.getDelay(), segment.getScrollDirection(),
+        this(segment.getDuration(), segment.getRepeat(), segment.getDelay(), segment.subDelay, segment.getScrollDirection(),
                 segment.borderColors.clone(), segment.borderEffect, segment.paddingColor, segment.getEntranceEffect(),
-                segment.getMiddleEffect(), segment.getExitEffect(), segment.textColors, segment.text);
+                segment.getMiddleEffect(), segment.getExitEffect(), segment.textColors, segment.text, segment.subsegment);
     }
 
     public TextSegment()
@@ -64,9 +68,12 @@ public class TextSegment extends Segment
         borderEffect = BorderEffect.NONE;
         paddingColor = OFF_COLOR;
         textColors = new Color[]{DEFAULT_TEXT_COLOR};
+        subDelay = 0;
+        vLength = TEXT_ROWS;
 
         border = false;
         padding = false;
+        subsegment = false;
     }
 
     public boolean hasBorder()
@@ -92,8 +99,11 @@ public class TextSegment extends Segment
     public ArrayList<TextSegment> getSubsegments()
     {
         ArrayList<TextSegment> subsegments = new ArrayList<>();
+        double subDuration = (getDuration() - ((getRepeat() - 1) * getDelay()) - ((subtexts.size() - 1) * subDelay)) / getRepeat() / subtexts.size();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(getDuration(), getRepeat(), getDelay(), getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(), getMiddleEffect(), getExitEffect(), textColors, subtext)));
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(subDuration, 1, getDelay(), subDelay,
+                getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(),
+                getMiddleEffect(), getExitEffect(), textColors, subtext, true)));
 
         return subsegments;
     }
@@ -123,6 +133,11 @@ public class TextSegment extends Segment
         return textColors;
     }
 
+    public int getSubDelay()
+    {
+        return subDelay;
+    }
+
     public void setText(String text)
     {
         this.text = text;
@@ -137,6 +152,7 @@ public class TextSegment extends Segment
         size = 0;
 
         String textUp = text.toUpperCase();
+        int colorIndex = 0;
 
         for (int i = 0; i < text.length(); i++)
         {
@@ -144,7 +160,7 @@ public class TextSegment extends Segment
 
             if (Validation.validCharacter(ch))
             {
-                if (textColors[0] == Color.TRANSPARENT)
+                if (textColors[0].equals(Color.TRANSPARENT))
                 {
                     double red = Math.random() * 0.8 + 0.2;
                     double green = Math.random() * 0.8 + 0.2;
@@ -157,7 +173,7 @@ public class TextSegment extends Segment
                 }
                 else
                 {
-                    contents.add(new CharDot(textUp.charAt(i), textColors[i]));
+                    contents.add(new CharDot(textUp.charAt(i), textColors[colorIndex++]));
                 }
 
                 // Add spaces between characters
@@ -212,7 +228,7 @@ public class TextSegment extends Segment
     public void setBorderColors(Color[] borderColors)
     {
         this.borderColors = borderColors;
-        border = borderColors[0] != OFF_COLOR;
+        border = !borderColors[0].equals(OFF_COLOR);
     }
 
     public void setBorderEffect(BorderEffect borderEffect)
@@ -223,13 +239,37 @@ public class TextSegment extends Segment
     public void setPaddingColor(Color paddingColor)
     {
         this.paddingColor = paddingColor;
-        padding = paddingColor != OFF_COLOR;
+        padding = !paddingColor.equals(OFF_COLOR);
     }
 
     public void setTextColors(Color[] textColors)
     {
         this.textColors = textColors;
         setContents();
+    }
+
+    public void setSubDelay(int subDelay)
+    {
+        this.subDelay = subDelay;
+    }
+
+    @Override
+    public int getSpeed()
+    {
+        if (getScrollDirection() == ScrollDirection.STATIC)
+        {
+            return DEFAULT_SPEED;
+        }
+        else if (getScrollDirection() == ScrollDirection.LEFT || getScrollDirection() == ScrollDirection.RIGHT)
+        {
+            return subsegment ? (int) ((getDuration() * 1000) / (hLength + TEXT_COLS)) :
+                    (int) (((getDuration() - (getDelay() * (getRepeat() - 1))) / getRepeat() * 1000) / (hLength + TEXT_COLS));
+        }
+        else // vertical scroll
+        {
+            return subsegment ? (int) ((getDuration() * 1000) / (vLength + TEXT_ROWS)) :
+                    (int) (((getDuration() - (getDelay() * (getRepeat() - 1))) / getRepeat() * 1000) / (vLength + TEXT_ROWS));
+        }
     }
 
     @Override

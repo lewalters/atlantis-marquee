@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import util.BorderEffect;
 import util.MiddleEffect;
+import util.ScrollDirection;
 
 import static util.Global.*;
 
@@ -23,7 +24,7 @@ public class TextSegmentPane extends SegmentPane
     private RadioButton textColorSingle, textColorRandom, textColorCustom;
     private RadioButton borderColorNone, borderColorRandom, borderColorCustom;
     private RadioButton paddingColorNone, paddingColorCustom;
-    private TextField borderSpeedTextField;
+    private TextField subDelayTextField, borderSpeedTextField;
     private ObservableList<ColorPicker> borderColorPickers;
     private ColorPicker textColorPicker, paddingColorPicker;
     private ComboBox<BorderEffect> borderEffectComboBox;
@@ -34,7 +35,6 @@ public class TextSegmentPane extends SegmentPane
         super(new TextSegment(segment));
         this.segment = (TextSegment) getSegment();
         construct();
-        populate();
 
     }
 
@@ -67,21 +67,25 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(repeatLabel, 0, 5);
         textLabelElementsGrid.add(delayLabel, 0, 6);
 
+        Label subDelayLabel = new Label("Delay (subsegment):");
+        textLabelElementsGrid.add(subDelayLabel, 0, 7);
+
         Label borderColor = new Label("Border Color(s):");
-        textLabelElementsGrid.add(borderColor, 0, 7);
+        textLabelElementsGrid.add(borderColor, 0, 8);
 
         Label paddingColor = new Label("Padding Color:");
-        textLabelElementsGrid.add(paddingColor, 0, 9);
+        textLabelElementsGrid.add(paddingColor, 0, 10);
 
         Label borderEffect = new Label("Border Effect:");
-        textLabelElementsGrid.add(borderEffect, 0, 10);
+        textLabelElementsGrid.add(borderEffect, 0, 11);
 
         Label borderSpeed = new Label("Border Speed:");
-        textLabelElementsGrid.add(borderSpeed, 0, 11);
+        textLabelElementsGrid.add(borderSpeed, 0, 12);
 
         //Setting text Label Font
         textLabel.setFont(new Font(TEXT_FONT, 15));
         textColorLabel.setFont(new Font(TEXT_FONT, 15));
+        subDelayLabel.setFont(new Font(TEXT_FONT, 15));
         borderColor.setFont(new Font(TEXT_FONT, 15));
         paddingColor.setFont(new Font(TEXT_FONT, 15));
         borderEffect.setFont(new Font(TEXT_FONT, 15));
@@ -97,12 +101,20 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(durationTextField, 1, 4);
         textLabelElementsGrid.add(repeatTextField, 1, 5);
         textLabelElementsGrid.add(delayTextField, 1, 6);
+        subDelayTextField = new TextField();
+        textLabelElementsGrid.add(subDelayTextField, 1, 7);
         borderSpeedTextField = new TextField();
-        textLabelElementsGrid.add(borderSpeedTextField, 1, 11);
+        textLabelElementsGrid.add(borderSpeedTextField, 1, 12);
+
+        // Disable the subsegment delay entry if there are no subsegments
+        subDelayTextField.disableProperty().bind(Bindings.createBooleanBinding(() ->
+                textTextArea.getText().contains("|"), textTextArea.textProperty()).not());
 
         //Setting text Field Font
+        subDelayTextField.setFont(new Font(TEXT_FONT, 15));
         borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));
         //Setting text field's width
+        subDelayTextField.setMaxWidth(45);
         borderSpeedTextField.setMaxWidth(45);
         //Setting TextField Prompters
         textTextArea.setPromptText("Enter Display Message");
@@ -165,8 +177,8 @@ public class TextSegmentPane extends SegmentPane
         HBox borderColorsBox = new HBox(borderColorPickers.get(0));
         borderColorsBox.visibleProperty().bindBidirectional(borderColorsBox.managedProperty());
         borderColorsBox.visibleProperty().bind(borderColorCustom.selectedProperty());
-        textLabelElementsGrid.add(borderChoicesBox, 1, 7);
-        textLabelElementsGrid.add(borderColorsBox, 1, 8);
+        textLabelElementsGrid.add(borderChoicesBox, 1, 8);
+        textLabelElementsGrid.add(borderColorsBox, 1, 9);
 
         // Set the border color to the off color if "none" is selected
         borderColorNone.setOnAction(e -> segment.setBorderColors(new Color[]{OFF_COLOR}));
@@ -245,7 +257,7 @@ public class TextSegmentPane extends SegmentPane
         paddingColorPicker.visibleProperty().bind(paddingColorCustom.selectedProperty());
         HBox paddingColorChoices = new HBox(paddingColorNone, paddingColorCustom, paddingColorPicker);
         paddingColorChoices.setSpacing(2);
-        textLabelElementsGrid.add(paddingColorChoices, 1, 9);
+        textLabelElementsGrid.add(paddingColorChoices, 1, 10);
 
         // Set padding color when picker is changed
         paddingColorPicker.setOnAction(e -> segment.setPaddingColor(paddingColorPicker.getValue()));
@@ -255,7 +267,7 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox.getItems().addAll(BorderEffect.values());
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.getSelectionModel().selectFirst();
-        textLabelElementsGrid.add(borderEffectComboBox, 1, 10);
+        textLabelElementsGrid.add(borderEffectComboBox, 1, 11);
 
         // Disallow the user from choosing a border effect if no color is selected
         borderEffectComboBox.disableProperty().bind(borderColorNone.selectedProperty());
@@ -279,31 +291,82 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-
-
-        // Set the text in the segment or warn if the text is invalid
+        // Set the text in the segment and disable / enable options based on length
         textTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                String text = textTextArea.getText();
-
-                if (!text.isEmpty())
-                {
-                    segment.setText(text);
-                }
+                segment.setText(textTextArea.getText());
 
                 if (textColorCustom.isSelected())
                 {
                     textColorsPicker.refresh();
                 }
 
-                if (segment.getHlength() > TEXT_COLS && !segment.hasSubsegments())
+                if (segment.getHlength() > TEXT_COLS)
                 {
-                    statikRadioBtn.setDisable(true);
-                    effectsRadioBtn.setDisable(true);
+                    if (!segment.hasSubsegments())
+                    {
+                        statikRadioBtn.setDisable(true);
+                        effectsRadioBtn.setDisable(true);
+                        scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                    }
+                    else
+                    {
+                        for (TextSegment subsegment : segment.getSubsegments())
+                        {
+                            if (subsegment.getHlength() > TEXT_COLS)
+                            {
+                                statikRadioBtn.setDisable(true);
+                                effectsRadioBtn.setDisable(true);
+                                scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    statikRadioBtn.setDisable(false);
+                    effectsRadioBtn.setDisable(false);
+
+                    if (!scrollComboBox.getItems().contains(ScrollDirection.UP) && !scrollComboBox.getItems().contains(ScrollDirection.DOWN))
+                    {
+                        scrollComboBox.getItems().addAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                    }
                 }
             }
         }));
+
+        // Restrict subDelayTextField to accept only numeric values
+        subDelayTextField.textProperty().addListener(((observable, oldValue, newValue) ->
+        {
+            if (!newValue.matches("\\d*"))
+            {
+                subDelayTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        }));
+
+        // Restrict the length of subDelayTextField to 2 characters
+        subDelayTextField.lengthProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if (newValue.intValue() > oldValue.intValue())
+            {
+                if (newValue.intValue() > 2)
+                {
+                    subDelayTextField.setText(subDelayTextField.getText().substring(0, 2));
+                }
+            }
+        });
+
+        // Set the subsegment delay on the text segment
+        subDelayTextField.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if (!newValue) // lost focus
+            {
+                String subDelayText = subDelayTextField.getText();
+                segment.setSubDelay(subDelayText.isEmpty() ? 0 : Integer.valueOf(subDelayText));
+            }
+        });
 
         //Making borderSpeedTextField Accept Only Numeric Values
         borderSpeedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -313,7 +376,7 @@ public class TextSegmentPane extends SegmentPane
         });
 
         //Setting borderSpeedTextField Character Length
-        borderSpeedTextField. lengthProperty().addListener((observable, oldValue, newValue) -> {
+        borderSpeedTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue()){
                 if(borderSpeedTextField.getText().length() > 2){
                     borderSpeedTextField.setText(borderSpeedTextField.getText().substring(0,2));
@@ -328,19 +391,13 @@ public class TextSegmentPane extends SegmentPane
         buttonElementsGrid.setHgap(25);
         buttonElementsGrid.setVgap(5);
 
-        //Applying CSS
-        textLabel.getStylesheets().add("VisionStyleSheet.css");
-        textColorLabel.getStylesheets().add("VisionStyleSheet.css");
-        borderColor.getStylesheets().add("VisionStyleSheet.css");
-        paddingColor.getStylesheets().add("VisionStyleSheet.css");
-        borderEffect.getStylesheets().add("VisionStyleSheet.css");
-        borderSpeed.getStylesheets().add("VisionStyleSheet.css");
+        populate();
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
-    private void populate()
+    protected void populate()
     {
-        super.populate(segment);
+        super.populate();
 
         textTextArea.setText(segment.getText());
 
@@ -348,7 +405,7 @@ public class TextSegmentPane extends SegmentPane
 
         if (textColors.length == 1)
         {
-            if (textColors[0] == Color.TRANSPARENT)
+            if (textColors[0].equals(Color.TRANSPARENT))
             {
                 textColorRandom.setSelected(true);
             }
@@ -364,6 +421,8 @@ public class TextSegmentPane extends SegmentPane
             textColorsPicker.setSegment(segment);
             textColorsPicker.refresh();
         }
+
+        subDelayTextField.setText(String.valueOf(segment.getSubDelay()));
 
         Color[] borderColors = segment.getBorderColors();
 

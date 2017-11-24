@@ -12,6 +12,10 @@
     -fx-padding: 2;
 }
 
+.text-field{
+    -fx-alignment: center;
+}
+
 .button{
     -fx-border-radius: 6;
     -fx-base: #585858;

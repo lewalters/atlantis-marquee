@@ -16,7 +16,7 @@ import static util.Global.*;
  */
 public abstract class Segment
 {
-    private int duration;
+    private double duration;
     private int repeat;
     private int delay;
     private ScrollDirection scrollDirection;
@@ -25,7 +25,7 @@ public abstract class Segment
     private ExitEffect effectEx;
     protected int hLength, vLength, size;
 
-    protected Segment(int duration, int repeat, int delay, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
+    protected Segment(double duration, int repeat, int delay, ScrollDirection scrollDirection, EntranceEffect effectEn, MiddleEffect effectMi, ExitEffect effectEx)
     {
         this.duration = duration;
         this.repeat = repeat;
@@ -47,7 +47,7 @@ public abstract class Segment
         effectEx = ExitTransition.NONE;
     }
 
-    public int getDuration()
+    public double getDuration()
     {
         return duration;
     }
@@ -97,17 +97,7 @@ public abstract class Segment
         return size;
     }
 
-    public int getSpeed()
-    {
-        if (scrollDirection == ScrollDirection.STATIC)
-        {
-            return DEFAULT_SPEED;
-        }
-        else // continuous scroll
-        {
-            return (int) (((duration - (delay * repeat)) / (repeat * 1.0) * 1000) / (hLength + (this instanceof TextSegment ? TEXT_COLS : NUM_COLS)));
-        }
-    }
+    public abstract int getSpeed();
 
     public void setDuration(int duration)
     {

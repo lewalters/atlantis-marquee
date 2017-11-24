@@ -2,6 +2,7 @@ package gui;
 
 import data.*;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
@@ -35,6 +36,9 @@ public class SettingsController
 
         //Event Handler for ImageSegmentButton to display Image Segment Pane
         settingsPane.getImageSegmentButton().setOnAction(e -> createSegmentPane(null, false));
+
+        // Event handler for Exit Menu Item
+        settingsPane.getExit().setOnAction(e -> Platform.exit());
 
         // Event handler for reorder segments button
         settingsPane.getReorderButton().setOnAction(e -> {
@@ -162,9 +166,8 @@ public class SettingsController
         });
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();
-
-        //Applying inline CSS to TextSegment and ImageSegment
-        segmentPane.setStyle("-fx-base:#181818;");
+        //Applying Style CSS to TextSegment and ImageSegment
+        segmentPane.getStylesheets().add("VisionStyleSheet.css");
 
     }
 }

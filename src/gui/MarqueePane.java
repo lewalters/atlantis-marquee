@@ -134,7 +134,8 @@ public class MarqueePane extends StackPane
     // Turn the border off if it is on, or vice versa
     public void toggleBorder()
     {
-        border.forEach(led -> {
+        border.forEach(led ->
+        {
             if (led.isOn())
             {
                 led.turnOff();
@@ -1426,7 +1427,7 @@ public class MarqueePane extends StackPane
 
                 if (dot.getIntensity() > 0)
                 {
-                    currLED.turnOn(dot.getColor(), dot.getIntensity());
+                    currLED.turnOn(dot.getColor());
 
                     if (!opaque)
                     {
