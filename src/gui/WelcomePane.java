@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import util.EntranceTransition;
+import util.ExitTransition;
 import util.ScrollDirection;
 
 import static util.Global.TEXT_FONT;
@@ -27,9 +29,10 @@ public class WelcomePane extends BorderPane
     {
         // Welcome message on marquee without background
         TextSegment welcomeText = new TextSegment();
-        welcomeText.setText("Welcome to VISION");
-        welcomeText.setScrollDirection(ScrollDirection.LEFT);
-        welcomeText.setDuration(10);
+        welcomeText.setText("Welcome|to|VISION");
+        welcomeText.setEntranceEffect(EntranceTransition.RANDOM_ON);
+        welcomeText.setExitEffect(ExitTransition.RANDOM_OFF);
+        welcomeText.setDuration(2);
         welcomeText.setTextColors(new Color[]{Color.web("#DAF7A6")});
         Message welcomeMessage = new Message();
         welcomeMessage.addSegment(0, welcomeText);
