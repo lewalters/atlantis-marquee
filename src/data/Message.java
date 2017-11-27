@@ -13,33 +13,17 @@ import java.util.LinkedList;
  */
 public class Message
 {
-    private String name;
     private LinkedList<Segment> contents;
     private int repeatFactor;
     private int delay;
     private String comments;
 
-    public Message(String name, int repeatFactor, int delay, String comments )
-    {
-        this.name = name;
-        contents = new LinkedList<>();
-        this.repeatFactor = repeatFactor;
-        this.delay = delay;
-        this.comments = comments;
-    }
-
     public Message()
     {
-        name = "";
         contents = new LinkedList<>();
         repeatFactor = 0;
         delay = 0;
         comments = "";
-    }
-
-    public String getName()
-    {
-        return name;
     }
 
     public LinkedList<Segment> getContents()
@@ -57,11 +41,6 @@ public class Message
     public String getComments()
     {
         return comments;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
     }
 
     public void setRepeatFactor(int repeatFactor)
@@ -97,5 +76,10 @@ public class Message
         {
             contents.set(ranks[i] - 1, tempContents[i]);
         }
+    }
+
+    public boolean isValid()
+    {
+        return contents.size() > 0 && repeatFactor >= 0 && delay >= 0;
     }
 }

@@ -1369,6 +1369,23 @@ public class MarqueePane extends StackPane
         }
     }
 
+    // Inverts the colors on all LEDs displaying the current segment
+    public void invert(Segment segment)
+    {
+        LED[][] matrix = segment instanceof TextSegment ? textMatrix : ledMatrix;
+
+        for (LED[] leds : matrix)
+        {
+            for (LED led : leds)
+            {
+                if (led.isOn())
+                {
+                    led.turnOn(((Color) led.getFill()).invert());
+                }
+            }
+        }
+    }
+
     // Changes a random "on" LED to a random color
     public void randomColorText()
     {
@@ -1438,6 +1455,7 @@ public class MarqueePane extends StackPane
         }
     }
 
+    // Turn off all LEDs on the marquee
     public void reset()
     {
         for (LED[] leds : ledMatrix)

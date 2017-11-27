@@ -278,18 +278,8 @@ public class TextSegmentPane extends SegmentPane
         // Set the border effect on the segment if the combo box value is changed
         borderEffectComboBox.setOnAction(e -> segment.setBorderEffect(borderEffectComboBox.getValue()));
         
-        this.setLeft(textLabelElementsGrid); //Adding Text fields and Labels to GridPane inserted TextSegmentPane
-
-        //Setting commentsTextArea Character Length
-        textTextArea.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue())
-            {
-                if(textTextArea.getText().length() > 100)
-                {
-                    textTextArea.setText(textTextArea.getText(0, 100));
-                }
-            }
-        });
+        //Adding Text fields and Labels to GridPane inserted TextSegmentPane
+        this.setLeft(textLabelElementsGrid);
 
         // Set the text in the segment and disable / enable options based on length
         textTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
@@ -358,7 +348,7 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        // Set the subsegment delay on the text segment
+        // Set the subsegment delay on the text segment when the field loses focus
         subDelayTextField.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
             if (!newValue) // lost focus
@@ -466,6 +456,14 @@ public class TextSegmentPane extends SegmentPane
         {
             borderEffectComboBox.getSelectionModel().select(segment.getBorderEffect());
         }
+    }
+
+    // Display warnings for all fields which are invalid
+    @Override
+    public void warn()
+    {
+        super.warn();
+        System.out.println("TEXT SEGMENT");
     }
 
     private void changeColors()

@@ -76,6 +76,7 @@ public class MarqueeController
     public Pane getFullMarqueePane()
     {
         BorderPane frame = new BorderPane();
+        frame.getStylesheets().add("VisionStyleSheet.css");
         Pos position = marquee.getScreenPos();
 
         switch (position)
@@ -167,7 +168,7 @@ public class MarqueeController
             scheduler.shutdown();
         }
 
-        restart.setOnAction(e -> messageAnimation.playFromStart());
+        restart.setOnAction(e -> play());
         restart.setDisable(true);
         messageAnimation.setOnFinished(e -> restart.setDisable(false));
     }
@@ -315,6 +316,9 @@ public class MarqueeController
             case BLINK:
                 blink(timeline, segment);
                 break;
+            case INVERT:
+                invertBlink(timeline, segment);
+                break;
             case RANDOM_COLOR:
                 randomColorText(timeline, (TextSegment) segment);
                 break;
@@ -377,7 +381,7 @@ public class MarqueeController
         transition.getChildren().addAll(new Timeline(new KeyFrame(Duration.ONE), new KeyFrame(Duration.ONE, e -> scrollFrame(segment, time).play()), new KeyFrame(duration)));
     }
 
-    // Scrolls the method across the screen in the selected direction, either partially or fully
+    // Scrolls the segment across the screen in the selected direction, either part way or fully
     private Timeline scrollFrame(Segment segment, EffectTime time)
     {
         Timeline timeline = new Timeline();
@@ -435,7 +439,15 @@ public class MarqueeController
         return timeline;
     }
 
+    // Helper method to allow partial scrolling to reset the segment iterators
     private void partialScroll(SequentialTransition transition, Segment segment, EffectTime time)
+    {
+        Duration duration = partialScrollFrame(segment, time).getTotalDuration();
+        transition.getChildren().addAll(new Timeline(new KeyFrame(Duration.ONE), new KeyFrame(Duration.ONE, e -> partialScrollFrame(segment, time).play()), new KeyFrame(duration)));
+    }
+
+    // Scrolls the segment across the screen in the selected style (segment halves scrolling in unison)
+    private ParallelTransition partialScrollFrame(Segment segment, EffectTime time)
     {
         Timeline timeline1 = new Timeline();
         Timeline timeline2 = new Timeline();
@@ -586,7 +598,7 @@ public class MarqueeController
         // Set the cycle counts with an offset for half scrolls that are split horizontally and have an odd length
         timeline1.setCycleCount(effect == ScrollEffect.HALF_SCROLL_TOP_LEFT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
         timeline2.setCycleCount(effect == ScrollEffect.HALF_SCROLL_TOP_RIGHT && segment.getHlength() % 2 == 1 ? cycles + 1 : cycles);
-        transition.getChildren().add(new ParallelTransition(timeline1, timeline2));
+        return new ParallelTransition(timeline1, timeline2);
     }
 
     private void randomLight(SequentialTransition transition, Segment segment, EffectTime time)
@@ -626,6 +638,12 @@ public class MarqueeController
     private void blink(Timeline timeline, Segment segment)
     {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.toggle(segment)));
+        timeline.setCycleCount((int) (segment.getDuration() * 5 - 1));
+    }
+
+    private void invertBlink(Timeline timeline, Segment segment)
+    {
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> marqueePane.invert(segment)));
         timeline.setCycleCount((int) (segment.getDuration() * 5 - 1));
     }
 

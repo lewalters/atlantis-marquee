@@ -41,7 +41,6 @@ public class SettingsPane extends BorderPane
     private RadioButton timeImmediate, timeCustom;
     private Spinner<LocalTime> timeSpinner;
     private CheckBox fullScreenCheckBox, maxSizeCheckBox;
-    //private CheckBox authenticationCheckBox;
     private Button startButton;
     private Button textSegmentButton, imageSegmentButton;
     private Button reorderButton;
@@ -62,10 +61,10 @@ public class SettingsPane extends BorderPane
         this.setPrefSize(760, 500);
 
         /*Creating GridPanes*/
-        // Creating Width label
         GridPane leftLabelTextFieldGrid = new GridPane();
 
         /*Adding Labels*/
+        // Creating Width label
         Label setWidthLabel = new Label("Width:");
         setWidthLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setWidthLabel, 0, 0);
@@ -226,8 +225,6 @@ public class SettingsPane extends BorderPane
         heightTextField.disableProperty().bind(maxSizeCheckBox.selectedProperty());
         HBox fullScreenBox = new HBox(fullScreenCheckBox, maxSizeCheckBox);
         fullScreenBox.setSpacing(10);
-//        authenticationCheckBox = new CheckBox("Authentication");
-//        authenticationCheckBox.setFont(new Font("TEXT_FONT", 15));
 
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
@@ -278,6 +275,7 @@ public class SettingsPane extends BorderPane
         segmentListView = new SegmentListView(controller, marquee.get().getMessage().getContents());
         ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
         segmentScrollPane.setPadding(new Insets(5));
+        segmentScrollPane.setFocusTraversable(false);
 
         reorderButton = new Button("Reorder Segments");
         reorderButton.setFont(new Font(TEXT_FONT, 15));
@@ -312,9 +310,7 @@ public class SettingsPane extends BorderPane
         delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
         repeatTextField.setTooltip(new Tooltip("This sets the repeat factor for the message"));
         commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
-        //Creating Tooltip for startButton
         startButton.setTooltip(new Tooltip("This Starts Marquee Based On User Requirements"));
-        //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
         fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
@@ -436,78 +432,48 @@ public class SettingsPane extends BorderPane
             }
         });
 
-        // Set the width of the marquee or warn if the width is invalid
+        // Set the width of the marquee when the field loses focus
         widthTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String widthText = widthTextField.getText();
-
-                int width = widthText.isEmpty() ? 0 : Integer.valueOf(widthText);
-
-                if (width >= MIN_WIDTH)
-                {
-                    marquee.get().setWidth(width);
-                }
+                marquee.get().setWidth(widthText.isEmpty() ? 0 : Integer.valueOf(widthText));
             }
         }));
 
-        // Set the height of the marquee or warn if the height is invalid
+        // Set the height of the marquee when the field loses focus
         heightTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String heightText = heightTextField.getText();
-
-                int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
-
-                if (height >= 50)
-                {
-                    marquee.get().setHeight(height);
-                }
+                marquee.get().setHeight(heightText.isEmpty() ? 0 : Integer.valueOf(heightText));
             }
         }));
 
-        // Set the LED gap of the marquee or warn if the LED gap is invalid
+        // Set the LED gap of the marquee when the field loses focus
         ledGapTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String ledGapText = ledGapTextField.getText();
-
-                int ledGap = ledGapText.isEmpty() ? 0 : Integer.valueOf(ledGapText);
-
-                if (ledGap >= 0 && ledGap <= 9)
-                {
-                    marquee.get().setLedGap(ledGap);
-                }
+                marquee.get().setLedGap(ledGapText.isEmpty() ? 0 : Integer.valueOf(ledGapText));
             }
         }));
 
-        // Set the delay of the message or warn if the delay is invalid
+        // Set the delay of the message when the field loses focus
         delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String delayText = delayTextField.getText();
-
-                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
-
-                if (delay >= 0)
-                {
-                    marquee.get().getMessage().setDelay(delay);
-                }
+                marquee.get().getMessage().setDelay(delayText.isEmpty() ? 0 : Integer.valueOf(delayText));
             }
         }));
 
-        // Set the repeat factor of the message or warn if the repeat value is invalid
+        // Set the repeat factor of the message when the field loses focus
         repeatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String repeatText = repeatTextField.getText();
-
-                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
-
-                if (repeat >= 0)
-                {
-                    marquee.get().getMessage().setRepeatFactor(repeat);
-                }
+                marquee.get().getMessage().setRepeatFactor(repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText));
             }
         });
 
@@ -519,10 +485,10 @@ public class SettingsPane extends BorderPane
             }
         }));
 
-        // Set the screen position of the marquee
+        // Set the screen position of the marquee when it is changed
         screenPosition.setOnAction(e -> marquee.get().setScreenPosition(screenPosition.getValue()));
 
-        // Set the start time of the marquee
+        // Set the start time of the marquee when the field loses focus
         timeSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
@@ -530,8 +496,20 @@ public class SettingsPane extends BorderPane
             }
         });
 
-        // Set the fullscreen toggle on the marquee
-        fullScreenCheckBox.setOnAction(e -> marquee.get().setFullscreen(fullScreenCheckBox.isSelected()));
+        // Set the fullscreen toggle on the marquee when it is changed
+        fullScreenCheckBox.setOnAction(e ->
+        {
+            marquee.get().setFullscreen(fullScreenCheckBox.isSelected());
+
+            if (!fullScreenCheckBox.isSelected())
+            {
+                if (maxSizeCheckBox.isSelected())
+                {
+                    maxSizeCheckBox.setSelected(false);
+                    maxSizeCheckBox.fire();
+                }
+            }
+        });
 
         // Set the marquee to the maximum display size if max size is checked
         maxSizeCheckBox.setOnAction(e ->
@@ -541,22 +519,10 @@ public class SettingsPane extends BorderPane
             if (!maxSizeCheckBox.isSelected())
             {
                 String widthText = widthTextField.getText();
-
-                int width = widthText.isEmpty() ? 0 : Integer.valueOf(widthText);
-
-                if (width >= MIN_WIDTH)
-                {
-                    marquee.get().setWidth(width);
-                }
+                marquee.get().setWidth(widthText.isEmpty() ? 0 : Integer.valueOf(widthText));
 
                 String heightText = heightTextField.getText();
-
-                int height = heightText.isEmpty() ? 0 : Integer.valueOf(heightText);
-
-                if (height >= 50)
-                {
-                    marquee.get().setHeight(height);
-                }
+                marquee.get().setHeight(heightText.isEmpty() ? 0 : Integer.valueOf(heightText));
             }
         });
 
@@ -582,7 +548,6 @@ public class SettingsPane extends BorderPane
 
         //Creating Tooltip for startButton
         startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
-        //authenticationCheckBox.setTooltip(new Tooltip("This prompts user to set a password for Marquee Display"));
         fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
@@ -592,8 +557,6 @@ public class SettingsPane extends BorderPane
         //Using VisionStyleSheet
         rightPanel.getStyleClass().add("customGridControl");
         leftControlVb.getStyleClass().add("customGridControl");
-        //MenuBar
-        menuBar.getStyleClass().add("customMenuBar");
     }
 
     //SettingsPane Constructors return properties
@@ -642,11 +605,6 @@ public class SettingsPane extends BorderPane
         return startButton;
     }
 
-    /*public CheckBox getAuthenticationCheckBox()
-    {
-        return authenticationCheckBox;
-    }*/
-
     public Button getTextSegmentButton()
     {
         return textSegmentButton;
@@ -689,6 +647,12 @@ public class SettingsPane extends BorderPane
         }
         segmentListView.setSegments(marquee.get().getMessage().getContents());
         segmentListView.refresh();
+    }
+
+    // Display warnings for all fields which are invalid
+    public void warn()
+    {
+        System.out.println("INVALID MESSAGE");
     }
 }
 

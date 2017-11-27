@@ -7,6 +7,9 @@ import java.time.LocalTime;
 
 import java.time.LocalTime;
 
+import static util.Global.MIN_HEIGHT;
+import static util.Global.MIN_WIDTH;
+
 /**
  * (Insert a brief comment that describes
  * the purpose of this class definition.)
@@ -113,5 +116,10 @@ public class Marquee
     public void setStartTime(LocalTime startTime)
     {
         this.startTime = startTime;
+    }
+
+    public boolean isValid()
+    {
+        return width > MIN_WIDTH && height > MIN_HEIGHT && message.isValid();
     }
 }

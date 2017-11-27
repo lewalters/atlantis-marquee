@@ -140,8 +140,8 @@ public class SettingsController
         }
 
         segmentPane.getCancelButton().setOnAction(e -> segmentStage.close());
-        segmentPane.getContinueButton().setOnAction(e -> {
-
+        segmentPane.getContinueButton().setOnAction(e ->
+        {
             int index = marquee.get().getMessage().getContents().indexOf(segment);
             Segment newSegment = segmentPane.getSegment();
 
@@ -161,13 +161,12 @@ public class SettingsController
             }
             else
             {
-                System.out.println("INVALID SEGMENT");
+                segmentPane.warn();
             }
         });
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();
         //Applying Style CSS to TextSegment and ImageSegment
         segmentPane.getStylesheets().add("VisionStyleSheet.css");
-
     }
 }

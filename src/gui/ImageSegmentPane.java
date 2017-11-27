@@ -57,7 +57,7 @@ public class ImageSegmentPane extends SegmentPane
         imageChooser = new FileChooser();
         imageChooser.setTitle("Select Source Image");
         imageChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+                new FileChooser.ExtensionFilter("Image Files (PNG, JPG, or GIF)", "*.png", "*.jpg", "*.gif"));
 
         imageBox = new HBox();
         imageBox.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;");
@@ -103,6 +103,13 @@ public class ImageSegmentPane extends SegmentPane
     {
         super.populate();
         setSourceImageView(segment.getSource());
+    }
+
+    // Display warnings for all fields which are invalid
+    public void warn()
+    {
+        super.warn();
+        System.out.println("IMAGE SEGMENT");
     }
 
     // Create ImageView to preview the chosen image

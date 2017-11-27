@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import util.*;
@@ -40,10 +41,14 @@ public abstract class SegmentPane extends BorderPane
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setStyle("-fx-border-color: black;-fx-border-style: solid;-fx-font-weight: bold;-fx-border-width: 5px;-fx-padding:3");
 
-        // Create a preview marquee below the title that executes when clicked
+        // Create a preview marquee below the title that executes when a preview button is clicked
         MarqueeController controller = new MarqueeController(segment, false);
         MarqueePane marqueePane = controller.getPreviewMarqueePane();
-        marqueePane.setOnMouseClicked(e ->
+        marqueePane.setStyle("-fx-border-color: white;");
+        Button previewButton = new Button("Preview");
+        previewButton.setFont(new Font(TEXT_FONT, 25));
+        previewButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        previewButton.setOnAction(e ->
         {
             if (segment.isValid())
             {
@@ -51,7 +56,10 @@ public abstract class SegmentPane extends BorderPane
             }
         });
 
-        VBox topBox = new VBox(titleLabel, marqueePane);
+        HBox.setHgrow(previewButton, Priority.ALWAYS);
+        HBox marqueeBox = new HBox(marqueePane, previewButton);
+        marqueeBox.setSpacing(5);
+        VBox topBox = new VBox(titleLabel, marqueeBox);
         topBox.setSpacing(10);
         this.setTop(topBox);
 
@@ -84,18 +92,12 @@ public abstract class SegmentPane extends BorderPane
             }
         });
 
-        // Set the duration in the segment or warn if the duration is invalid
+        // Set the duration in the segment when the field loses focus
         durationTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String durationText = durationTextField.getText();
-
-                int duration = durationText.isEmpty() ? 0 : Integer.valueOf(durationText);
-
-                if (duration > 0)
-                {
-                    segment.setDuration(duration);
-                }
+                segment.setDuration(durationText.isEmpty() ? 0 : Integer.valueOf(durationText));
             }
         }));
 
@@ -123,18 +125,12 @@ public abstract class SegmentPane extends BorderPane
             }
         });
 
-        // Set the repeat factor in the segment or warn if the repeat is invalid
+        // Set the repeat factor in the segment when the field loses focus
         repeatTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String repeatText = repeatTextField.getText();
-
-                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
-
-                if (repeat > 0)
-                {
-                    segment.setRepeat(repeat);
-                }
+                segment.setRepeat(repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText));
             }
         }));
 
@@ -162,18 +158,12 @@ public abstract class SegmentPane extends BorderPane
             }
         });
 
-        // Set the delay in the segment or warn if the delay is invalid
+        // Set the delay in the segment when the field loses focus
         delayTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
                 String delayText = delayTextField.getText();
-
-                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
-
-                if (delay >= 0)
-                {
-                    segment.setDelay(delay);
-                }
+                segment.setDelay(delayText.isEmpty() ? 0 : Integer.valueOf(delayText));
             }
         }));
 
@@ -228,7 +218,7 @@ public abstract class SegmentPane extends BorderPane
         entranceComboBox.getItems().addAll(scrollComboBox.getItems());
         entranceComboBox.setEditable(false);
         entranceComboBox.getSelectionModel().selectFirst();
-        middleComboBox.getItems().addAll(MiddleEffect.NONE, MiddleEffect.BLINK);
+        middleComboBox.getItems().addAll(MiddleEffect.NONE, MiddleEffect.BLINK, MiddleEffect.INVERT);
         middleComboBox.setEditable(false);
         middleComboBox.getSelectionModel().selectFirst();
         exitComboBox.getItems().addAll(ExitTransition.values());
@@ -279,7 +269,6 @@ public abstract class SegmentPane extends BorderPane
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);
 
-        //Creating Multiple ComboBoxes
         this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
 
         /*CSS*/
@@ -327,6 +316,13 @@ public abstract class SegmentPane extends BorderPane
         }
     }
 
+    // Display warnings for all fields which are invalid
+    protected void warn()
+    {
+        System.out.println("INVALID SEGMENT");
+    }
+
+    // Reset the selected effects to the first option ("NONE")
     private void resetEffects()
     {
         entranceComboBox.getSelectionModel().selectFirst();

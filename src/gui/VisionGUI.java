@@ -35,79 +35,84 @@ public class VisionGUI extends Application
         });
 
         settingsPane.getStartButton().setOnAction(e -> {
-            MarqueeController marqueeController = new MarqueeController(settingsController.getMarquee());
             Marquee marquee = settingsController.getMarquee();
-            Stage marqueeStage = new Stage();
-            marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));
 
-            if (marquee.isFullscreen())
+            if (marquee.isValid())
             {
-                marqueeStage.setFullScreen(true);
-            }
+                MarqueeController marqueeController = new MarqueeController(marquee);
+                Stage marqueeStage = new Stage();
+                marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));
 
-            marqueeStage.show();
-
-            // If the marquee is not fullscreen, position its window on the screen based on the provided position
-            if (!marquee.isFullscreen())
-            {
-                Pos position = marquee.getScreenPos();
-                Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-
-                switch (position)
+                if (marquee.isFullscreen())
                 {
-                    case TOP_LEFT:
-                    case CENTER_LEFT:
-                    case BOTTOM_LEFT:
-                        marqueeStage.setX(0);
-                        break;
-                    case TOP_RIGHT:
-                    case CENTER_RIGHT:
-                    case BOTTOM_RIGHT:
-                        marqueeStage.setX(bounds.getWidth() - marqueeStage.getWidth());
-                        break;
+                    marqueeStage.setFullScreen(true);
                 }
 
-                switch (position)
+                marqueeStage.show();
+
+                // If the marquee is not fullscreen, position its window on the screen based on the provided position
+                if (!marquee.isFullscreen())
                 {
-                    case TOP_LEFT:
-                    case TOP_CENTER:
-                    case TOP_RIGHT:
-                        marqueeStage.setY(0);
-                        break;
-                    case CENTER_LEFT:
-                    case CENTER:
-                    case CENTER_RIGHT:
-                        marqueeStage.setY((bounds.getHeight() - marqueeStage.getHeight()) / 2);
-                        break;
-                    case BOTTOM_LEFT:
-                    case BOTTOM_CENTER:
-                    case BOTTOM_RIGHT:
-                        marqueeStage.setY(bounds.getHeight() - marqueeStage.getHeight());
-                        break;
+                    Pos position = marquee.getScreenPos();
+                    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+                    switch (position)
+                    {
+                        case TOP_LEFT:
+                        case CENTER_LEFT:
+                        case BOTTOM_LEFT:
+                            marqueeStage.setX(0);
+                            break;
+                        case TOP_RIGHT:
+                        case CENTER_RIGHT:
+                        case BOTTOM_RIGHT:
+                            marqueeStage.setX(bounds.getWidth() - marqueeStage.getWidth());
+                            break;
+                    }
+
+                    switch (position)
+                    {
+                        case TOP_LEFT:
+                        case TOP_CENTER:
+                        case TOP_RIGHT:
+                            marqueeStage.setY(0);
+                            break;
+                        case CENTER_LEFT:
+                        case CENTER:
+                        case CENTER_RIGHT:
+                            marqueeStage.setY((bounds.getHeight() - marqueeStage.getHeight()) / 2);
+                            break;
+                        case BOTTOM_LEFT:
+                        case BOTTOM_CENTER:
+                        case BOTTOM_RIGHT:
+                            marqueeStage.setY(bounds.getHeight() - marqueeStage.getHeight());
+                            break;
+                    }
+
+                    // Prevent the window from being resized smaller than the size of the marquee
+                    marqueeStage.sizeToScene();
+                    marqueeStage.setMinHeight(marqueeStage.getHeight());
+                    marqueeStage.setMinWidth(marqueeStage.getWidth());
                 }
 
-                // Prevent the window from being resized smaller than the size of the marquee
-                marqueeStage.sizeToScene();
-                marqueeStage.setMinHeight(marqueeStage.getHeight());
-                marqueeStage.setMinWidth(marqueeStage.getWidth());
+                marqueeStage.setOnCloseRequest(exit -> primaryStage.show());
+
+                marqueeController.getExit().setOnAction(exit -> {
+                    marqueeStage.close();
+                    primaryStage.show();
+                });
+
+                primaryStage.hide();
+                marqueeController.play();
             }
-
-            marqueeStage.setOnCloseRequest(exit -> primaryStage.show());
-
-            marqueeController.getExit().setOnAction(exit -> {
-                marqueeStage.close();
-                primaryStage.show();
-            });
-
-            primaryStage.hide();
-            marqueeController.play();
+            else
+            {
+                settingsPane.warn();
+            }
         });
 
         //Applying StyleSheet to WelcomePane and SettingsPane
         welcomePane.getStylesheets().add("VisionStyleSheet.css");
         settingsPane.getStylesheets().add("VisionStyleSheet.css");
-
-
-
     }
 }

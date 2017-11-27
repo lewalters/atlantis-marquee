@@ -1,3 +1,4 @@
+/*
 package test;
 
 import data.*;
@@ -104,3 +105,4 @@ public class MessageTest {
 
 
 
+*/

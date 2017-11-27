@@ -2,7 +2,7 @@ package util;
 
 public enum MiddleEffect
 {
-    NONE("None"), BLINK("Blinking"), RANDOM_COLOR("Random Colors");
+    NONE("None"), BLINK("Blinking"), INVERT("Inverted Blinking"), RANDOM_COLOR("Random Colors");
 
     private String description;
 

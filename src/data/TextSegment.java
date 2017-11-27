@@ -144,6 +144,7 @@ public class TextSegment extends Segment
         setContents();
     }
 
+    // Turn the segment text into dots
     private void setContents()
     {
         contents.clear();
@@ -165,15 +166,22 @@ public class TextSegment extends Segment
                     double red = Math.random() * 0.8 + 0.2;
                     double green = Math.random() * 0.8 + 0.2;
                     double blue = Math.random() * 0.8 + 0.2;
-                    contents.add(new CharDot(textUp.charAt(i), Color.color(red, green, blue)));
+                    contents.add(new CharDot(ch, Color.color(red, green, blue)));
                 }
                 else if (textColors.length == 1)
                 {
-                    contents.add(new CharDot(textUp.charAt(i), textColors[0]));
+                    contents.add(new CharDot(ch, textColors[0]));
                 }
                 else
                 {
-                    contents.add(new CharDot(textUp.charAt(i), textColors[colorIndex++]));
+                    if (colorIndex < textColors.length)
+                    {
+                        contents.add(new CharDot(ch, textColors[colorIndex++]));
+                    }
+                    else
+                    {
+                        contents.add(new CharDot(ch, DEFAULT_TEXT_COLOR));
+                    }
                 }
 
                 // Add spaces between characters

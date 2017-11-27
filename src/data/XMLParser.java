@@ -70,7 +70,7 @@ public class XMLParser
 	NodeList msgList = doc.getElementsByTagName("message");
 	for (int m = 0; m < msgList.getLength(); m++) 
 	{   	
-	  Message message = new Message("", 0, 0,"");
+	  Message message = new Message();
 	  marquee.setMessage(message);
       NodeList msgChildList = msgList.item(m).getChildNodes();
       for (int i = 0; i < msgChildList.getLength(); i++) 
@@ -95,9 +95,14 @@ public class XMLParser
             	marquee.setLedGap(Integer.parseInt(msgChildNode.getTextContent()));
             }
             break;
-            case "name":
+            case "marqueeFullscreen":
             {
-            	message.setName(msgChildNode.getTextContent());
+                marquee.setFullscreen(Boolean.parseBoolean(msgChildNode.getTextContent()));
+            }
+            break;
+            case "marqueeMaxSize":
+            {
+                marquee.setMaxSize(Boolean.parseBoolean(msgChildNode.getTextContent()));
             }
             break;
             case "repeatFactor":
@@ -257,6 +262,7 @@ public class XMLParser
       doc = dBuilder.newDocument();
   	  Element root = doc.createElement("message");
   	  doc.appendChild(root);
+
   	  Element marqueeWidth = doc.createElement("marqueeWidth");
   	  root.appendChild(marqueeWidth);
   	  marqueeWidth.appendChild(doc.createTextNode(Integer.toString(marquee.getWidth())));
@@ -269,9 +275,13 @@ public class XMLParser
   	  root.appendChild(marqueeLedGap);
   	  marqueeLedGap.appendChild(doc.createTextNode(Integer.toString(marquee.getLedGap())));
 
-  	  Element messageName = doc.createElement("name");
-  	  root.appendChild(messageName);
-  	  messageName.appendChild(doc.createTextNode(message.getName()));
+  	  Element marqueeFullscreen = doc.createElement("marqueeFullscreen");
+  	  root.appendChild(marqueeFullscreen);
+  	  marqueeFullscreen.appendChild(doc.createTextNode(Boolean.toString(marquee.isFullscreen())));
+
+  	  Element marqueeMaxSize = doc.createElement("marqueeMaxSize");
+  	  root.appendChild(marqueeMaxSize);
+  	  marqueeMaxSize.appendChild(doc.createTextNode(Boolean.toString(marquee.isMaxSize())));
 
   	  Element messageRepeatFactor = doc.createElement("repeatFactor");
   	  root.appendChild(messageRepeatFactor);
@@ -297,9 +307,17 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString((int) textSegment.getDuration())));
 
-      	  Element speed = doc.createElement("repeat");
-      	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(textSegment.getRepeat())));
+      	  Element repeat = doc.createElement("repeat");
+      	  seg.appendChild(repeat);
+          repeat.appendChild(doc.createTextNode(Integer.toString(textSegment.getRepeat())));
+
+          Element delay = doc.createElement("delay");
+          seg.appendChild(delay);
+          delay.appendChild(doc.createTextNode(Integer.toString(textSegment.getDelay())));
+
+          Element subDelay = doc.createElement("subDelay");
+          seg.appendChild(subDelay);
+          subDelay.appendChild(doc.createTextNode(Integer.toString(textSegment.getSubDelay())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);
@@ -346,9 +364,13 @@ public class XMLParser
       	  seg.appendChild(duration);
       	  duration.appendChild(doc.createTextNode(Integer.toString((int) imageSegment.getDuration())));
 
-      	  Element speed = doc.createElement("repeat");
-      	  seg.appendChild(speed);
-      	  speed.appendChild(doc.createTextNode(Integer.toString(imageSegment.getRepeat())));
+      	  Element repeat = doc.createElement("repeat");
+      	  seg.appendChild(repeat);
+      	  repeat.appendChild(doc.createTextNode(Integer.toString(imageSegment.getRepeat())));
+
+      	  Element delay = doc.createElement("delay");
+      	  seg.appendChild(delay);
+      	  delay.appendChild(doc.createTextNode(Integer.toString(imageSegment.getDelay())));
 
       	  Element scrollDirection = doc.createElement("scrollDirection");
       	  seg.appendChild(scrollDirection);
