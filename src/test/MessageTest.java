@@ -1,4 +1,4 @@
-/*
+
 package test;
 
 import data.*;
@@ -16,36 +16,36 @@ public class MessageTest {
 
     @Before
     public void setUp() {
-        m = new Message("Hello", 1, 3, "Welcome Message");
+        m = new Message();
     }
 
     @Test
     public void testMessageGetters() {
-        assertEquals("data.Message Test: getName", "Hello", m.getName());
-        assertEquals("data.Message Test: getRepeatFactor", 1, m.getRepeatFactor());
-        assertEquals("data.Message Test: getDelay", 3, m.getDelay());
-        assertEquals("data.Message Test: getComments", "Welcome Message", m.getComments());
+        assertEquals("data.Message Test: getRepeatFactor", 0, m.getRepeatFactor());
+        assertEquals("data.Message Test: getDelay", 0, m.getDelay());
+        assertEquals("data.Message Test: getComments", "", m.getComments());
     }
 
     @Test
     public void testMessageSetters() {
-        m.setName("Welcome");
+
         m.setRepeatFactor(3);
         m.setDelay(5);
         m.setComments("Welcome Message 2");
 
-        assertEquals("data.Message Test: setName", "Welcome", m.getName());
+        //assertEquals("data.Message Test: setName", "Welcome", m.getName());
         assertEquals("data.Message Test: setRepeatFactor", 3, m.getRepeatFactor());
         assertEquals("data.Message Test: setDelay", 5, m.getDelay());
         assertEquals("data.Message Test: setComments", "Welcome Message 2", m.getComments());
     }
 
-    //    @Test
-    // public void testGetContent() {
-    //m.getContents();
-    //assertEquals(message:"data.Message Test: getContents", expected);
-    //}
-
+    /*   @Test
+    public void testGetContent() {
+           LinkedList one = new LinkedList()
+                   m.getContents();
+           assertEquals(one.isEmpty());
+   }
+*/
     @Test
     public void testAddSegment() {
         //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
@@ -98,11 +98,11 @@ public class MessageTest {
 
     @After
     public void tearDown() {
-        m = new Message("By", 2, 4, "Good By");
+        m = new Message();
 
     }
 }
 
 
 
-*/
+
