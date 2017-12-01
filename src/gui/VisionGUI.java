@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -22,6 +23,7 @@ public class VisionGUI extends Application
         WelcomePane welcomePane = new WelcomePane();
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("Atlantis VISION Marquee");
+        primaryStage.getIcons().add(new Image("./img/V.png"));
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
