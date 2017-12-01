@@ -536,6 +536,14 @@ public class TextSegmentPane extends SegmentPane
                         statikRadioBtn.pseudoClassStateChanged(INVALID, true);
                         scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
                         effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        warnings.add(textTextArea);
+                        warnings.add(durationTextField);
+                        warnings.add(repeatTextField);
+                        warnings.add(delayTextField);
+                        warnings.add(subDelayTextField);
+                        warnings.add(statikRadioBtn);
+                        warnings.add(scrollRadioBtn);
+                        warnings.add(effectsRadioBtn);
                         break;
                     }
                 }
@@ -553,6 +561,13 @@ public class TextSegmentPane extends SegmentPane
                         statikRadioBtn.pseudoClassStateChanged(INVALID, true);
                         scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
                         effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        warnings.add(textTextArea);
+                        warnings.add(durationTextField);
+                        warnings.add(repeatTextField);
+                        warnings.add(delayTextField);
+                        warnings.add(statikRadioBtn);
+                        warnings.add(scrollRadioBtn);
+                        warnings.add(effectsRadioBtn);
                     }
                     else if (segment.getSpeed() < MAX_SPEED) // continuous horizontal scroll
                     {
@@ -563,6 +578,13 @@ public class TextSegmentPane extends SegmentPane
                         statikRadioBtn.pseudoClassStateChanged(INVALID, true);
                         scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
                         effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        warnings.add(textTextArea);
+                        warnings.add(durationTextField);
+                        warnings.add(repeatTextField);
+                        warnings.add(delayTextField);
+                        warnings.add(statikRadioBtn);
+                        warnings.add(scrollRadioBtn);
+                        warnings.add(effectsRadioBtn);
                     }
                 }
                 else if (segment.getSpeed() < MAX_SPEED) // TODO: change--speed only matters if scrolling
@@ -574,6 +596,13 @@ public class TextSegmentPane extends SegmentPane
                     statikRadioBtn.pseudoClassStateChanged(INVALID, true);
                     scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
                     effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                    warnings.add(textTextArea);
+                    warnings.add(durationTextField);
+                    warnings.add(repeatTextField);
+                    warnings.add(delayTextField);
+                    warnings.add(statikRadioBtn);
+                    warnings.add(scrollRadioBtn);
+                    warnings.add(effectsRadioBtn);
                 }
             }
         }

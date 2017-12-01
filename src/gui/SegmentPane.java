@@ -14,7 +14,9 @@ import javafx.scene.text.Font;
 import util.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static util.Global.INVALID;
 import static util.Global.TEXT_FONT;
@@ -29,7 +31,7 @@ public abstract class SegmentPane extends BorderPane
     private Button cancelButton;
 
     protected BooleanProperty validated;
-    protected List<Node> warnings;
+    protected Set<Node> warnings;
 
     protected RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     protected Label titleLabel, durationLabel, repeatLabel, delayLabel;
@@ -41,7 +43,7 @@ public abstract class SegmentPane extends BorderPane
     {
         this.segment = segment;
         validated = new SimpleBooleanProperty(false);
-        warnings = new ArrayList<>();
+        warnings = new HashSet<>();
 
         // Take the focus off of the active node if the dead space is clicked
         this.setOnMouseClicked(e -> requestFocus());
@@ -440,6 +442,7 @@ public abstract class SegmentPane extends BorderPane
     private void resetWarnings()
     {
         warnings.forEach(node -> node.pseudoClassStateChanged(INVALID, false));
+        warnings.clear();
     }
 
     // Reset the selected effects to the first option ("NONE")
