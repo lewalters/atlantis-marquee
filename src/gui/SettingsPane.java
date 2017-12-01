@@ -58,7 +58,7 @@ public class SettingsPane extends BorderPane
         this.setOnMouseClicked(e -> requestFocus());
 
         // Setting SettingsPane Width/Height/Padding
-        this.setPrefSize(760, 500);
+        this.setPrefSize(780, 500);
 
         /*Creating GridPanes*/
         GridPane leftLabelTextFieldGrid = new GridPane();
