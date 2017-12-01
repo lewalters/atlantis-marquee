@@ -1,5 +1,6 @@
 package gui;
 
+import data.ImageSegment;
 import data.Message;
 import data.TextSegment;
 import javafx.geometry.Insets;
@@ -10,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import util.EntranceTransition;
 import util.ExitTransition;
-import util.ScrollDirection;
 
 import static util.Global.TEXT_FONT;
 /**
@@ -33,9 +33,13 @@ public class WelcomePane extends BorderPane
         welcomeText.setEntranceEffect(EntranceTransition.RANDOM_ON);
         welcomeText.setExitEffect(ExitTransition.RANDOM_OFF);
         welcomeText.setDuration(2);
-        welcomeText.setTextColors(new Color[]{Color.web("#DAF7A6")});
+        welcomeText.setTextColors(new Color[]{Color.TRANSPARENT});
+        ImageSegment logo = new ImageSegment();
+        logo.setSource("./img/V.png");
+        logo.setDuration(5);
         Message welcomeMessage = new Message();
         welcomeMessage.addSegment(0, welcomeText);
+        welcomeMessage.addSegment(0, logo);
         controller = new MarqueeController(welcomeMessage);
         this.setCenter(controller.getPreviewMarqueePane());
 

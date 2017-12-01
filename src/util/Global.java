@@ -1,6 +1,7 @@
 package util;
 
 import data.CharDot;
+import javafx.css.PseudoClass;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 
@@ -32,9 +33,8 @@ public final class Global
     // GUI
     public static Color OFF_COLOR = Color.BLACK;
     public static Color DEFAULT_TEXT_COLOR = Color.WHITE;
-    public static String TITLE_FONT = "Onyx";
-    public static String APP_FONT = "Onyx";
     public static String TEXT_FONT = "Helvetica";
+    public static final PseudoClass INVALID = PseudoClass.getPseudoClass("invalid");
 
     // Validation
     public static int MAX_IMAGE_HEIGHT = 300;

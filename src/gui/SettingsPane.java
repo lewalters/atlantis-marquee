@@ -75,12 +75,12 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.add(setHeightLabel,0,1);
 
         // LED Gap Label
-        Label ledGapLabel = new Label("LED Gap:");
+        Label ledGapLabel = new Label("LED Gap (pixels):");
         ledGapLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(ledGapLabel, 0, 2);
 
         //Setting Delay Label
-        Label setDelayLabel = new Label("Delay:");
+        Label setDelayLabel = new Label("Delay (seconds):");
         setDelayLabel.setFont(new Font(TEXT_FONT, 15));
         leftLabelTextFieldGrid.add(setDelayLabel,0,4);
 
@@ -653,6 +653,8 @@ public class SettingsPane extends BorderPane
     public void warn()
     {
         System.out.println("INVALID MESSAGE");
+
+
     }
 }
 

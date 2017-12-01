@@ -259,6 +259,12 @@ public class TextSegmentPane extends SegmentPane
         paddingColorChoices.setSpacing(2);
         textLabelElementsGrid.add(paddingColorChoices, 1, 10);
 
+        paddingColorNone.setOnAction(e ->
+        {
+            segment.setPaddingColor(OFF_COLOR);
+            paddingColorPicker.setValue(OFF_COLOR);
+        });
+
         // Set padding color when picker is changed
         paddingColorPicker.setOnAction(e -> segment.setPaddingColor(paddingColorPicker.getValue()));
 
@@ -276,7 +282,15 @@ public class TextSegmentPane extends SegmentPane
         borderSpeedTextField.disableProperty().bind(Bindings.equal(borderEffectComboBox.getSelectionModel().selectedItemProperty(), BorderEffect.NONE));
 
         // Set the border effect on the segment if the combo box value is changed
-        borderEffectComboBox.setOnAction(e -> segment.setBorderEffect(borderEffectComboBox.getValue()));
+        borderEffectComboBox.setOnAction(e ->
+        {
+            BorderEffect border = borderEffectComboBox.getValue();
+
+            if (border != segment.getBorderEffect())
+            {
+                segment.setBorderEffect(border);
+            }
+        });
         
         //Adding Text fields and Labels to GridPane inserted TextSegmentPane
         this.setLeft(textLabelElementsGrid);
@@ -285,43 +299,49 @@ public class TextSegmentPane extends SegmentPane
         textTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) // Lost focus
             {
-                segment.setText(textTextArea.getText());
+                String text = textTextArea.getText();
 
-                if (textColorCustom.isSelected())
+                if (!segment.getText().equalsIgnoreCase(text))
                 {
-                    textColorsPicker.refresh();
-                }
+                    segment.setText(text);
+                    validated.set(false);
 
-                if (segment.getHlength() > TEXT_COLS)
-                {
-                    if (!segment.hasSubsegments())
+                    if (textColorCustom.isSelected())
                     {
-                        statikRadioBtn.setDisable(true);
-                        effectsRadioBtn.setDisable(true);
-                        scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                        textColorsPicker.refresh();
                     }
-                    else
+
+                    if (segment.getHlength() > TEXT_COLS)
                     {
-                        for (TextSegment subsegment : segment.getSubsegments())
+                        if (!segment.hasSubsegments())
                         {
-                            if (subsegment.getHlength() > TEXT_COLS)
+                            statikRadioBtn.setDisable(true);
+                            effectsRadioBtn.setDisable(true);
+                            scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                        }
+                        else
+                        {
+                            for (TextSegment subsegment : segment.getSubsegments())
                             {
-                                statikRadioBtn.setDisable(true);
-                                effectsRadioBtn.setDisable(true);
-                                scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
-                                break;
+                                if (subsegment.getHlength() > TEXT_COLS)
+                                {
+                                    statikRadioBtn.setDisable(true);
+                                    effectsRadioBtn.setDisable(true);
+                                    scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                                    break;
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    statikRadioBtn.setDisable(false);
-                    effectsRadioBtn.setDisable(false);
-
-                    if (!scrollComboBox.getItems().contains(ScrollDirection.UP) && !scrollComboBox.getItems().contains(ScrollDirection.DOWN))
+                    else
                     {
-                        scrollComboBox.getItems().addAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                        statikRadioBtn.setDisable(false);
+                        effectsRadioBtn.setDisable(false);
+
+                        if (!scrollComboBox.getItems().contains(ScrollDirection.UP) && !scrollComboBox.getItems().contains(ScrollDirection.DOWN))
+                        {
+                            scrollComboBox.getItems().addAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                        }
                     }
                 }
             }
@@ -354,7 +374,13 @@ public class TextSegmentPane extends SegmentPane
             if (!newValue) // lost focus
             {
                 String subDelayText = subDelayTextField.getText();
-                segment.setSubDelay(subDelayText.isEmpty() ? 0 : Integer.valueOf(subDelayText));
+                int subDelay = subDelayText.isEmpty() ? 0 : Integer.valueOf(subDelayText);
+
+                if (subDelay != segment.getSubDelay())
+                {
+                    validated.set(false);
+                    segment.setSubDelay(subDelay);
+                }
             }
         });
 
@@ -390,6 +416,29 @@ public class TextSegmentPane extends SegmentPane
         super.populate();
 
         textTextArea.setText(segment.getText());
+
+        if (segment.getHlength() > TEXT_COLS)
+        {
+            if (!segment.hasSubsegments())
+            {
+                statikRadioBtn.setDisable(true);
+                effectsRadioBtn.setDisable(true);
+                scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+            }
+            else
+            {
+                for (TextSegment subsegment : segment.getSubsegments())
+                {
+                    if (subsegment.getHlength() > TEXT_COLS)
+                    {
+                        statikRadioBtn.setDisable(true);
+                        effectsRadioBtn.setDisable(true);
+                        scrollComboBox.getItems().removeAll(ScrollDirection.UP, ScrollDirection.DOWN);
+                        break;
+                    }
+                }
+            }
+        }
 
         Color[] textColors = segment.getTextColors();
 
@@ -462,8 +511,72 @@ public class TextSegmentPane extends SegmentPane
     @Override
     public void warn()
     {
-        super.warn();
         System.out.println("TEXT SEGMENT");
+
+        // A text segment must have text (but not just the break character)
+        if (textTextArea.getText().isEmpty() || textTextArea.getText().matches("[|]+"))
+        {
+            textTextArea.pseudoClassStateChanged(INVALID, true);
+            warnings.add(textTextArea);
+        }
+        else // If there is valid text
+        {
+            // Subsegment highlighting
+            if (segment.hasSubsegments())
+            {
+                for (TextSegment segment : segment.getSubsegments())
+                {
+                    if (segment.getSpeed() < MAX_SPEED)
+                    {
+                        textTextArea.pseudoClassStateChanged(INVALID, true);
+                        durationTextField.pseudoClassStateChanged(INVALID, true);
+                        repeatTextField.pseudoClassStateChanged(INVALID, true);
+                        delayTextField.pseudoClassStateChanged(INVALID, true);
+                        subDelayTextField.pseudoClassStateChanged(INVALID, true);
+                        statikRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        break;
+                    }
+                }
+            }
+            else // No subsegments
+            {
+                if (segment.getHlength() > TEXT_COLS)
+                {
+                    if (segment.getScrollDirection() != ScrollDirection.LEFT && segment.getScrollDirection() != ScrollDirection.RIGHT)
+                    {
+                        textTextArea.pseudoClassStateChanged(INVALID, true);
+                        durationTextField.pseudoClassStateChanged(INVALID, true);
+                        repeatTextField.pseudoClassStateChanged(INVALID, true);
+                        delayTextField.pseudoClassStateChanged(INVALID, true);
+                        statikRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                    }
+                    else if (segment.getSpeed() < MAX_SPEED) // continuous horizontal scroll
+                    {
+                        textTextArea.pseudoClassStateChanged(INVALID, true);
+                        durationTextField.pseudoClassStateChanged(INVALID, true);
+                        repeatTextField.pseudoClassStateChanged(INVALID, true);
+                        delayTextField.pseudoClassStateChanged(INVALID, true);
+                        statikRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
+                        effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                    }
+                }
+                else if (segment.getSpeed() < MAX_SPEED) // TODO: change--speed only matters if scrolling
+                {
+                    textTextArea.pseudoClassStateChanged(INVALID, true);
+                    durationTextField.pseudoClassStateChanged(INVALID, true);
+                    repeatTextField.pseudoClassStateChanged(INVALID, true);
+                    delayTextField.pseudoClassStateChanged(INVALID, true);
+                    statikRadioBtn.pseudoClassStateChanged(INVALID, true);
+                    scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
+                    effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
+                }
+            }
+        }
     }
 
     private void changeColors()

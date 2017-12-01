@@ -1,36 +1,47 @@
 package gui;
 
 import data.Segment;
+import javafx.animation.Animation;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import util.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static util.Global.INVALID;
 import static util.Global.TEXT_FONT;
 
 public abstract class SegmentPane extends BorderPane
 {
     private Segment segment;
 
-    protected RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     private ComboBox<EntranceEffect> entranceComboBox;
-    protected ComboBox<MiddleEffect> middleComboBox;
     private ComboBox<ExitEffect> exitComboBox;
-    protected ComboBox<ScrollDirection> scrollComboBox;
     private Button continueButton;
     private Button cancelButton;
 
+    protected BooleanProperty validated;
+    protected List<Node> warnings;
+
+    protected RadioButton statikRadioBtn, scrollRadioBtn, effectsRadioBtn;
     protected Label titleLabel, durationLabel, repeatLabel, delayLabel;
     protected TextField durationTextField, repeatTextField, delayTextField;
+    protected ComboBox<MiddleEffect> middleComboBox;
+    protected ComboBox<ScrollDirection> scrollComboBox;
 
     public SegmentPane(Segment segment)
     {
         this.segment = segment;
+        validated = new SimpleBooleanProperty(false);
+        warnings = new ArrayList<>();
 
         // Take the focus off of the active node if the dead space is clicked
         this.setOnMouseClicked(e -> requestFocus());
@@ -55,6 +66,9 @@ public abstract class SegmentPane extends BorderPane
                 controller.preview();
             }
         });
+        previewButton.disableProperty().bind(Bindings.or(Bindings.createBooleanBinding(() ->
+                controller.previewStatusProperty().getValue() == Animation.Status.STOPPED,
+                controller.previewStatusProperty()).not(), validated.not()));
 
         HBox.setHgrow(previewButton, Priority.ALWAYS);
         HBox marqueeBox = new HBox(marqueePane, previewButton);
@@ -68,7 +82,7 @@ public abstract class SegmentPane extends BorderPane
         this.setPrefSize(700, 700);
         this.setPadding(new Insets(30));
 
-        durationLabel = new Label("Duration:");
+        durationLabel = new Label("Duration (seconds):");
         durationLabel.setFont(new Font(TEXT_FONT, 15));
 
         durationTextField = new TextField();
@@ -97,7 +111,13 @@ public abstract class SegmentPane extends BorderPane
             if (!newValue) // Lost focus
             {
                 String durationText = durationTextField.getText();
-                segment.setDuration(durationText.isEmpty() ? 0 : Integer.valueOf(durationText));
+                int duration = durationText.isEmpty() ? 0 : Integer.valueOf(durationText);
+
+                if (duration != segment.getDuration())
+                {
+                    validated.set(false);
+                    segment.setDuration(duration);
+                }
             }
         }));
 
@@ -130,7 +150,13 @@ public abstract class SegmentPane extends BorderPane
             if (!newValue) // Lost focus
             {
                 String repeatText = repeatTextField.getText();
-                segment.setRepeat(repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText));
+                int repeat = repeatText.isEmpty() ? 0 : Integer.valueOf(repeatText);
+
+                if (repeat != segment.getRepeat())
+                {
+                    validated.set(false);
+                    segment.setRepeat(repeat);
+                }
             }
         }));
 
@@ -163,27 +189,56 @@ public abstract class SegmentPane extends BorderPane
             if (!newValue) // Lost focus
             {
                 String delayText = delayTextField.getText();
-                segment.setDelay(delayText.isEmpty() ? 0 : Integer.valueOf(delayText));
+                int delay = delayText.isEmpty() ? 0 : Integer.valueOf(delayText);
+
+                if (delay != segment.getDelay())
+                {
+                    validated.set(false);
+                    segment.setDelay(delay);
+                }
             }
         }));
 
         /*Adding Creating Buttons and Setting Font/Size*/
+        Button validateButton = new Button("Validate");
         continueButton = new Button("Continue");
         cancelButton = new Button("Cancel");
 
         //Setting Font
+        validateButton.setFont(new Font(TEXT_FONT, 15));
         continueButton.setFont(new Font(TEXT_FONT, 15));
         cancelButton.setFont(new Font(TEXT_FONT, 15));
 
         //Setting Height
+        validateButton.setPrefHeight(40);
         cancelButton.setPrefHeight(40);
         continueButton.setPrefHeight(40);
 
         //Setting buttons width
+        validateButton.setPrefWidth(200);
         continueButton.setPrefWidth(200);
         cancelButton.setPrefWidth(200);
 
-        HBox buttonsBox = new HBox(continueButton, cancelButton);
+        continueButton.visibleProperty().bindBidirectional(continueButton.managedProperty());
+        continueButton.visibleProperty().bind(validateButton.visibleProperty().not());
+        validateButton.visibleProperty().bind(validated.not());
+        validateButton.managedProperty().bind(validateButton.visibleProperty());
+
+        validateButton.setOnAction(e ->
+        {
+            resetWarnings();
+
+            if (segment.isValid())
+            {
+                validated.set(true);
+            }
+            else
+            {
+                warn();
+            }
+        });
+
+        HBox buttonsBox = new HBox(validateButton, continueButton, cancelButton);
         buttonsBox.setSpacing(10);
         buttonsBox.setAlignment(Pos.CENTER);
         this.setBottom(buttonsBox);
@@ -212,49 +267,111 @@ public abstract class SegmentPane extends BorderPane
         middleComboBox = new ComboBox<>();
         exitComboBox = new ComboBox<>();
 
-        //Adding ComboBox contents
+        // Create a grid pane to hold effects choices and their labels
+        GridPane effectsGrid = new GridPane();
+        Label entranceLabel = new Label("Entrance:");
+        effectsGrid.add(entranceLabel, 0, 0);
         entranceComboBox.getItems().addAll(EntranceTransition.values());
         entranceComboBox.getItems().addAll(ScrollEffect.values());
         entranceComboBox.getItems().addAll(scrollComboBox.getItems());
         entranceComboBox.setEditable(false);
         entranceComboBox.getSelectionModel().selectFirst();
+        effectsGrid.add(entranceComboBox, 1, 0);
+        Label middleLabel = new Label("Middle:");
+        effectsGrid.add(middleLabel, 0, 1);
         middleComboBox.getItems().addAll(MiddleEffect.NONE, MiddleEffect.BLINK, MiddleEffect.INVERT);
         middleComboBox.setEditable(false);
         middleComboBox.getSelectionModel().selectFirst();
+        effectsGrid.add(middleComboBox, 1, 1);
+        Label exitLabel = new Label("Exit:");
+        effectsGrid.add(exitLabel, 0, 2);
         exitComboBox.getItems().addAll(ExitTransition.values());
         exitComboBox.getItems().addAll(ScrollEffect.values());
         exitComboBox.getItems().addAll(scrollComboBox.getItems());
         exitComboBox.setEditable(false);
         exitComboBox.getSelectionModel().selectFirst();
+        effectsGrid.add(exitComboBox, 1, 2);
 
-        VBox effectsVBox = new VBox(entranceComboBox, middleComboBox, exitComboBox);
-        effectsVBox.visibleProperty().bindBidirectional(effectsVBox.managedProperty());
-        effectsVBox.visibleProperty().bind(effectsRadioBtn.selectedProperty());
-        effectsVBox.setSpacing(5);
-        effectsVBox.setPadding(new Insets(5));
+        effectsGrid.visibleProperty().bindBidirectional(effectsGrid.managedProperty());
+        effectsGrid.visibleProperty().bind(effectsRadioBtn.selectedProperty());
+        effectsGrid.setHgap(5);
+        effectsGrid.setVgap(5);
+        effectsGrid.setPadding(new Insets(5));
 
         // Set the scroll direction to STATIC and remove effects if "static" is chosen
-        statikRadioBtn.setOnAction(e -> {
-            segment.setScrollDirection(ScrollDirection.STATIC);
-            resetEffects();
+        statikRadioBtn.setOnAction(e ->
+        {
+            if (segment.getScrollDirection() != ScrollDirection.STATIC)
+            {
+                validated.set(false);
+                segment.setScrollDirection(ScrollDirection.STATIC);
+                resetEffects();
+            }
         });
 
         // Set the scroll direction to the initial direction and remove effects if "scroll" is chosen
-        scrollRadioBtn.setOnAction(e -> {
-            segment.setScrollDirection(scrollComboBox.getValue());
-            resetEffects();
+        scrollRadioBtn.setOnAction(e ->
+        {
+            ScrollDirection direction = scrollComboBox.getValue();
+
+            if (direction != segment.getScrollDirection())
+            {
+                validated.set(false);
+                segment.setScrollDirection(scrollComboBox.getValue());
+                resetEffects();
+            }
         });
 
         // Set the scroll direction if the direction is changed
-        scrollComboBox.setOnAction(e -> segment.setScrollDirection(scrollComboBox.getValue()));
+        scrollComboBox.setOnAction(e ->
+        {
+            ScrollDirection direction = scrollComboBox.getValue();
+
+            if (direction != segment.getScrollDirection())
+            {
+                validated.set(false);
+                segment.setScrollDirection(scrollComboBox.getValue());
+            }
+        });
 
         // Set the scroll direction to STATIC if "effects" is chosen
-        effectsRadioBtn.setOnAction(e -> segment.setScrollDirection(ScrollDirection.STATIC));
+        effectsRadioBtn.setOnAction(e ->
+        {
+            if (segment.getScrollDirection() != ScrollDirection.STATIC)
+            {
+                validated.set(false);
+                segment.setScrollDirection(ScrollDirection.STATIC);
+            }
+        });
 
-        // Set the effects as changed if "effects" is chosen
-        entranceComboBox.setOnAction(e -> segment.setEntranceEffect(entranceComboBox.getValue()));
-        middleComboBox.setOnAction(e -> segment.setMiddleEffect(middleComboBox.getValue()));
-        exitComboBox.setOnAction(e -> segment.setExitEffect(exitComboBox.getValue()));
+        // Set the effects as they are changed if "effects" is chosen
+        entranceComboBox.setOnAction(e ->
+        {
+            EntranceEffect entrance = entranceComboBox.getValue();
+
+            if (entrance != segment.getEntranceEffect())
+            {
+                segment.setEntranceEffect(entrance);
+            }
+        });
+        middleComboBox.setOnAction(e ->
+        {
+            MiddleEffect middle = middleComboBox.getValue();
+
+            if (middle != segment.getMiddleEffect())
+            {
+                segment.setMiddleEffect(middle);
+            }
+        });
+        exitComboBox.setOnAction(e ->
+        {
+            ExitEffect exit = exitComboBox.getValue();
+
+            if (exit != segment.getExitEffect())
+            {
+                segment.setExitEffect(exit);
+            }
+        });
         
         //Setting SegmentRadio/ComboBox Button Prompters
         statikRadioBtn.setTooltip(new Tooltip("The Sets The Marquee Display To Default Settings"));
@@ -269,7 +386,7 @@ public abstract class SegmentPane extends BorderPane
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);
 
-        this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsVBox));
+        this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsGrid));
 
         /*CSS*/
         this.getStylesheets().add("VisionStyleSheet.css");
@@ -317,9 +434,12 @@ public abstract class SegmentPane extends BorderPane
     }
 
     // Display warnings for all fields which are invalid
-    protected void warn()
+    public abstract void warn();
+
+    // Reset the warnings
+    private void resetWarnings()
     {
-        System.out.println("INVALID SEGMENT");
+        warnings.forEach(node -> node.pseudoClassStateChanged(INVALID, false));
     }
 
     // Reset the selected effects to the first option ("NONE")

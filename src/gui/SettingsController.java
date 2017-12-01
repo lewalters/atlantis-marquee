@@ -145,24 +145,17 @@ public class SettingsController
             int index = marquee.get().getMessage().getContents().indexOf(segment);
             Segment newSegment = segmentPane.getSegment();
 
-            if (newSegment.isValid())
+            if (index < 0)
             {
-                if (index < 0)
-                {
-                    marquee.get().getMessage().getContents().add(segmentPane.getSegment());
-                }
-                else
-                {
-                    marquee.get().getMessage().getContents().set(index, segmentPane.getSegment());
-                }
-
-                settingsPane.getSegmentListView().refresh();
-                segmentStage.close();
+                marquee.get().getMessage().getContents().add(newSegment);
             }
             else
             {
-                segmentPane.warn();
+                marquee.get().getMessage().getContents().set(index, newSegment);
             }
+
+            settingsPane.getSegmentListView().refresh();
+            segmentStage.close();
         });
         segmentStage.setScene(new Scene(segmentPane));
         segmentStage.show();

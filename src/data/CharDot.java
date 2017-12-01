@@ -549,6 +549,10 @@ public class CharDot
                                           {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}};
 
+    private static final int[][] APOST = {{1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                          {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}};
+
     public static final Map<Character, int[][]> charMap = Map.ofEntries(
         entry('A', A),
         entry('B', B),
@@ -600,7 +604,8 @@ public class CharDot
         entry('-', HYPHEN),
         entry('/', SLASH),
         entry(' ', SPACE),
-        entry('?', QUEST)
+        entry('?', QUEST),
+        entry('\'', APOST)
     );
 }
 

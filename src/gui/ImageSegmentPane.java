@@ -108,7 +108,6 @@ public class ImageSegmentPane extends SegmentPane
     // Display warnings for all fields which are invalid
     public void warn()
     {
-        super.warn();
         System.out.println("IMAGE SEGMENT");
     }
 

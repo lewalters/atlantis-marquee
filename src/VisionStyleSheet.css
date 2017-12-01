@@ -1,4 +1,4 @@
-.root{
+.root {
     -fx-base: #181818;
     -fx-accent: silver;
     -fx-focus-color: silver;
@@ -8,17 +8,17 @@
     -fx-control-inner-background: white;
 }
 
-.label{
+.label {
     -fx-border-width: 2px;
     -fx-font-weight: bold;
     -fx-padding: 2;
 }
 
-.text-field{
+.text-field {
     -fx-alignment: center;
 }
 
-.button{
+.button {
     -fx-border-radius: 6;
     -fx-base: #585858;
     -fx-border-color: grey;
@@ -32,13 +32,17 @@
     -fx-color: #585858;
 }
 
-.customGridControl{
+.customGridControl {
     -fx-padding: 15;
 }
 
-.customTitleLabel{
+.customTitleLabel {
     -fx-border-style: solid;
     -fx-border-width: 5px;
     -fx-font-weight: bold;
     -fx-padding: 3;
+}
+
+.text-area:invalid, .text-field:invalid, .radio-button:invalid {
+    -fx-border-color: red;
 }

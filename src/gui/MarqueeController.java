@@ -1,6 +1,7 @@
 package gui;
 
 import data.*;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import util.*;
 
 import javafx.animation.*;
@@ -125,6 +126,7 @@ public class MarqueeController
         return exit;
     }
 
+    // Fix repetition of preview
     public void preview()
     {
         preview.stop();
@@ -137,6 +139,11 @@ public class MarqueeController
     public void stopPreview()
     {
         preview.stop();
+    }
+
+    public ReadOnlyObjectProperty<Animation.Status> previewStatusProperty()
+    {
+        return preview.statusProperty();
     }
 
     // Set up an animation for each segment and play them in order, accounting for message delay and repeat
