@@ -1,4 +1,4 @@
-/*
+
 
 
 package test;
@@ -35,12 +35,12 @@ public class MarqueeTest {
     @Test
     public void testGetMessage() {
 
-        Message s = new Message("Hello", 1, 3, "Hello Everyone");
+        Message s = new Message();
         m.setMessage(s);
-        assertEquals("data.Message Test: getName", "Hello", s.getName());
-        assertEquals("data.Message Test: getComment", "Hello Everyone", s.getComments());
-        assertEquals("data.Message Test: getRepeatFactor", 1, s.getRepeatFactor());
-        assertEquals("data.Message Test: getDelay", 3, s.getDelay());
+        // assertEquals("data.Message Test: getName", "Hello", s.getName());
+        assertEquals("data.Message Test: getComment", "", s.getComments());
+        assertEquals("data.Message Test: getRepeatFactor", 0, s.getRepeatFactor());
+        assertEquals("data.Message Test: getDelay", 0, s.getDelay());
         assertEquals(s, m.getMessage());
 
     }
@@ -109,15 +109,15 @@ public class MarqueeTest {
 
     @Test
     public void testSetMessage() {
-        Message s = new Message("Hello", 1, 3, "Hello Everyone");
+        Message s = new Message();
         m.setMessage(s);
-        assertEquals("data.Message Test: getName", "Hello", s.getName());
-        assertEquals("data.Message Test: getComment", "Hello Everyone", s.getComments());
-        assertEquals("data.Message Test: getRepeatFactor", 1, s.getRepeatFactor());
-        assertEquals("data.Message Test: getDelay", 3, s.getDelay());
+        // assertEquals("data.Message Test: getName", "Hello", s.getName());
+        assertEquals("data.Message Test: getComment", "", s.getComments());
+        assertEquals("data.Message Test: getRepeatFactor", 0, s.getRepeatFactor());
+        assertEquals("data.Message Test: getDelay", 0, s.getDelay());
     }
 
 
 }
 
-*/
+
