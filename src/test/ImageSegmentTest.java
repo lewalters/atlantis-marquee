@@ -1,5 +1,8 @@
 
+
+
 package test;
+
 
 
 import static org.junit.Assert.*;
@@ -20,6 +23,7 @@ public class ImageSegmentTest {
     }
 
     @Test
+
     public void testImageSegmentGetters()
     {
 
@@ -29,9 +33,10 @@ public class ImageSegmentTest {
     @Test
     public void testImageSegmentSetters()
     {
-        is.setSource("");
+         is.setSource(".//img//V.png");
 
-        assertEquals("data.ImageSegment test: setSource", "", is.getSource());
+
+        assertEquals("data.ImageSegment test: setSource", ".//img//V.png", is.getSource());
     }
 }
 
