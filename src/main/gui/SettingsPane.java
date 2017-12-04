@@ -46,7 +46,7 @@ public class SettingsPane extends BorderPane
     private MenuItem newMarq, save, load, exit;
     private MenuItem undo, redo;
     private MenuItem userGuide, about;
-    private RadioButton timeImmediate, timeCustom;
+    private RadioButton timeCustom;
     private Spinner<LocalTime> timeSpinner;
     private CheckBox fullScreenCheckBox, maxSizeCheckBox;
     private Button startButton;
@@ -162,7 +162,7 @@ public class SettingsPane extends BorderPane
 
         // Radio buttons to decide between start time = now or a custom start time
         ToggleGroup timeGroup = new ToggleGroup();
-        timeImmediate = new RadioButton("Immediate");
+        RadioButton timeImmediate = new RadioButton("Immediate");
         timeImmediate.setToggleGroup(timeGroup);
         timeImmediate.setSelected(true);
         timeCustom = new RadioButton("Custom");

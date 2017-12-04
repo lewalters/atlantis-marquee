@@ -13,6 +13,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class SettingsController
 {
@@ -28,7 +31,7 @@ public class SettingsController
 
         //Creating Segment Stage
         segmentStage = new Stage();
-        segmentStage.getIcons().add(new Image("img/V.png"));
+        segmentStage.getIcons().add(new Image("/img/V.png"));
         segmentStage.setTitle("Segment Settings");
         segmentStage.setResizable(false);
         segmentStage.initModality(Modality.APPLICATION_MODAL);
@@ -99,12 +102,14 @@ public class SettingsController
             }
         });
 
+        // Display the user guide in a temporary file that is removed on application close
         settingsPane.getUserGuide().setOnAction(e ->
         {
-            File userGuide = new File("./VISION User Guide.pdf");
-
-            try
+            try (InputStream is = getClass().getResourceAsStream("/VISION User Guide.pdf"))
             {
+                File userGuide = File.createTempFile("vug", ".pdf");
+                userGuide.deleteOnExit();
+                Files.copy(is, userGuide.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 Desktop.getDesktop().open(userGuide);
             }
             catch (Exception ex)
@@ -121,7 +126,7 @@ public class SettingsController
             AboutPane aboutPane = new AboutPane();
             aboutPane.getStylesheets().add("VisionStyleSheet.css");
             Scene aboutScene = new Scene(aboutPane);
-            aboutStage.getIcons().add(new Image("img/V.png"));
+            aboutStage.getIcons().add(new Image("/img/V.png"));
             aboutStage.setScene(aboutScene);
             aboutStage.setResizable(false);
             aboutStage.initStyle(StageStyle.UNDECORATED);

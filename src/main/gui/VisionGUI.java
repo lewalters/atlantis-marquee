@@ -26,7 +26,7 @@ public class VisionGUI extends Application
         WelcomePane welcomePane = new WelcomePane();
         primaryStage.setScene(new Scene(welcomePane));
         primaryStage.setTitle("VISION");
-        primaryStage.getIcons().add(new Image("img/V.png"));
+        primaryStage.getIcons().add(new Image("/img/V.png"));
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
@@ -47,7 +47,7 @@ public class VisionGUI extends Application
                 settingsPane.resetWarnings();
                 MarqueeController marqueeController = new MarqueeController(marquee);
                 Stage marqueeStage = new Stage();
-                marqueeStage.getIcons().add(new Image("img/V.png"));
+                marqueeStage.getIcons().add(new Image("/img/V.png"));
                 marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));
 
                 if (marquee.isFullscreen())

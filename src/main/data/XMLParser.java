@@ -7,45 +7,36 @@
  */
 package data;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javafx.scene.paint.Color;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import util.*;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import javafx.scene.paint.Color;
-import util.BorderEffect;
-import util.EntranceTransition;
-import util.ExitTransition;
-import util.MiddleEffect;
-import util.ScrollDirection;
-import org.w3c.dom.Node;
 import java.io.File;
 import java.util.Arrays;
 
 public class XMLParser 
 {
   private File XMLFile;
-  private DocumentBuilderFactory dbFactory;
   private DocumentBuilder dBuilder;
   private Document doc;
-  private Message message;
   
   public XMLParser(File XMLFile)
   {
     this.XMLFile = XMLFile;
 	try
 	{
-	  if(!XMLFile.exists())
-	  {
-		 XMLFile.createNewFile();
-	  }
-	  dbFactory = DocumentBuilderFactory.newInstance();
+	  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	  dBuilder = dbFactory.newDocumentBuilder();
     }
 	catch (Exception e) 
@@ -255,7 +246,7 @@ public class XMLParser
   
   public void XMLWriter(Marquee marquee)
   {
-    message = marquee.getMessage();
+    Message message = marquee.getMessage();
 
     try 
  	{
