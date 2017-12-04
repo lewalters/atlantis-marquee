@@ -56,15 +56,14 @@ public class ImageSegment extends Segment
         try
         {
             contents = convertImage(source);
+            hLength = contents.getCols();
+            vLength = contents.getRows();
+            size = hLength * vLength;
         }
         catch (IOException ex)
         {
             System.out.println(ex.getMessage());
         }
-
-        hLength = contents.getCols();
-        vLength = contents.getRows();
-        size = hLength * vLength;
     }
 
     @Override

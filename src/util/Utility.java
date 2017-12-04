@@ -36,7 +36,7 @@ public final class Utility
         }
         else
         {
-            throw new IOException("Image not usable");
+            throw new IOException("Unable to load image from source.");
         }
 
         // Get the width and height in pixels from the image and use them to set the width and height of
