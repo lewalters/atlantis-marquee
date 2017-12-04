@@ -6,11 +6,11 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
-import javafx.stage.FileChooser;
+import javafx.scene.control.Alert;
+import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 
 public class SettingsController
@@ -96,6 +96,37 @@ public class SettingsController
                 settingsPane.populate();
             }
         });
+
+        settingsPane.getUserGuide().setOnAction(e ->
+        {
+            File userGuide = new File("./src/VISION User Guide.pdf");
+
+            try
+            {
+                Desktop.getDesktop().open(userGuide);
+            }
+            catch (Exception ex)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to find \"VISION User Guide.pdf\"");
+                alert.showAndWait();
+                settingsPane.getUserGuide().setDisable(true);
+            }
+        });
+
+        settingsPane.getAbout().setOnAction(e ->
+        {
+            Stage aboutStage = new Stage();
+            AboutPane aboutPane = new AboutPane();
+            aboutPane.getStylesheets().add("VisionStyleSheet.css");
+            Scene aboutScene = new Scene(aboutPane);
+            aboutStage.setScene(aboutScene);
+            aboutStage.setResizable(false);
+            aboutStage.initStyle(StageStyle.UNDECORATED);
+            aboutStage.initModality(Modality.APPLICATION_MODAL);
+            aboutStage.show();
+            aboutScene.setOnMouseClicked(m -> aboutStage.close());
+            aboutScene.setOnKeyPressed(k -> aboutStage.close());
+        });
     }
 
     public SettingsPane getSettingsPane()
@@ -118,6 +149,7 @@ public class SettingsController
         createSegmentPane(segment, segment instanceof TextSegment);
     }
 
+    // Creates and displays a segment creation pane that is either empty or populated with the provided segment
     private void createSegmentPane(Segment segment, boolean text)
     {
         SegmentPane segmentPane;

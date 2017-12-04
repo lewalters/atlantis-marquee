@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 import java.time.LocalTime;
 
+import static util.Global.MAX_WIDTH;
 import static util.Global.MIN_HEIGHT;
 import static util.Global.MIN_WIDTH;
 
@@ -120,6 +121,6 @@ public class Marquee
 
     public boolean isValid()
     {
-        return width > MIN_WIDTH && height > MIN_HEIGHT && message.isValid();
+        return width > MIN_WIDTH && width <= MAX_WIDTH && height > MIN_HEIGHT && message.isValid();
     }
 }

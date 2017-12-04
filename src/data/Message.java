@@ -21,7 +21,7 @@ public class Message
     public Message()
     {
         contents = new LinkedList<>();
-        repeatFactor = 0;
+        repeatFactor = 1;
         delay = 0;
         comments = "";
     }
@@ -80,6 +80,6 @@ public class Message
 
     public boolean isValid()
     {
-        return contents.size() > 0 && repeatFactor >= 0 && delay >= 0;
+        return !contents.isEmpty() && repeatFactor > 0 && delay >= 0;
     }
 }

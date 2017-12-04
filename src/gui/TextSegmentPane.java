@@ -24,7 +24,7 @@ public class TextSegmentPane extends SegmentPane
     private RadioButton textColorSingle, textColorRandom, textColorCustom;
     private RadioButton borderColorNone, borderColorRandom, borderColorCustom;
     private RadioButton paddingColorNone, paddingColorCustom;
-    private TextField subDelayTextField, borderSpeedTextField;
+    private TextField subDelayTextField;
     private ObservableList<ColorPicker> borderColorPickers;
     private ColorPicker textColorPicker, paddingColorPicker;
     private ComboBox<BorderEffect> borderEffectComboBox;
@@ -79,8 +79,8 @@ public class TextSegmentPane extends SegmentPane
         Label borderEffect = new Label("Border Effect:");
         textLabelElementsGrid.add(borderEffect, 0, 11);
 
-        Label borderSpeed = new Label("Border Speed:");
-        textLabelElementsGrid.add(borderSpeed, 0, 12);
+/*        Label borderSpeed = new Label("Border Speed:");
+        textLabelElementsGrid.add(borderSpeed, 0, 12);*/
 
         //Setting text Label Font
         textLabel.setFont(new Font(TEXT_FONT, 15));
@@ -89,7 +89,7 @@ public class TextSegmentPane extends SegmentPane
         borderColor.setFont(new Font(TEXT_FONT, 15));
         paddingColor.setFont(new Font(TEXT_FONT, 15));
         borderEffect.setFont(new Font(TEXT_FONT, 15));
-        borderSpeed.setFont(new Font(TEXT_FONT, 15));
+/*        borderSpeed.setFont(new Font(TEXT_FONT, 15));*/
 
         /*Adding TextFields*/
         textTextArea = new TextArea();
@@ -103,8 +103,8 @@ public class TextSegmentPane extends SegmentPane
         textLabelElementsGrid.add(delayTextField, 1, 6);
         subDelayTextField = new TextField();
         textLabelElementsGrid.add(subDelayTextField, 1, 7);
-        borderSpeedTextField = new TextField();
-        textLabelElementsGrid.add(borderSpeedTextField, 1, 12);
+/*        borderSpeedTextField = new TextField();
+        textLabelElementsGrid.add(borderSpeedTextField, 1, 12);*/
 
         // Disable the subsegment delay entry if there are no subsegments
         subDelayTextField.disableProperty().bind(Bindings.createBooleanBinding(() ->
@@ -112,10 +112,10 @@ public class TextSegmentPane extends SegmentPane
 
         //Setting text Field Font
         subDelayTextField.setFont(new Font(TEXT_FONT, 15));
-        borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));
+/*        borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));*/
         //Setting text field's width
         subDelayTextField.setMaxWidth(45);
-        borderSpeedTextField.setMaxWidth(45);
+/*        borderSpeedTextField.setMaxWidth(45);*/
         //Setting TextField Prompters
         textTextArea.setPromptText("Enter Display Message");
         //Adding ToolTip Hints for TextSegment Elements
@@ -279,7 +279,7 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox.disableProperty().bind(borderColorNone.selectedProperty());
 
         // Disallow the user from setting a border speed if no effect is selected
-        borderSpeedTextField.disableProperty().bind(Bindings.equal(borderEffectComboBox.getSelectionModel().selectedItemProperty(), BorderEffect.NONE));
+/*        borderSpeedTextField.disableProperty().bind(Bindings.equal(borderEffectComboBox.getSelectionModel().selectedItemProperty(), BorderEffect.NONE));*/
 
         // Set the border effect on the segment if the combo box value is changed
         borderEffectComboBox.setOnAction(e ->
@@ -384,7 +384,7 @@ public class TextSegmentPane extends SegmentPane
             }
         });
 
-        //Making borderSpeedTextField Accept Only Numeric Values
+/*        //Making borderSpeedTextField Accept Only Numeric Values
         borderSpeedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 borderSpeedTextField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -398,7 +398,7 @@ public class TextSegmentPane extends SegmentPane
                     borderSpeedTextField.setText(borderSpeedTextField.getText().substring(0,2));
                 }
             }
-        });
+        });*/
 
         /*SETTING HGAP/VGAP */
         //Setting horizontal/vertical gaps for GridPanes
@@ -511,8 +511,6 @@ public class TextSegmentPane extends SegmentPane
     @Override
     public void warn()
     {
-        System.out.println("TEXT SEGMENT");
-
         // A text segment must have text (but not just the break character)
         if (textTextArea.getText().isEmpty() || textTextArea.getText().matches("[|]+"))
         {
@@ -555,19 +553,9 @@ public class TextSegmentPane extends SegmentPane
                     if (segment.getScrollDirection() != ScrollDirection.LEFT && segment.getScrollDirection() != ScrollDirection.RIGHT)
                     {
                         textTextArea.pseudoClassStateChanged(INVALID, true);
-                        durationTextField.pseudoClassStateChanged(INVALID, true);
-                        repeatTextField.pseudoClassStateChanged(INVALID, true);
-                        delayTextField.pseudoClassStateChanged(INVALID, true);
-                        statikRadioBtn.pseudoClassStateChanged(INVALID, true);
                         scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
-                        effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
                         warnings.add(textTextArea);
-                        warnings.add(durationTextField);
-                        warnings.add(repeatTextField);
-                        warnings.add(delayTextField);
-                        warnings.add(statikRadioBtn);
                         warnings.add(scrollRadioBtn);
-                        warnings.add(effectsRadioBtn);
                     }
                     else if (segment.getSpeed() < MAX_SPEED) // continuous horizontal scroll
                     {
@@ -575,19 +563,13 @@ public class TextSegmentPane extends SegmentPane
                         durationTextField.pseudoClassStateChanged(INVALID, true);
                         repeatTextField.pseudoClassStateChanged(INVALID, true);
                         delayTextField.pseudoClassStateChanged(INVALID, true);
-                        statikRadioBtn.pseudoClassStateChanged(INVALID, true);
-                        scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
-                        effectsRadioBtn.pseudoClassStateChanged(INVALID, true);
                         warnings.add(textTextArea);
                         warnings.add(durationTextField);
                         warnings.add(repeatTextField);
                         warnings.add(delayTextField);
-                        warnings.add(statikRadioBtn);
-                        warnings.add(scrollRadioBtn);
-                        warnings.add(effectsRadioBtn);
                     }
                 }
-                else if (segment.getSpeed() < MAX_SPEED) // TODO: change--speed only matters if scrolling
+                else if (segment.getSpeed() < MAX_SPEED)
                 {
                     textTextArea.pseudoClassStateChanged(INVALID, true);
                     durationTextField.pseudoClassStateChanged(INVALID, true);

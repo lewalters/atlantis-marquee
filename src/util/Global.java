@@ -1,6 +1,5 @@
 package util;
 
-import data.CharDot;
 import javafx.css.PseudoClass;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -13,10 +12,6 @@ public final class Global
     // Marquee
     public static int MAX_SPEED = 10; // milliseconds per dot
     public static int DEFAULT_SPEED = 200; // milliseconds per dot
-    //public static int MAX_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    //public static int MAX_HEIGHT = 1;
-    public static int MIN_WIDTH = 200;
-    public static int MIN_HEIGHT = 50;
     public static int NUM_COLS = 96;
     public static int NUM_ROWS = 16;
     private static int BORDER_WIDTH = 1;
@@ -29,6 +24,10 @@ public final class Global
     public static int TEXT_COL_END = NUM_COLS - (BORDER_WIDTH + PADDING_WIDTH + 1);
     public static int TEXT_ROW_START = BORDER_WIDTH + PADDING_WIDTH;
     public static int TEXT_ROW_END = NUM_ROWS - (BORDER_WIDTH + PADDING_WIDTH + 1);
+    public static int MAX_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
+    public static int MAX_HEIGHT = (int) (MAX_WIDTH / (NUM_COLS * 1.0 / NUM_ROWS));
+    public static int MIN_WIDTH = 200;
+    public static int MIN_HEIGHT = 50;
 
     // GUI
     public static Color OFF_COLOR = Color.BLACK;

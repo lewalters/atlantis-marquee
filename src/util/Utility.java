@@ -84,9 +84,6 @@ public final class Utility
             }
         }
 
-        // Calculate the area of each dot in terms of pixels in the original image
-        int tgbArea = dotHeightPx * dotWidthPx;
-
         // Set the color and opacity of each dot based on the average of its pixels,
         // using a min_opacity to sharpen the final image
         for (int r = 0; r < dotHeight; r++)
@@ -101,6 +98,4 @@ public final class Utility
 
         return matrix;
     }
-
-    public static void authenticate(String password) {}
 }

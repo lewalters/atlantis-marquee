@@ -18,7 +18,7 @@ public class VisionGUI extends Application
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage)
     {
         WelcomePane welcomePane = new WelcomePane();
         primaryStage.setScene(new Scene(welcomePane));
@@ -41,6 +41,7 @@ public class VisionGUI extends Application
 
             if (marquee.isValid())
             {
+                settingsPane.resetWarnings();
                 MarqueeController marqueeController = new MarqueeController(marquee);
                 Stage marqueeStage = new Stage();
                 marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));

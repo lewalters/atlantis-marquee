@@ -1,27 +1,35 @@
 package gui;
 
 import data.Marquee;
+import data.Segment;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalTimeStringConverter;
 
+import java.awt.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static util.Global.MIN_WIDTH;
-import static util.Global.TEXT_FONT;
+import static util.Global.*;
 
 
 /**
@@ -48,11 +56,15 @@ public class SettingsPane extends BorderPane
     private TextField widthTextField, heightTextField, ledGapTextField, delayTextField, repeatTextField;
     private TextArea commentsTextArea;
     private ComboBox<Pos> screenPosition;
+    private ScrollPane segmentScrollPane;
+    private Set<Node> warnings;
 
     SettingsPane(SettingsController controller)
     {
         marquee = new SimpleObjectProperty<>();
         marquee.bindBidirectional(controller.marqueeProperty());
+
+        warnings = new HashSet<>();
 
         // Take the focus off of the active node if the dead space is clicked
         this.setOnMouseClicked(e -> requestFocus());
@@ -82,27 +94,27 @@ public class SettingsPane extends BorderPane
         //Setting Delay Label
         Label setDelayLabel = new Label("Delay (seconds):");
         setDelayLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(setDelayLabel,0,4);
+        leftLabelTextFieldGrid.add(setDelayLabel,0,3);
 
         // Repeat Factor Label
-        Label setRepeatLabel = new Label("Repeat:");
+        Label setRepeatLabel = new Label("Repetitions:");
         setRepeatLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(setRepeatLabel, 0, 5);
+        leftLabelTextFieldGrid.add(setRepeatLabel, 0, 4);
 
         //Creating Comments Label
         Label setCommentsLabel = new Label("Comments:");
         setCommentsLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(setCommentsLabel,0,6);
+        leftLabelTextFieldGrid.add(setCommentsLabel,0,5);
 
         // Screen position label
         Label screenPositionLabel = new Label("Screen Position");
         screenPositionLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(screenPositionLabel, 0, 7);
+        leftLabelTextFieldGrid.add(screenPositionLabel, 0, 6);
 
         // Start Time Label
         Label startTimeLabel = new Label("Start Time:");
         startTimeLabel.setFont(new Font(TEXT_FONT, 15));
-        leftLabelTextFieldGrid.add(startTimeLabel, 0, 8);
+        leftLabelTextFieldGrid.add(startTimeLabel, 0, 7);
 
         /*Adding TextFields*/
         //Creating Label TextFields
@@ -112,19 +124,19 @@ public class SettingsPane extends BorderPane
         leftLabelTextFieldGrid.add(heightTextField,1,1);
         ledGapTextField = new TextField();
         leftLabelTextFieldGrid.add(ledGapTextField, 1, 2);
-
         delayTextField = new TextField();
-        leftLabelTextFieldGrid.add(delayTextField,1,4);
+        leftLabelTextFieldGrid.add(delayTextField,1,3);
         repeatTextField = new TextField();
-        leftLabelTextFieldGrid.add(repeatTextField, 1, 5);
+        leftLabelTextFieldGrid.add(repeatTextField, 1, 4);
         commentsTextArea = new TextArea();
-        commentsTextArea.setPromptText("A Maximum Of 100 Alphanumeric Characters Allowed");
+        commentsTextArea.setPromptText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+                                       "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         commentsTextArea.setWrapText(true);
-        leftLabelTextFieldGrid.add(commentsTextArea,1,6);
+        leftLabelTextFieldGrid.add(commentsTextArea,1,5);
 
         // Screen position combo box using Pos with modified string values
         screenPosition = new ComboBox<>();
-        screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 10));
+        screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 9));
         screenPosition.getSelectionModel().select(Pos.CENTER);
         screenPosition.setConverter(new StringConverter<>()
         {
@@ -146,7 +158,7 @@ public class SettingsPane extends BorderPane
                 return map.get(string);
             }
         });
-        leftLabelTextFieldGrid.add(screenPosition, 1, 7);
+        leftLabelTextFieldGrid.add(screenPosition, 1, 6);
 
         // Radio buttons to decide between start time = now or a custom start time
         ToggleGroup timeGroup = new ToggleGroup();
@@ -212,7 +224,7 @@ public class SettingsPane extends BorderPane
 
         VBox timeBox = new VBox(timeChoices, timeSpinner);
         timeBox.setSpacing(5);
-        leftLabelTextFieldGrid.add(timeBox, 1, 8);
+        leftLabelTextFieldGrid.add(timeBox, 1, 7);
 
         /*Adding Checkboxes*/
         //Creating Checkboxes
@@ -247,13 +259,20 @@ public class SettingsPane extends BorderPane
         redo = new MenuItem("Redo");
 
         //Creating HelpMenu Elements
-        userGuide = new MenuItem("How to Use Vision");
+        userGuide = new MenuItem("User Guide");
         about = new MenuItem("About"); //Create a new pane
 
         //Adding File Elements
         file.getItems().addAll(newMarq, save, load, exit);
         edit.getItems().addAll(undo, redo);
-        help.getItems().addAll(userGuide, about);
+        if (Desktop.isDesktopSupported())
+        {
+            help.getItems().addAll(userGuide, about);
+        }
+        else // Don't add the user guide choice if the program won't be able to open it
+        {
+            help.getItems().add(about);
+        }
 
         /*Adding Buttons*/
         //Creating Start Button
@@ -273,7 +292,7 @@ public class SettingsPane extends BorderPane
         segmentButtonsBox.setAlignment(Pos.CENTER);
 
         segmentListView = new SegmentListView(controller, marquee.get().getMessage().getContents());
-        ScrollPane segmentScrollPane = new ScrollPane(segmentListView);
+        segmentScrollPane = new ScrollPane(segmentListView);
         segmentScrollPane.setPadding(new Insets(5));
         segmentScrollPane.setFocusTraversable(false);
 
@@ -332,20 +351,20 @@ public class SettingsPane extends BorderPane
         heightTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue())
             {
-                if(heightTextField.getText().length() > 3)
+                if(heightTextField.getText().length() > 4)
                 {
-                    heightTextField.setText(heightTextField.getText().substring(0,3));
+                    heightTextField.setText(heightTextField.getText().substring(0,4));
                 }
             }
         });
 
-        // Restricting the ledGapTextField to a length of 1
+        // Restricting the ledGapTextField to a length of 2
         ledGapTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() > oldValue.intValue())
             {
-                if(ledGapTextField.getText().length() > 1)
+                if(ledGapTextField.getText().length() > 2)
                 {
-                    ledGapTextField.setText(ledGapTextField.getText().substring(0,1));
+                    ledGapTextField.setText(ledGapTextField.getText().substring(0,2));
                 }
             }
         });
@@ -372,17 +391,6 @@ public class SettingsPane extends BorderPane
                 }
             }
         }));
-
-        //Setting commentsTextArea Character Length
-        commentsTextArea.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue())
-            {
-                if(commentsTextArea.getText().length() > 100)
-                {
-                    commentsTextArea.setText(commentsTextArea.getText(0, 100));
-                }
-            }
-        });
 
         //Making WidthTextField To Accept only Numeric Values
         widthTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -652,9 +660,42 @@ public class SettingsPane extends BorderPane
     // Display warnings for all fields which are invalid
     public void warn()
     {
-        System.out.println("INVALID MESSAGE");
+        if (marquee.get().getMessage().getContents().isEmpty())
+        {
+            segmentScrollPane.pseudoClassStateChanged(INVALID, true);
+            warnings.add(segmentScrollPane);
+        }
+        else
+        {
+            for (Segment segment : marquee.get().getMessage().getContents())
+            {
+                if (!segment.isValid())
+                {
+                    segmentScrollPane.pseudoClassStateChanged(INVALID, true);
+                    warnings.add(segmentScrollPane);
+                    break;
+                }
+            }
+        }
 
+        if (marquee.get().getWidth() > MAX_WIDTH)
+        {
+            widthTextField.pseudoClassStateChanged(INVALID, true);
+            warnings.add(widthTextField);
+        }
 
+        if (marquee.get().getHeight() > MAX_HEIGHT)
+        {
+            heightTextField.pseudoClassStateChanged(INVALID, true);
+            warnings.add(heightTextField);
+        }
+    }
+
+    // Reset the warnings
+    public void resetWarnings()
+    {
+        warnings.forEach(node -> node.pseudoClassStateChanged(INVALID, false));
+        warnings.clear();
     }
 }
 

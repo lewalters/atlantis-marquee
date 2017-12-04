@@ -43,6 +43,11 @@
     -fx-padding: 3;
 }
 
-.text-area:invalid, .text-field:invalid, .radio-button:invalid {
+.image-box {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
+
+.text-area:invalid, .text-field:invalid, .radio-button:invalid, .scroll-pane:invalid, .image-box:invalid {
     -fx-border-color: red;
 }

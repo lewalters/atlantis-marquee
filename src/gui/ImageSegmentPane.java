@@ -11,9 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import util.Validation;
 
 import java.io.File;
 
+import static util.Global.INVALID;
+import static util.Global.MAX_SPEED;
 import static util.Validation.validImage;
 
 public class ImageSegmentPane extends SegmentPane
@@ -60,7 +63,9 @@ public class ImageSegmentPane extends SegmentPane
                 new FileChooser.ExtensionFilter("Image Files (PNG, JPG, or GIF)", "*.png", "*.jpg", "*.gif"));
 
         imageBox = new HBox();
-        imageBox.setStyle("-fx-border-color: black;"+ "-fx-border-style: solid;");
+        imageBox.getStyleClass().add("image-box");
+        //imageBox.setStyle("-fx-border-color: black;" +
+        //                  "-fx-border-style: solid;");
         imageBox.setPrefSize(310, 160);
         imageBox.setAlignment(Pos.CENTER);
         imageBox.setPadding(new Insets(5));
@@ -108,7 +113,20 @@ public class ImageSegmentPane extends SegmentPane
     // Display warnings for all fields which are invalid
     public void warn()
     {
-        System.out.println("IMAGE SEGMENT");
+        if (!Validation.validImage(segment.getSource()))
+        {
+            imageBox.pseudoClassStateChanged(INVALID, true);
+            warnings.add(imageBox);
+        }
+        else if (segment.getSpeed() < MAX_SPEED)
+        {
+            durationTextField.pseudoClassStateChanged(INVALID, true);
+            repeatTextField.pseudoClassStateChanged(INVALID, true);
+            delayTextField.pseudoClassStateChanged(INVALID, true);
+            warnings.add(durationTextField);
+            warnings.add(repeatTextField);
+            warnings.add(delayTextField);
+        }
     }
 
     // Create ImageView to preview the chosen image
