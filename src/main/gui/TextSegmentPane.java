@@ -278,9 +278,6 @@ public class TextSegmentPane extends SegmentPane
         // Disallow the user from choosing a border effect if no color is selected
         borderEffectComboBox.disableProperty().bind(borderColorNone.selectedProperty());
 
-        // Disallow the user from setting a border speed if no effect is selected
-/*        borderSpeedTextField.disableProperty().bind(Bindings.equal(borderEffectComboBox.getSelectionModel().selectedItemProperty(), BorderEffect.NONE));*/
-
         // Set the border effect on the segment if the combo box value is changed
         borderEffectComboBox.setOnAction(e ->
         {
@@ -383,22 +380,6 @@ public class TextSegmentPane extends SegmentPane
                 }
             }
         });
-
-/*        //Making borderSpeedTextField Accept Only Numeric Values
-        borderSpeedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                borderSpeedTextField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-
-        //Setting borderSpeedTextField Character Length
-        borderSpeedTextField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() > oldValue.intValue()){
-                if(borderSpeedTextField.getText().length() > 2){
-                    borderSpeedTextField.setText(borderSpeedTextField.getText().substring(0,2));
-                }
-            }
-        });*/
 
         /*SETTING HGAP/VGAP */
         //Setting horizontal/vertical gaps for GridPanes

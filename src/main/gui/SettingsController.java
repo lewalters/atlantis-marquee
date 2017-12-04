@@ -7,6 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -27,6 +28,7 @@ public class SettingsController
 
         //Creating Segment Stage
         segmentStage = new Stage();
+        segmentStage.getIcons().add(new Image("img/V.png"));
         segmentStage.setTitle("Segment Settings");
         segmentStage.setResizable(false);
         segmentStage.initModality(Modality.APPLICATION_MODAL);
@@ -99,7 +101,7 @@ public class SettingsController
 
         settingsPane.getUserGuide().setOnAction(e ->
         {
-            File userGuide = new File("./src/VISION User Guide.pdf");
+            File userGuide = new File("./VISION User Guide.pdf");
 
             try
             {
@@ -119,6 +121,7 @@ public class SettingsController
             AboutPane aboutPane = new AboutPane();
             aboutPane.getStylesheets().add("VisionStyleSheet.css");
             Scene aboutScene = new Scene(aboutPane);
+            aboutStage.getIcons().add(new Image("img/V.png"));
             aboutStage.setScene(aboutScene);
             aboutStage.setResizable(false);
             aboutStage.initStyle(StageStyle.UNDECORATED);

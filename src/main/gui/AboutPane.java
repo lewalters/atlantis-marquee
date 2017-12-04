@@ -13,7 +13,7 @@ public class AboutPane extends BorderPane
         this.setPrefSize(400, 300);
         this.setStyle("-fx-border-color: white");
 
-        ImageView logo = new ImageView("./img/VISION.png");
+        ImageView logo = new ImageView("img/VISION.png");
         HBox logoBox = new HBox(logo);
         logoBox.setAlignment(Pos.CENTER);
         this.setTop(logoBox);

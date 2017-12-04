@@ -35,11 +35,11 @@ public class WelcomePane extends BorderPane
         welcomeText.setDuration(2);
         welcomeText.setTextColors(new Color[]{Color.TRANSPARENT});
         ImageSegment logo = new ImageSegment();
-        logo.setSource("./img/V.png");
+        logo.setSource("img/V.png");
         logo.setDuration(5);
         Message welcomeMessage = new Message();
         welcomeMessage.addSegment(0, welcomeText);
-        welcomeMessage.addSegment(0, logo);
+        welcomeMessage.addSegment(1, logo);
         controller = new MarqueeController(welcomeMessage);
         this.setCenter(controller.getPreviewMarqueePane());
 
