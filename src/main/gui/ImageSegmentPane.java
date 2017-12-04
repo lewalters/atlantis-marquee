@@ -11,12 +11,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import util.Validation;
 
 import java.io.File;
+import java.util.StringJoiner;
 
-import static util.Global.INVALID;
-import static util.Global.MAX_SPEED;
+import static util.Global.*;
 import static util.Validation.validImage;
 
 public class ImageSegmentPane extends SegmentPane
@@ -43,6 +44,8 @@ public class ImageSegmentPane extends SegmentPane
 
     private void construct()
     {
+        this.setPrefSize(700, 550);
+
         titleLabel.setText("Image Segment Settings");
 
         VBox leftSide = new VBox();
@@ -111,10 +114,15 @@ public class ImageSegmentPane extends SegmentPane
     // Display warnings for all fields which are invalid
     public void warn()
     {
+        StringJoiner warningText = new StringJoiner("\n");
+
         if (!Validation.validImage(segment.getSource()))
         {
             imageBox.pseudoClassStateChanged(INVALID, true);
             warnings.add(imageBox);
+            warningText.add("The source text could not be used to load a valid image");
+            warningText.add(String.format("The maximum image width is %dpx and the maximum image height is %dpx",
+                            MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT));
         }
         else if (segment.getSpeed() < MAX_SPEED)
         {
@@ -124,7 +132,14 @@ public class ImageSegmentPane extends SegmentPane
             warnings.add(durationTextField);
             warnings.add(repeatTextField);
             warnings.add(delayTextField);
+            warningText.add("The selected settings result in the image scrolling too quickly");
         }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText("");
+        alert.setContentText(warningText.toString());
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
     }
 
     // Create ImageView to preview the chosen image

@@ -3,6 +3,7 @@ package gui;
 import data.TextSegment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.ColorPicker;
@@ -65,7 +66,8 @@ public class TextColorsPicker extends VBox
     private void draw(String text)
     {
         HBox textBox = new HBox();
-        textBox.setAlignment(Pos.CENTER);
+        textBox.setPadding(new Insets(5));
+        textBox.setSpacing(2);
         this.getChildren().add(textBox);
 
         for(int i = 0; i < text.length(); i++)

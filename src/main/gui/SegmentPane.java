@@ -78,9 +78,8 @@ public abstract class SegmentPane extends BorderPane
         topBox.setSpacing(10);
         this.setTop(topBox);
 
-        /*Setting TextSegmentPane Size and Padding*/
-        //This sets the TextSegment Pane size and padding
-        this.setPrefSize(700, 700);
+        /*Setting SegmentPane Size and Padding*/
+        this.setPrefSize(500, 500);
         this.setPadding(new Insets(30));
 
         durationLabel = new Label("Duration (seconds):");
@@ -262,7 +261,7 @@ public abstract class SegmentPane extends BorderPane
         VBox scrollVBox = new VBox(scrollComboBox);
         scrollVBox.visibleProperty().bindBidirectional(scrollVBox.managedProperty());
         scrollVBox.visibleProperty().bind(scrollRadioBtn.selectedProperty());
-        scrollVBox.setStyle("-fx-padding: 15");
+        scrollVBox.setStyle("-fx-padding: 10");
         scrollVBox.setAlignment(Pos.CENTER);
 
         entranceComboBox = new ComboBox<>();
@@ -387,14 +386,18 @@ public abstract class SegmentPane extends BorderPane
         HBox radioBox = new HBox(statikRadioBtn, scrollRadioBtn, effectsRadioBtn);
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);
+        radioBox.setAlignment(Pos.CENTER);
 
-        VBox effectsBox = new VBox(new HBox(radioBox), scrollVBox, effectsGrid);
-        effectsBox.setPrefHeight(150);
+        Label animationLabel = new Label("Segment Animation");
+        animationLabel.setFont(new Font(TEXT_FONT, 15));
+        VBox effectsBox = new VBox(animationLabel, radioBox, scrollVBox, effectsGrid);
+        effectsBox.setPrefHeight(180);
         effectsBox.setStyle("-fx-border-color: white");
         effectsBox.setPadding(new Insets(5));
-        rightBox = new VBox(new Label("Segment Animation:"), effectsBox);
+        effectsBox.setAlignment(Pos.TOP_CENTER);
+        rightBox = new VBox(effectsBox);
         rightBox.setPadding(new Insets(10, 0, 0, 0));
-        rightBox.setAlignment(Pos.TOP_CENTER);
+        rightBox.setSpacing(30);
         this.setRight(rightBox);
 
         /*CSS*/

@@ -19,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalTimeStringConverter;
 
@@ -660,10 +661,13 @@ public class SettingsPane extends BorderPane
     // Display warnings for all fields which are invalid
     public void warn()
     {
+        StringJoiner warningText = new StringJoiner("\n");
+
         if (marquee.get().getMessage().getContents().isEmpty())
         {
             segmentScrollPane.pseudoClassStateChanged(INVALID, true);
             warnings.add(segmentScrollPane);
+            warningText.add("The message must contain at least one segment");
         }
         else
         {
@@ -673,6 +677,7 @@ public class SettingsPane extends BorderPane
                 {
                     segmentScrollPane.pseudoClassStateChanged(INVALID, true);
                     warnings.add(segmentScrollPane);
+                    warningText.add("One or more of the segments are invalid");
                     break;
                 }
             }
@@ -682,13 +687,21 @@ public class SettingsPane extends BorderPane
         {
             widthTextField.pseudoClassStateChanged(INVALID, true);
             warnings.add(widthTextField);
+            warningText.add(String.format("The selected width exceeds the maximum allowed on this screen of %dpx", MAX_WIDTH));
         }
 
         if (marquee.get().getHeight() > MAX_HEIGHT)
         {
             heightTextField.pseudoClassStateChanged(INVALID, true);
             warnings.add(heightTextField);
+            warningText.add(String.format("The selected height exceeds the maximum allowed on this screen of %dpx", MAX_HEIGHT));
         }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText("");
+        alert.setContentText(warningText.toString());
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
     }
 
     // Reset the warnings

@@ -10,9 +10,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.StageStyle;
 import util.BorderEffect;
 import util.MiddleEffect;
 import util.ScrollDirection;
+
+import java.util.StringJoiner;
 
 import static util.Global.*;
 
@@ -47,14 +50,13 @@ public class TextSegmentPane extends SegmentPane
 
     private void construct()
     {
+        this.setPrefSize(740, 610);
+
         titleLabel.setText("Text Segment Settings");
         middleComboBox.getItems().add(MiddleEffect.RANDOM_COLOR);
 
         //Creating GridPane for textFields and labels
         GridPane textLabelElementsGrid = new GridPane();
-
-        //Creating GridPane for buttons
-        GridPane buttonElementsGrid = new GridPane();
 
         //Adding Labels//
         Label textLabel = new Label("Text:");
@@ -70,22 +72,10 @@ public class TextSegmentPane extends SegmentPane
         Label subDelayLabel = new Label("Delay (subsegment):");
         textLabelElementsGrid.add(subDelayLabel, 0, 7);
 
-        Label borderColor = new Label("Border Color(s):");
-        textLabelElementsGrid.add(borderColor, 0, 8);
-
-        Label paddingColor = new Label("Padding Color:");
-        textLabelElementsGrid.add(paddingColor, 0, 10);
-
-        Label borderEffect = new Label("Border Effect:");
-        textLabelElementsGrid.add(borderEffect, 0, 11);
-
         //Setting text Label Font
         textLabel.setFont(new Font(TEXT_FONT, 15));
         textColorLabel.setFont(new Font(TEXT_FONT, 15));
         subDelayLabel.setFont(new Font(TEXT_FONT, 15));
-        borderColor.setFont(new Font(TEXT_FONT, 15));
-        paddingColor.setFont(new Font(TEXT_FONT, 15));
-        borderEffect.setFont(new Font(TEXT_FONT, 15));
 
         /*Adding TextFields*/
         textTextArea = new TextArea();
@@ -126,8 +116,8 @@ public class TextSegmentPane extends SegmentPane
         textColorsPicker = new TextColorsPicker(segment);
         ScrollPane colorsScroll = new ScrollPane(textColorsPicker);
         textColorsPicker.minWidthProperty().bind(colorsScroll.widthProperty());
-        colorsScroll.setPrefViewportWidth(200);
-        colorsScroll.setPrefViewportHeight(60);
+        colorsScroll.setPrefViewportWidth(185);
+        colorsScroll.setPrefViewportHeight(70);
         colorsScroll.visibleProperty().bindBidirectional(colorsScroll.managedProperty());
         colorsScroll.visibleProperty().bind(textColorCustom.selectedProperty());
         HBox textColorTypes = new HBox(textColorPicker, colorsScroll);
@@ -145,6 +135,24 @@ public class TextSegmentPane extends SegmentPane
         textColorRandom.setOnAction(e -> segment.setTextColors(new Color[]{Color.TRANSPARENT}));
 
         textColorCustom.setOnAction(e -> textColorsPicker.refresh());
+
+        //Adding Text fields and Labels to GridPane inserted TextSegmentPane
+        this.setLeft(textLabelElementsGrid);
+
+        GridPane borderGrid = new GridPane();
+        rightBox.getChildren().add(borderGrid);
+
+        Label borderColor = new Label("Border Color(s):");
+        borderColor.setFont(new Font(TEXT_FONT, 15));
+        borderGrid.add(borderColor, 0, 0);
+
+        Label borderEffect = new Label("Border Effect:");
+        borderEffect.setFont(new Font(TEXT_FONT, 15));
+        borderGrid.add(borderEffect, 0, 2);
+
+        Label paddingColor = new Label("Padding Color:");
+        paddingColor.setFont(new Font(TEXT_FONT, 15));
+        borderGrid.add(paddingColor, 0, 3);
 
         // Adding border color choices
         ToggleGroup borderGroup = new ToggleGroup();
@@ -165,8 +173,8 @@ public class TextSegmentPane extends SegmentPane
         HBox borderColorsBox = new HBox(borderColorPickers.get(0));
         borderColorsBox.visibleProperty().bindBidirectional(borderColorsBox.managedProperty());
         borderColorsBox.visibleProperty().bind(borderColorCustom.selectedProperty());
-        textLabelElementsGrid.add(borderChoicesBox, 1, 8);
-        textLabelElementsGrid.add(borderColorsBox, 1, 9);
+        borderGrid.add(borderChoicesBox, 1, 0);
+        borderGrid.add(borderColorsBox, 1, 1);
 
         // Set the border color to the off color if "none" is selected
         borderColorNone.setOnAction(e -> segment.setBorderColors(new Color[]{OFF_COLOR}));
@@ -233,37 +241,12 @@ public class TextSegmentPane extends SegmentPane
 
         borderColorsBox.getChildren().add(addBorderColorButton);
 
-        // Adding padding color choices
-        ToggleGroup paddingGroup = new ToggleGroup();
-        paddingColorNone = new RadioButton("None");
-        paddingColorNone.setToggleGroup(paddingGroup);
-        paddingColorNone.setSelected(true);
-        paddingColorCustom = new RadioButton("Custom");
-        paddingColorCustom.setToggleGroup(paddingGroup);
-        paddingColorPicker = new ColorPicker(OFF_COLOR);
-        paddingColorPicker.getStyleClass().add("button");
-        paddingColorPicker.setStyle("-fx-color-label-visible: false ;");
-        paddingColorPicker.visibleProperty().bindBidirectional(paddingColorPicker.managedProperty());
-        paddingColorPicker.visibleProperty().bind(paddingColorCustom.selectedProperty());
-        HBox paddingColorChoices = new HBox(paddingColorNone, paddingColorCustom, paddingColorPicker);
-        paddingColorChoices.setSpacing(2);
-        textLabelElementsGrid.add(paddingColorChoices, 1, 10);
-
-        paddingColorNone.setOnAction(e ->
-        {
-            segment.setPaddingColor(OFF_COLOR);
-            paddingColorPicker.setValue(OFF_COLOR);
-        });
-
-        // Set padding color when picker is changed
-        paddingColorPicker.setOnAction(e -> segment.setPaddingColor(paddingColorPicker.getValue()));
-
         //Creating BorderEffect ComboBox
         borderEffectComboBox = new ComboBox<>();
         borderEffectComboBox.getItems().addAll(BorderEffect.values());
         borderEffectComboBox.setEditable(false);
         borderEffectComboBox.getSelectionModel().selectFirst();
-        textLabelElementsGrid.add(borderEffectComboBox, 1, 11);
+        borderGrid.add(borderEffectComboBox, 1, 2);
 
         // Disallow the user from choosing a border effect if no color is selected
         borderEffectComboBox.disableProperty().bind(borderColorNone.selectedProperty());
@@ -278,9 +261,31 @@ public class TextSegmentPane extends SegmentPane
                 segment.setBorderEffect(border);
             }
         });
-        
-        //Adding Text fields and Labels to GridPane inserted TextSegmentPane
-        this.setLeft(textLabelElementsGrid);
+
+        // Adding padding color choices
+        ToggleGroup paddingGroup = new ToggleGroup();
+        paddingColorNone = new RadioButton("None");
+        paddingColorNone.setToggleGroup(paddingGroup);
+        paddingColorNone.setSelected(true);
+        paddingColorCustom = new RadioButton("Custom");
+        paddingColorCustom.setToggleGroup(paddingGroup);
+        paddingColorPicker = new ColorPicker(OFF_COLOR);
+        paddingColorPicker.getStyleClass().add("button");
+        paddingColorPicker.setStyle("-fx-color-label-visible: false ;");
+        paddingColorPicker.visibleProperty().bindBidirectional(paddingColorPicker.managedProperty());
+        paddingColorPicker.visibleProperty().bind(paddingColorCustom.selectedProperty());
+        HBox paddingColorChoices = new HBox(paddingColorNone, paddingColorCustom, paddingColorPicker);
+        paddingColorChoices.setSpacing(2);
+        borderGrid.add(paddingColorChoices, 1, 3);
+
+        paddingColorNone.setOnAction(e ->
+        {
+            segment.setPaddingColor(OFF_COLOR);
+            paddingColorPicker.setValue(OFF_COLOR);
+        });
+
+        // Set padding color when picker is changed
+        paddingColorPicker.setOnAction(e -> segment.setPaddingColor(paddingColorPicker.getValue()));
 
         // Set the text in the segment and disable / enable options based on length
         textTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
@@ -375,12 +380,10 @@ public class TextSegmentPane extends SegmentPane
         //Setting horizontal/vertical gaps for GridPanes
         textLabelElementsGrid.setHgap(10);
         textLabelElementsGrid.setVgap(5);
-        buttonElementsGrid.setHgap(25);
-        buttonElementsGrid.setVgap(5);
+        borderGrid.setHgap(10);
+        borderGrid.setVgap(5);
 
         populate();
-
-        rightBox.getChildren().add(new Label("TEST"));
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
@@ -484,11 +487,14 @@ public class TextSegmentPane extends SegmentPane
     @Override
     public void warn()
     {
+        StringJoiner warningText = new StringJoiner("\n");
+
         // A text segment must have text (but not just the break character)
         if (textTextArea.getText().isEmpty() || textTextArea.getText().matches("[|]+"))
         {
             textTextArea.pseudoClassStateChanged(INVALID, true);
             warnings.add(textTextArea);
+            warningText.add("Text must include at least one valid character");
         }
         else // If there is valid text
         {
@@ -515,6 +521,7 @@ public class TextSegmentPane extends SegmentPane
                         warnings.add(statikRadioBtn);
                         warnings.add(scrollRadioBtn);
                         warnings.add(effectsRadioBtn);
+                        warningText.add("The selected settings result in one or more of the text subsegments scrolling too quickly");
                         break;
                     }
                 }
@@ -529,6 +536,7 @@ public class TextSegmentPane extends SegmentPane
                         scrollRadioBtn.pseudoClassStateChanged(INVALID, true);
                         warnings.add(textTextArea);
                         warnings.add(scrollRadioBtn);
+                        warningText.add("The entered text is too large to be displayed on the screen at one time and must be scrolled");
                     }
                     else if (segment.getSpeed() < MAX_SPEED) // continuous horizontal scroll
                     {
@@ -540,6 +548,7 @@ public class TextSegmentPane extends SegmentPane
                         warnings.add(durationTextField);
                         warnings.add(repeatTextField);
                         warnings.add(delayTextField);
+                        warningText.add("The selected settings result in the text scrolling too quickly");
                     }
                 }
                 else if (segment.getSpeed() < MAX_SPEED)
@@ -558,9 +567,16 @@ public class TextSegmentPane extends SegmentPane
                     warnings.add(statikRadioBtn);
                     warnings.add(scrollRadioBtn);
                     warnings.add(effectsRadioBtn);
+                    warningText.add("The selected settings result in the text scrolling too quickly");
                 }
             }
         }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText("");
+        alert.setContentText(warningText.toString());
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
     }
 
     private void changeColors()

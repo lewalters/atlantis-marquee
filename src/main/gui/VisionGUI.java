@@ -39,12 +39,13 @@ public class VisionGUI extends Application
             welcomePane.stopMessage();
         });
 
-        settingsPane.getStartButton().setOnAction(e -> {
+        settingsPane.getStartButton().setOnAction(e ->
+        {
             Marquee marquee = settingsController.getMarquee();
+            settingsPane.resetWarnings();
 
             if (marquee.isValid())
             {
-                settingsPane.resetWarnings();
                 MarqueeController marqueeController = new MarqueeController(marquee);
                 Stage marqueeStage = new Stage();
                 marqueeStage.getIcons().add(new Image("/img/V.png"));
