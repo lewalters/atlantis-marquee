@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import util.Global;
 
 public class VisionGUI extends Application
 {
@@ -20,10 +21,12 @@ public class VisionGUI extends Application
     @Override
     public void start(Stage primaryStage)
     {
+        Global.init();
+
         WelcomePane welcomePane = new WelcomePane();
         primaryStage.setScene(new Scene(welcomePane));
-        primaryStage.setTitle("Atlantis VISION Marquee");
-        primaryStage.getIcons().add(new Image("./img/V.png"));
+        primaryStage.setTitle("VISION");
+        primaryStage.getIcons().add(new Image("img/V.png"));
         primaryStage.show();
         primaryStage.setResizable(false); // Disabling Stage resizing
 
@@ -44,6 +47,7 @@ public class VisionGUI extends Application
                 settingsPane.resetWarnings();
                 MarqueeController marqueeController = new MarqueeController(marquee);
                 Stage marqueeStage = new Stage();
+                marqueeStage.getIcons().add(new Image("img/V.png"));
                 marqueeStage.setScene(new Scene(marqueeController.getFullMarqueePane()));
 
                 if (marquee.isFullscreen())

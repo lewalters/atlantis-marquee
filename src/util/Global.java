@@ -24,8 +24,8 @@ public final class Global
     public static int TEXT_COL_END = NUM_COLS - (BORDER_WIDTH + PADDING_WIDTH + 1);
     public static int TEXT_ROW_START = BORDER_WIDTH + PADDING_WIDTH;
     public static int TEXT_ROW_END = NUM_ROWS - (BORDER_WIDTH + PADDING_WIDTH + 1);
-    public static int MAX_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    public static int MAX_HEIGHT = (int) (MAX_WIDTH / (NUM_COLS * 1.0 / NUM_ROWS));
+    public static int MAX_WIDTH;
+    public static int MAX_HEIGHT;
     public static int MIN_WIDTH = 200;
     public static int MIN_HEIGHT = 50;
 
@@ -40,6 +40,12 @@ public final class Global
     public static int MAX_IMAGE_WIDTH = 1200;
     public static int MIN_OPACITY = 90;
     public static int MAX_BORDER_COLORS = 4;
+
+    public static void init()
+    {
+        MAX_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
+        MAX_HEIGHT = (int) (MAX_WIDTH / (NUM_COLS * 1.0 / NUM_ROWS));
+    }
 
     private Global() {}
 }
