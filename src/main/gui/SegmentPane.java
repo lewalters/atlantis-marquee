@@ -36,6 +36,7 @@ public abstract class SegmentPane extends BorderPane
     protected TextField durationTextField, repeatTextField, delayTextField;
     protected ComboBox<MiddleEffect> middleComboBox;
     protected ComboBox<ScrollDirection> scrollComboBox;
+    protected VBox rightBox;
 
     public SegmentPane(Segment segment)
     {
@@ -262,6 +263,7 @@ public abstract class SegmentPane extends BorderPane
         scrollVBox.visibleProperty().bindBidirectional(scrollVBox.managedProperty());
         scrollVBox.visibleProperty().bind(scrollRadioBtn.selectedProperty());
         scrollVBox.setStyle("-fx-padding: 15");
+        scrollVBox.setAlignment(Pos.CENTER);
 
         entranceComboBox = new ComboBox<>();
         middleComboBox = new ComboBox<>();
@@ -386,7 +388,14 @@ public abstract class SegmentPane extends BorderPane
         radioBox.setStyle("-fx-padding: 10");
         radioBox.setSpacing(5);
 
-        this.setRight(new VBox(new HBox(radioBox), scrollVBox, effectsGrid));
+        VBox effectsBox = new VBox(new HBox(radioBox), scrollVBox, effectsGrid);
+        effectsBox.setPrefHeight(150);
+        effectsBox.setStyle("-fx-border-color: white");
+        effectsBox.setPadding(new Insets(5));
+        rightBox = new VBox(new Label("Segment Animation:"), effectsBox);
+        rightBox.setPadding(new Insets(10, 0, 0, 0));
+        rightBox.setAlignment(Pos.TOP_CENTER);
+        this.setRight(rightBox);
 
         /*CSS*/
         this.getStylesheets().add("VisionStyleSheet.css");

@@ -48,6 +48,11 @@
     -fx-border-width: 2px;
 }
 
+.color-picker, .color-button {
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+}
+
 .text-area:invalid, .text-field:invalid, .radio-button:invalid, .scroll-pane:invalid, .image-box:invalid {
     -fx-border-color: red;
 }

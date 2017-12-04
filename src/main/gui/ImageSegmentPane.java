@@ -64,8 +64,6 @@ public class ImageSegmentPane extends SegmentPane
 
         imageBox = new HBox();
         imageBox.getStyleClass().add("image-box");
-        //imageBox.setStyle("-fx-border-color: black;" +
-        //                  "-fx-border-style: solid;");
         imageBox.setPrefSize(310, 160);
         imageBox.setAlignment(Pos.CENTER);
         imageBox.setPadding(new Insets(5));

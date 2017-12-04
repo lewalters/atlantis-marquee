@@ -79,9 +79,6 @@ public class TextSegmentPane extends SegmentPane
         Label borderEffect = new Label("Border Effect:");
         textLabelElementsGrid.add(borderEffect, 0, 11);
 
-/*        Label borderSpeed = new Label("Border Speed:");
-        textLabelElementsGrid.add(borderSpeed, 0, 12);*/
-
         //Setting text Label Font
         textLabel.setFont(new Font(TEXT_FONT, 15));
         textColorLabel.setFont(new Font(TEXT_FONT, 15));
@@ -89,7 +86,6 @@ public class TextSegmentPane extends SegmentPane
         borderColor.setFont(new Font(TEXT_FONT, 15));
         paddingColor.setFont(new Font(TEXT_FONT, 15));
         borderEffect.setFont(new Font(TEXT_FONT, 15));
-/*        borderSpeed.setFont(new Font(TEXT_FONT, 15));*/
 
         /*Adding TextFields*/
         textTextArea = new TextArea();
@@ -97,29 +93,20 @@ public class TextSegmentPane extends SegmentPane
         textTextArea.setMaxWidth(200);
         textTextArea.setPrefHeight(75);
         textTextArea.setWrapText(true);
+        textTextArea.setPromptText("Enter display message...");
+        textTextArea.setTooltip(new Tooltip("This Assigns A Text Entered By User As The Displayed Marquee Message"));
         textLabelElementsGrid.add(textTextArea, 1, 1);
         textLabelElementsGrid.add(durationTextField, 1, 4);
         textLabelElementsGrid.add(repeatTextField, 1, 5);
         textLabelElementsGrid.add(delayTextField, 1, 6);
         subDelayTextField = new TextField();
+        subDelayTextField.setFont(new Font(TEXT_FONT, 15));
+        subDelayTextField.setMaxWidth(45);
         textLabelElementsGrid.add(subDelayTextField, 1, 7);
-/*        borderSpeedTextField = new TextField();
-        textLabelElementsGrid.add(borderSpeedTextField, 1, 12);*/
 
         // Disable the subsegment delay entry if there are no subsegments
         subDelayTextField.disableProperty().bind(Bindings.createBooleanBinding(() ->
                 textTextArea.getText().contains("|"), textTextArea.textProperty()).not());
-
-        //Setting text Field Font
-        subDelayTextField.setFont(new Font(TEXT_FONT, 15));
-/*        borderSpeedTextField.setFont(new Font(TEXT_FONT, 15));*/
-        //Setting text field's width
-        subDelayTextField.setMaxWidth(45);
-/*        borderSpeedTextField.setMaxWidth(45);*/
-        //Setting TextField Prompters
-        textTextArea.setPromptText("Enter Display Message");
-        //Adding ToolTip Hints for TextSegment Elements
-        textTextArea.setTooltip(new Tooltip("This Assigns An Text Entered By User As The Displayed Marquee Message"));
 
         // Adding text color choices
         ToggleGroup textGroup = new ToggleGroup();
@@ -133,6 +120,7 @@ public class TextSegmentPane extends SegmentPane
         HBox textChoicesBox = new HBox(textColorSingle, textColorRandom, textColorCustom);
         textChoicesBox.setSpacing(2);
         textColorPicker = new ColorPicker(DEFAULT_TEXT_COLOR);
+        textColorPicker.getStyleClass().add("button");
         textColorPicker.visibleProperty().bindBidirectional(textColorPicker.managedProperty());
         textColorPicker.visibleProperty().bind(textColorSingle.selectedProperty());
         textColorsPicker = new TextColorsPicker(segment);
@@ -191,8 +179,10 @@ public class TextSegmentPane extends SegmentPane
 
         // Create buttons to manage border color selection
         addBorderColorButton = new Button();
-        Button removeBorderColorButton = new Button();
+        addBorderColorButton.getStyleClass().add("color-button");
         addBorderColorButton.setGraphic(new ImageView("img/add.png"));
+        Button removeBorderColorButton = new Button();
+        removeBorderColorButton.getStyleClass().add("color-button");
         removeBorderColorButton.setGraphic(new ImageView("img/remove.png"));
 
         // Event handling for adding new border colors
@@ -389,6 +379,8 @@ public class TextSegmentPane extends SegmentPane
         buttonElementsGrid.setVgap(5);
 
         populate();
+
+        rightBox.getChildren().add(new Label("TEST"));
     }
 
     // Fill in the pane's cells with information from the given segment (for segment editing)
