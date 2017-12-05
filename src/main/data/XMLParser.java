@@ -36,6 +36,10 @@ public class XMLParser
     this.XMLFile = XMLFile;
 	try
 	{
+      if (!XMLFile.exists())
+      {
+          XMLFile.createNewFile();
+      }
 	  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	  dBuilder = dbFactory.newDocumentBuilder();
     }
@@ -139,7 +143,7 @@ public class XMLParser
                     break;
                     case "effectEn":
                     {
-                      segment.setEntranceEffect(EntranceTransition.valueOf(segChildNode.getTextContent()));
+                      segment.setEntranceEffect(parseEntranceEffect(segChildNode.getTextContent()));
                     }
                     break;
                     case "effectMi":
@@ -149,7 +153,7 @@ public class XMLParser
                    	break;
                     case "effectEx":
                     {
-                      segment.setExitEffect(ExitTransition.valueOf(segChildNode.getTextContent()));
+                      segment.setExitEffect(parseExitEffect(segChildNode.getTextContent()));
                     }
                   	break;
                     case "text":
@@ -316,7 +320,7 @@ public class XMLParser
 
       	  Element effectEn = doc.createElement("effectEn");
       	  seg.appendChild(effectEn);
-      	  effectEn.appendChild(doc.createTextNode(((EntranceTransition) textSegment.getEntranceEffect()).name()));
+      	  effectEn.appendChild(doc.createTextNode(textSegment.getEntranceEffect().toString()));
       	  
       	  Element effectMi = doc.createElement("effectMi");
       	  seg.appendChild(effectMi);
@@ -324,7 +328,7 @@ public class XMLParser
 
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
-      	  effectEx.appendChild(doc.createTextNode(((ExitTransition) textSegment.getExitEffect()).name()));
+      	  effectEx.appendChild(doc.createTextNode(textSegment.getExitEffect().toString()));
 
       	  Element text = doc.createElement("text");
       	  seg.appendChild(text);
@@ -369,7 +373,7 @@ public class XMLParser
 
       	  Element effectEn = doc.createElement("effectEn");
       	  seg.appendChild(effectEn);
-      	  effectEn.appendChild(doc.createTextNode(((EntranceTransition) imageSegment.getEntranceEffect()).name()));
+      	  effectEn.appendChild(doc.createTextNode(imageSegment.getEntranceEffect().toString()));
       	  
       	  Element effectMi = doc.createElement("effectMi");
       	  seg.appendChild(effectMi);
@@ -377,7 +381,7 @@ public class XMLParser
 
       	  Element effectEx = doc.createElement("effectEx");
       	  seg.appendChild(effectEx);
-      	  effectEx.appendChild(doc.createTextNode(((ExitTransition) imageSegment.getExitEffect()).name()));
+      	  effectEx.appendChild(doc.createTextNode(imageSegment.getExitEffect().toString()));
       	  
       	  Element source = doc.createElement("source");
       	  seg.appendChild(source);
@@ -411,5 +415,55 @@ public class XMLParser
       colors[c] = Color.valueOf(strings[c]);
     }
     return(colors);
+  }
+
+  private EntranceEffect parseEntranceEffect(String effectString)
+  {
+      EntranceEffect effect;
+
+      if (effectString.startsWith("Scroll "))
+      {
+          effect = ScrollDirection.valueOf(effectString.replace("Scroll ", "").toUpperCase());
+      }
+      else
+      {
+          effectString = effectString.toUpperCase().replace(' ', '_');
+
+          try
+          {
+              effect = ScrollEffect.valueOf(effectString);
+          }
+          catch (Exception ex)
+          {
+              effect = EntranceTransition.valueOf(effectString);
+          }
+      }
+
+      return effect;
+  }
+
+  private ExitEffect parseExitEffect(String effectString)
+  {
+      ExitEffect effect;
+
+      if (effectString.startsWith("Scroll "))
+      {
+          effect = ScrollDirection.valueOf(effectString.replace("Scroll ", "").toUpperCase());
+      }
+      else
+      {
+          effectString = effectString.toUpperCase().replace(' ', '_');
+
+          try
+          {
+              effect = ScrollEffect.valueOf(effectString);
+          }
+          catch (Exception ex)
+          {
+              effect = ExitTransition.valueOf(effectString);
+          }
+      }
+
+      return effect;
   }
 }

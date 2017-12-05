@@ -45,7 +45,6 @@ public class SettingsPane extends BorderPane
 {
     private ObjectProperty<Marquee> marquee;
     private MenuItem newMarq, save, load, exit;
-    private MenuItem undo, redo;
     private MenuItem userGuide, about;
     private RadioButton timeCustom;
     private Spinner<LocalTime> timeSpinner;
@@ -242,12 +241,11 @@ public class SettingsPane extends BorderPane
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
         Menu file = new Menu("File");
-        Menu edit = new Menu("Edit");
         Menu help = new Menu("Help");
 
         //setting MenuBar Width
         menuBar.prefWidthProperty().bind(widthProperty());
-        menuBar.getMenus().addAll(file, edit, help);
+        menuBar.getMenus().addAll(file, help);
 
         //Creating FileMenu Elements
         newMarq = new MenuItem("New");
@@ -255,17 +253,12 @@ public class SettingsPane extends BorderPane
         load = new MenuItem("Load");
         exit = new MenuItem("Exit");
 
-        //Creating EditMenu Elements
-        undo = new MenuItem("Undo");
-        redo = new MenuItem("Redo");
-
         //Creating HelpMenu Elements
         userGuide = new MenuItem("User Guide");
         about = new MenuItem("About"); //Create a new pane
 
         //Adding File Elements
         file.getItems().addAll(newMarq, save, load, exit);
-        edit.getItems().addAll(undo, redo);
         if (Desktop.isDesktopSupported())
         {
             help.getItems().addAll(userGuide, about);
@@ -587,16 +580,6 @@ public class SettingsPane extends BorderPane
     public MenuItem getExit()
     {
         return exit;
-    }
-
-    public MenuItem getUndo()
-    {
-        return undo;
-    }
-
-    public MenuItem getRedo()
-    {
-        return redo;
     }
 
     public MenuItem getUserGuide()
