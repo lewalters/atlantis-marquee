@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 
+import java.io.File;
 import java.io.IOException;
 
 import static util.Global.MIN_OPACITY;
@@ -32,7 +33,7 @@ public final class Utility
 
         if (validImage(source))
         {
-            image = new Image(source);
+            image = new Image(new File(source).toURI().toString());
         }
         else
         {

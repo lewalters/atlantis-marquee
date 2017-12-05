@@ -12,6 +12,8 @@ import javafx.scene.text.Font;
 import util.EntranceTransition;
 import util.ExitTransition;
 
+import java.nio.file.Paths;
+
 import static util.Global.TEXT_FONT;
 /**
  * (Insert a brief comment that describes
@@ -34,12 +36,8 @@ public class WelcomePane extends BorderPane
         welcomeText.setExitEffect(ExitTransition.RANDOM_OFF);
         welcomeText.setDuration(2);
         welcomeText.setTextColors(new Color[]{Color.TRANSPARENT});
-        ImageSegment logo = new ImageSegment();
-        logo.setSource("img/V.png");
-        logo.setDuration(5);
         Message welcomeMessage = new Message();
         welcomeMessage.addSegment(0, welcomeText);
-        welcomeMessage.addSegment(1, logo);
         controller = new MarqueeController(welcomeMessage);
         this.setCenter(controller.getPreviewMarqueePane());
 

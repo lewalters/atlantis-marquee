@@ -15,6 +15,8 @@ import javafx.stage.StageStyle;
 import util.Validation;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.StringJoiner;
 
 import static util.Global.*;
@@ -100,7 +102,7 @@ public class ImageSegmentPane extends SegmentPane
 
         if (imageFile != null)
         {
-            setSourceImageView(imageFile.toURI().toString());
+            setSourceImageView(imageFile.toString());
         }
     }
 
@@ -143,11 +145,23 @@ public class ImageSegmentPane extends SegmentPane
     }
 
     // Create ImageView to preview the chosen image
-    private void setSourceImageView(String path)
+    private void setSourceImageView(String pathString)
     {
-        if (validImage(path))
+        if (validImage(pathString))
         {
-            Image image = new Image(path);
+            File imageFile = new File(System.getProperty("user.dir"), "/images/" + Paths.get(pathString).getFileName().toString());
+
+            try
+            {
+                Files.copy(Paths.get(pathString), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+                return;
+            }
+
+            Image image = new Image(imageFile.toURI().toString());
 
             sourceImageView.setImage(image);
 
@@ -162,7 +176,7 @@ public class ImageSegmentPane extends SegmentPane
             }
 
             sourceImageView.setVisible(true);
-            segment.setSource(path);
+            segment.setSource(Paths.get(System.getProperty("user.dir")).relativize(imageFile.toPath()).toString().replace("\\", "/"));
         }
     }
 }

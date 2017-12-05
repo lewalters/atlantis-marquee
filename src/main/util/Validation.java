@@ -3,6 +3,8 @@ package util;
 import data.CharDot;
 import javafx.scene.image.Image;
 
+import java.io.File;
+
 import static util.Global.MAX_IMAGE_HEIGHT;
 import static util.Global.MAX_IMAGE_WIDTH;
 
@@ -10,14 +12,20 @@ public final class Validation
 {
     public static boolean validImage(String path)
     {
+        if (path.isEmpty())
+        {
+            return false;
+        }
+
         Image image;
 
         try
         {
-            image = new Image(path);
+            image = new Image(new File(path).toURI().toString());
         }
-        catch (RuntimeException ex)
+        catch (Exception ex)
         {
+            System.out.println("Error in validating");
             return false;
         }
 
