@@ -2,7 +2,7 @@ package util;
 
 public enum EntranceTransition implements EntranceEffect
 {
-    NONE("None"), RANDOM_ON("Random On"), FADE("Fade In");
+    NONE("None"), RANDOM_ON("Random On"), FADE_IN("Fade In");
 
     private String description;
 

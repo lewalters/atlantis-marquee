@@ -2,7 +2,7 @@ package util;
 
 public enum ExitTransition implements ExitEffect
 {
-    NONE("None"), RANDOM_OFF("Random Off"), FADE("Fade Out");
+    NONE("None"), RANDOM_OFF("Random Off"), FADE_OUT("Fade Out");
 
     private String description;
 

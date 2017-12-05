@@ -112,7 +112,7 @@ public class MarqueePane extends StackPane
     // Set the border to the provided colors or randomly
     public void setBorderColor(Color[] colors)
     {
-        if (colors[0] == Color.TRANSPARENT)
+        if (colors[0].equals(Color.TRANSPARENT))
         {
             border.forEach(led -> {
                 double red = Math.random() * 0.8 + 0.2;

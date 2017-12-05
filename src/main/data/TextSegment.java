@@ -236,7 +236,7 @@ public class TextSegment extends Segment
     public void setBorderColors(Color[] borderColors)
     {
         this.borderColors = borderColors;
-        border = !borderColors[0].equals(OFF_COLOR);
+        border = borderColors.length > 1 || !borderColors[0].equals(OFF_COLOR);
     }
 
     public void setBorderEffect(BorderEffect borderEffect)

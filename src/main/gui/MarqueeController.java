@@ -299,7 +299,7 @@ public class MarqueeController
                     set(transition, segment, false);
                     randomLight(transition, segment, IN);
                     break;
-                case FADE:
+                case FADE_IN:
                     set(transition, segment, false);
                     fade(transition, segment, IN);
                     break;
@@ -351,7 +351,7 @@ public class MarqueeController
                 case RANDOM_OFF:
                     randomLight(transition, segment, OUT);
                     break;
-                case FADE:
+                case FADE_OUT:
                     fade(transition, segment, OUT);
                     break;
                 case NONE:

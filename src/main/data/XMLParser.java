@@ -216,7 +216,7 @@ public class XMLParser
                     break;
                     case "effectEn":
                     {
-                      segment.setEntranceEffect(EntranceTransition.valueOf(segChildNode.getTextContent()));
+                      segment.setEntranceEffect(parseEntranceEffect(segChildNode.getTextContent()));
                     }
                     break;
                     case "effectMi":
@@ -226,7 +226,7 @@ public class XMLParser
                    	break;
                     case "effectEx":
                     {
-                      segment.setExitEffect(ExitTransition.valueOf(segChildNode.getTextContent()));
+                      segment.setExitEffect(parseExitEffect(segChildNode.getTextContent()));
                     }
                   	break;
                     case "source":
