@@ -101,7 +101,7 @@ public class TextSegment extends Segment
         ArrayList<TextSegment> subsegments = new ArrayList<>();
         double subDuration = (getDuration() - ((getRepeat() - 1) * getDelay()) - ((subtexts.size() - 1) * subDelay)) / getRepeat() / subtexts.size();
 
-        subtexts.forEach(subtext -> subsegments.add(new TextSegment(subDuration, 1, getDelay(), subDelay,
+        subtexts.forEach(subtext -> subsegments.add(new TextSegment(subDuration, 1, 0, subDelay,
                 getScrollDirection(), borderColors, borderEffect, paddingColor, getEntranceEffect(),
                 getMiddleEffect(), getExitEffect(), textColors, subtext, true)));
 

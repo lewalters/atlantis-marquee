@@ -1,6 +1,7 @@
 package gui;
 
 import data.Dot;
+import data.ImageSegment;
 import data.Segment;
 import data.TextSegment;
 import javafx.scene.layout.GridPane;
@@ -1456,14 +1457,19 @@ public class MarqueePane extends StackPane
     }
 
     // Turn off all LEDs on the marquee
-    public void reset()
+    public void reset(Segment segment)
     {
-        for (LED[] leds : ledMatrix)
+        for (LED[] leds : segment instanceof TextSegment ? textMatrix : ledMatrix)
         {
             for (LED led : leds)
             {
                 led.turnOff();
             }
         }
+    }
+
+    public void reset()
+    {
+        reset(new ImageSegment());
     }
 }

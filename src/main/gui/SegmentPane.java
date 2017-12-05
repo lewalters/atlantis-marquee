@@ -306,8 +306,9 @@ public abstract class SegmentPane extends BorderPane
             {
                 validated.set(false);
                 segment.setScrollDirection(ScrollDirection.STATIC);
-                resetEffects();
             }
+
+            resetEffects();
         });
 
         // Set the scroll direction to the initial direction and remove effects if "scroll" is chosen
