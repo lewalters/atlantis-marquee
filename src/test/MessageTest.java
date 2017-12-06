@@ -42,7 +42,7 @@ public class MessageTest {
 
     @Test
     public void testAddSegment() {
-        //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};
+
 
         Segment s = new TextSegment();
         m.addSegment(0, s);
