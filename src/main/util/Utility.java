@@ -58,8 +58,9 @@ public final class Utility
         matrix = new DotMatrix(dotHeight, dotWidth);
 
         // Calculate the width and height of each dot in terms of pixels in the original image
-        int dotHeightPx = (int) Math.ceil((height * 1.0) / dotHeight);
-        int dotWidthPx = (int) Math.ceil((width * 1.0) / dotWidth);
+        double dotHeightPx = (height * 1.0) / dotHeight;
+        double dotWidthPx = (width * 1.0) / dotWidth;
+        System.out.println(dotHeightPx + " // " + dotWidthPx);
 
         // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
@@ -75,13 +76,14 @@ public final class Utility
         {
             for (int c = 0; c < width; c++)
             {
-                int row = r / dotHeightPx;
-                int col = c / dotWidthPx;
+                int row = (int) (r / dotHeightPx);
+                int col = (int) (c / dotWidthPx);
                 Color pixel = pixelReader.getColor(c, r);
                 rgbs[row][col].addRed(pixel.getRed());
                 rgbs[row][col].addGreen(pixel.getGreen());
                 rgbs[row][col].addBlue(pixel.getBlue());
                 rgbs[row][col].addOpacity(pixel.getOpacity());
+                System.out.println("row: " + row + " // col: " + col);
             }
         }
 

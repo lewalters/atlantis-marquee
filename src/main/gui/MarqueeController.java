@@ -220,7 +220,7 @@ public class MarqueeController
 
         // Add either the borderedTransition or the bodyTransition to the animation set
         transition.getChildren().addAll(borderedTransition.getChildren().size() == 0 ? bodyTransition : borderedTransition,
-                                        new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset())));
+                                        new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.reset())));
     }
 
     private void addBodyAnimation(SequentialTransition bodyTransition, Segment segment)
@@ -242,7 +242,7 @@ public class MarqueeController
             scroll(bodyTransition, segment, EffectTime.CONTINUOUS);
         }
 
-        bodyTransition.getChildren().add(new Timeline(new KeyFrame(Duration.ONE, e -> marqueePane.reset(segment))));
+        bodyTransition.getChildren().add(new Timeline(new KeyFrame(Duration.millis(50), e -> marqueePane.reset(segment))));
     }
 
     // Create the border and padding iff colors are set in the segment
