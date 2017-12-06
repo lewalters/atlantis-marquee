@@ -21,7 +21,7 @@ public class MessageTest {
 
     @Test
     public void testMessageGetters() {
-        assertEquals("data.Message Test: getRepeatFactor", 0, m.getRepeatFactor());
+        assertEquals("data.Message Test: getRepeatFactor", 1, m.getRepeatFactor());
         assertEquals("data.Message Test: getDelay", 0, m.getDelay());
         assertEquals("data.Message Test: getComments", "", m.getComments());
     }
@@ -39,13 +39,7 @@ public class MessageTest {
         assertEquals("data.Message Test: setComments", "Welcome Message 2", m.getComments());
     }
 
-    /*   @Test
-    public void testGetContent() {
-           LinkedList one = new LinkedList()
-                   m.getContents();
-           assertEquals(one.isEmpty());
-   }
-*/
+
     @Test
     public void testAddSegment() {
         //  Color[] colorList = {Color.TRANSPARENT, Color.LIGHTSEAGREEN, Color.BLUEVIOLET, Color.ORCHID};

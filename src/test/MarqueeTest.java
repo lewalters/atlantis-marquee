@@ -39,7 +39,7 @@ public class MarqueeTest {
         m.setMessage(s);
         // assertEquals("data.Message Test: getName", "Hello", s.getName());
         assertEquals("data.Message Test: getComment", "", s.getComments());
-        assertEquals("data.Message Test: getRepeatFactor", 0, s.getRepeatFactor());
+        assertEquals("data.Message Test: getRepeatFactor", 1, s.getRepeatFactor());
         assertEquals("data.Message Test: getDelay", 0, s.getDelay());
         assertEquals(s, m.getMessage());
 
@@ -113,7 +113,7 @@ public class MarqueeTest {
         m.setMessage(s);
         // assertEquals("data.Message Test: getName", "Hello", s.getName());
         assertEquals("data.Message Test: getComment", "", s.getComments());
-        assertEquals("data.Message Test: getRepeatFactor", 0, s.getRepeatFactor());
+        assertEquals("data.Message Test: getRepeatFactor", 1, s.getRepeatFactor());
         assertEquals("data.Message Test: getDelay", 0, s.getDelay());
     }
 
