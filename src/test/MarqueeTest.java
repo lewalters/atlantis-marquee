@@ -66,7 +66,8 @@ public class MarqueeTest {
     @Test
     public void testSetScreenPosition() {
         m.setScreenPosition(TOP_LEFT);
-        assertEquals("data.Message Test: getScreenPos", TOP_LEFT, m.getScreenPos());
+        assertEquals(
+                "data.Message Test: getScreenPos", TOP_LEFT, m.getScreenPos());
 
     }
 
@@ -111,7 +112,6 @@ public class MarqueeTest {
     public void testSetMessage() {
         Message s = new Message();
         m.setMessage(s);
-        // assertEquals("data.Message Test: getName", "Hello", s.getName());
         assertEquals("data.Message Test: getComment", "", s.getComments());
         assertEquals("data.Message Test: getRepeatFactor", 1, s.getRepeatFactor());
         assertEquals("data.Message Test: getDelay", 0, s.getDelay());
