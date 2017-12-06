@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -29,7 +30,7 @@ public class SegmentListView extends GridPane
 
         this.setAlignment(Pos.CENTER);
         this.setVgap(10);
-        this.setHgap(10);
+        this.setHgap(5);
 
         refresh();
     }
@@ -47,21 +48,34 @@ public class SegmentListView extends GridPane
             Segment segment = segments.get(i);
 
             TextField rank = new TextField(Integer.toString(i + 1));
-            rank.setPrefWidth(30);
+            rank.setPrefSize(30, 30);
             rank.setAlignment(Pos.CENTER);
             this.add(rank, 0, i);
             orderFields.add(rank);
+
+            // Restrict rank boxes to only numeric characters
+            rank.textProperty().addListener((observable, oldValue, newValue) ->
+            {
+                if (!newValue.matches("\\d*"))
+                {
+                    rank.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
 
             MarqueeController controller = new MarqueeController(segment, true);
             Pane pane = controller.getPreviewMarqueePane();
             this.add(pane, 1, i);
             controller.preview();
 
-            Button edit = new Button("E");
+            Button edit = new Button();
+            edit.setGraphic(new ImageView("img/pencil.png"));
+            edit.getStyleClass().add("icon-button");
             this.add(edit, 2, i);
             editButtons.add(edit);
 
-            Button delete = new Button("X");
+            Button delete = new Button();
+            delete.setGraphic(new ImageView("img/trash.png"));
+            delete.getStyleClass().add("icon-button");
             this.add(delete, 3, i);
             deleteButtons.add(delete);
         }
@@ -97,6 +111,14 @@ public class SegmentListView extends GridPane
         }
 
         return ranks;
+    }
+
+    public void resetRanks()
+    {
+        for (int i = 0; i < orderFields.size(); i++)
+        {
+            orderFields.get(i).setText(Integer.toString(i + 1));
+        }
     }
 
     public void setSegments(List<Segment> segments)

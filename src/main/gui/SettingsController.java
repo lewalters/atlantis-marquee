@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -49,6 +50,7 @@ public class SettingsController
         settingsPane.getReorderButton().setOnAction(e -> {
             int[] ranks = settingsPane.getSegmentListView().getRanks();
             boolean isSorted = true;
+            boolean isValid = true;
 
             for (int i = 0; i < ranks.length - 1; i++)
             {
@@ -59,7 +61,26 @@ public class SettingsController
                 }
             }
 
-            if (!isSorted)
+            for (int i = 0; i < ranks.length - 1; i++)
+            {
+                if (ranks[i] > ranks.length || ranks[i] < 1)
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (!isValid)
+            {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText("");
+                alert.setContentText("One or more ranks are not valid. Please enter numbers between 1 and " + ranks.length + ".");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.getDialogPane().setGraphic(new ImageView("img/warning.png"));
+                alert.showAndWait();
+                settingsPane.getSegmentListView().resetRanks();
+            }
+            else if (!isSorted)
             {
                 marquee.get().getMessage().changeOrder(ranks);
                 settingsPane.getSegmentListView().refresh();
@@ -115,6 +136,7 @@ public class SettingsController
             catch (Exception ex)
             {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to find \"VISION User Guide.pdf\"");
+                alert.getDialogPane().setGraphic(new ImageView("img/error.png"));
                 alert.showAndWait();
                 settingsPane.getUserGuide().setDisable(true);
             }

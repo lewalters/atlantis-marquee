@@ -141,6 +141,7 @@ public class ImageSegmentPane extends SegmentPane
         alert.setHeaderText("");
         alert.setContentText(warningText.toString());
         alert.initStyle(StageStyle.UNDECORATED);
+        alert.getDialogPane().setGraphic(new ImageView("img/warning.png"));
         alert.showAndWait();
     }
 

@@ -200,7 +200,7 @@ public abstract class SegmentPane extends BorderPane
         }));
 
         /*Adding Creating Buttons and Setting Font/Size*/
-        Button validateButton = new Button("Validate");
+        Button validateButton = new Button("Apply");
         continueButton = new Button("Continue");
         cancelButton = new Button("Cancel");
 
@@ -282,6 +282,7 @@ public abstract class SegmentPane extends BorderPane
         effectsGrid.add(middleLabel, 0, 1);
         middleComboBox.getItems().addAll(MiddleEffect.NONE, MiddleEffect.BLINK, MiddleEffect.INVERT);
         middleComboBox.setEditable(false);
+        middleComboBox.prefWidthProperty().bind(entranceComboBox.widthProperty());
         middleComboBox.getSelectionModel().selectFirst();
         effectsGrid.add(middleComboBox, 1, 1);
         Label exitLabel = new Label("Exit:");
@@ -298,6 +299,8 @@ public abstract class SegmentPane extends BorderPane
         effectsGrid.setHgap(5);
         effectsGrid.setVgap(5);
         effectsGrid.setPadding(new Insets(5));
+        HBox effectsBox = new HBox(effectsGrid);
+        effectsBox.setAlignment(Pos.TOP_CENTER);
 
         // Set the scroll direction to STATIC and remove effects if "static" is chosen
         statikRadioBtn.setOnAction(e ->
@@ -391,12 +394,12 @@ public abstract class SegmentPane extends BorderPane
 
         Label animationLabel = new Label("Segment Animation");
         animationLabel.setFont(new Font(TEXT_FONT, 15));
-        VBox effectsBox = new VBox(animationLabel, radioBox, scrollVBox, effectsGrid);
-        effectsBox.setPrefHeight(180);
-        effectsBox.setStyle("-fx-border-color: white");
-        effectsBox.setPadding(new Insets(5));
-        effectsBox.setAlignment(Pos.TOP_CENTER);
-        rightBox = new VBox(effectsBox);
+        VBox animationBox = new VBox(animationLabel, radioBox, scrollVBox, effectsBox);
+        animationBox.setPrefHeight(180);
+        animationBox.setStyle("-fx-border-color: white");
+        animationBox.setPadding(new Insets(5));
+        animationBox.setAlignment(Pos.TOP_CENTER);
+        rightBox = new VBox(animationBox);
         rightBox.setPadding(new Insets(10, 0, 0, 0));
         rightBox.setSpacing(30);
         this.setRight(rightBox);
