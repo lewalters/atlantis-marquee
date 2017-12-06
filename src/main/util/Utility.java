@@ -60,7 +60,6 @@ public final class Utility
         // Calculate the width and height of each dot in terms of pixels in the original image
         double dotHeightPx = (height * 1.0) / dotHeight;
         double dotWidthPx = (width * 1.0) / dotWidth;
-        System.out.println(dotHeightPx + " // " + dotWidthPx);
 
         // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
@@ -83,7 +82,6 @@ public final class Utility
                 rgbs[row][col].addGreen(pixel.getGreen());
                 rgbs[row][col].addBlue(pixel.getBlue());
                 rgbs[row][col].addOpacity(pixel.getOpacity());
-                System.out.println("row: " + row + " // col: " + col);
             }
         }
 

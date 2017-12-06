@@ -19,21 +19,17 @@
 }
 
 .button {
-    -fx-border-radius: 6;
+    -fx-border-radius: 3px;
     -fx-base: #585858;
     -fx-border-color: grey;
 }
 
 .menu-bar {
     -fx-font-family: Helvetica;
-    -fx-border-width: 1;
+    -fx-border-width: 0px 0px 1px 0px;
     -fx-border-style: solid;
-    -fx-border-color: grey;
+    -fx-border-color: silver;
     -fx-color: #585858;
-}
-
-.customGridControl {
-    -fx-padding: 15;
 }
 
 .customTitleLabel {
@@ -48,7 +44,7 @@
     -fx-border-width: 2px;
 }
 
-.color-picker, .color-button {
+.color-picker, .color-button, .icon-button {
     -fx-min-width: 30px;
     -fx-min-height: 30px;
 }

@@ -108,7 +108,7 @@ public class TextSegmentPane extends SegmentPane
         textColorCustom = new RadioButton("Custom");
         textColorCustom.setToggleGroup(textGroup);
         HBox textChoicesBox = new HBox(textColorSingle, textColorRandom, textColorCustom);
-        textChoicesBox.setSpacing(2);
+        textChoicesBox.setSpacing(9);
         textColorPicker = new ColorPicker(DEFAULT_TEXT_COLOR);
         textColorPicker.getStyleClass().add("button");
         textColorPicker.visibleProperty().bindBidirectional(textColorPicker.managedProperty());
@@ -164,7 +164,7 @@ public class TextSegmentPane extends SegmentPane
         borderColorCustom = new RadioButton("Custom");
         borderColorCustom.setToggleGroup(borderGroup);
         HBox borderChoicesBox = new HBox(borderColorNone, borderColorRandom, borderColorCustom);
-        borderChoicesBox.setSpacing(2);
+        borderChoicesBox.setSpacing(3);
         borderColorPickers = FXCollections.observableArrayList();
         ColorPicker borderColorPicker = new ColorPicker(OFF_COLOR);
         borderColorPicker.getStyleClass().add("button");
@@ -194,7 +194,8 @@ public class TextSegmentPane extends SegmentPane
         removeBorderColorButton.setGraphic(new ImageView("img/remove.png"));
 
         // Event handling for adding new border colors
-        addBorderColorButton.setOnAction(e -> {
+        addBorderColorButton.setOnAction(e ->
+        {
             ColorPicker newBorderColorPicker = new ColorPicker(OFF_COLOR);
             newBorderColorPicker.getStyleClass().add("button");
             newBorderColorPicker.setStyle("-fx-color-label-visible: false;");
@@ -216,11 +217,13 @@ public class TextSegmentPane extends SegmentPane
             {
                 borderColorsBox.getChildren().add(borderColorsBox.getChildren().size() - 2, newBorderColorPicker);
             }
+
+            changeColors();
         });
 
         // Event handling for removing border colors
-        removeBorderColorButton.setOnAction(e -> {
-
+        removeBorderColorButton.setOnAction(e ->
+        {
             if (borderColorPickers.size() == MAX_BORDER_COLORS)
             {
                 borderColorsBox.getChildren().remove(borderColorsBox.getChildren().size() - 2);
@@ -237,6 +240,8 @@ public class TextSegmentPane extends SegmentPane
             {
                 borderColorsBox.getChildren().remove(removeBorderColorButton);
             }
+
+            changeColors();
         });
 
         borderColorsBox.getChildren().add(addBorderColorButton);
@@ -245,6 +250,7 @@ public class TextSegmentPane extends SegmentPane
         borderEffectComboBox = new ComboBox<>();
         borderEffectComboBox.getItems().addAll(BorderEffect.values());
         borderEffectComboBox.setEditable(false);
+        borderEffectComboBox.setPrefWidth(185);
         borderEffectComboBox.getSelectionModel().selectFirst();
         borderGrid.add(borderEffectComboBox, 1, 2);
 
@@ -275,7 +281,7 @@ public class TextSegmentPane extends SegmentPane
         paddingColorPicker.visibleProperty().bindBidirectional(paddingColorPicker.managedProperty());
         paddingColorPicker.visibleProperty().bind(paddingColorCustom.selectedProperty());
         HBox paddingColorChoices = new HBox(paddingColorNone, paddingColorCustom, paddingColorPicker);
-        paddingColorChoices.setSpacing(2);
+        paddingColorChoices.setSpacing(5);
         borderGrid.add(paddingColorChoices, 1, 3);
 
         paddingColorNone.setOnAction(e ->
@@ -576,6 +582,7 @@ public class TextSegmentPane extends SegmentPane
         alert.setHeaderText("");
         alert.setContentText(warningText.toString());
         alert.initStyle(StageStyle.UNDECORATED);
+        alert.getDialogPane().setGraphic(new ImageView("img/warning.png"));
         alert.showAndWait();
     }
 

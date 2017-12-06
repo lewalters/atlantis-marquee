@@ -17,7 +17,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -136,6 +138,7 @@ public class SettingsPane extends BorderPane
 
         // Screen position combo box using Pos with modified string values
         screenPosition = new ComboBox<>();
+        screenPosition.setPrefWidth(160);
         screenPosition.getItems().addAll(Arrays.copyOf(Pos.values(), 9));
         screenPosition.getSelectionModel().select(Pos.CENTER);
         screenPosition.setConverter(new StringConverter<>()
@@ -168,7 +171,7 @@ public class SettingsPane extends BorderPane
         timeCustom = new RadioButton("Custom");
         timeCustom.setToggleGroup(timeGroup);
         HBox timeChoices = new HBox(timeImmediate, timeCustom);
-        timeChoices.setSpacing(5);
+        timeChoices.setSpacing(20);
 
         // Time spinner to select a start time for the marquee animations
         timeSpinner = new Spinner<>();
@@ -211,6 +214,7 @@ public class SettingsPane extends BorderPane
         });
         timeSpinner.setValueFactory(timeValueFactory);
         timeSpinner.setEditable(true);
+        timeSpinner.setPrefWidth(160);
         timeSpinner.disableProperty().bind(timeCustom.selectedProperty().not());
 
         timeImmediate.setOnAction(e -> {
@@ -237,6 +241,7 @@ public class SettingsPane extends BorderPane
         heightTextField.disableProperty().bind(maxSizeCheckBox.selectedProperty());
         HBox fullScreenBox = new HBox(fullScreenCheckBox, maxSizeCheckBox);
         fullScreenBox.setSpacing(10);
+        fullScreenBox.setAlignment(Pos.CENTER);
 
         /*Adding MenuBar*/
         MenuBar menuBar = new MenuBar();
@@ -282,7 +287,7 @@ public class SettingsPane extends BorderPane
         imageSegmentButton.setFont(new Font(TEXT_FONT, 15));
 
         HBox segmentButtonsBox = new HBox(textSegmentButton, imageSegmentButton);
-        segmentButtonsBox.setSpacing(10);
+        segmentButtonsBox.setSpacing(20);
         segmentButtonsBox.setAlignment(Pos.CENTER);
 
         segmentListView = new SegmentListView(controller, marquee.get().getMessage().getContents());
@@ -295,20 +300,20 @@ public class SettingsPane extends BorderPane
 
         VBox rightPanel = new VBox(segmentButtonsBox, segmentScrollPane, reorderButton);
         rightPanel.setSpacing(15);
-        rightPanel.setPadding(new Insets(15));
+        rightPanel.setAlignment(Pos.TOP_CENTER);
         this.setCenter(rightPanel);
 
         /*Setting Width/Height*/
         //Setting TextFields Width
         widthTextField.setMaxWidth(50);
         heightTextField.setMaxWidth(50);
-        ledGapTextField.setMaxWidth(40);
-        delayTextField.setMaxWidth(40);
-        repeatTextField.setMaxWidth(40);
+        ledGapTextField.setMaxWidth(50);
+        delayTextField.setMaxWidth(50);
+        repeatTextField.setMaxWidth(50);
         commentsTextArea.setMaxWidth(160);
 
         //Setting Buttons Width
-        startButton.setPrefWidth(230);
+        startButton.setPrefWidth(195);
         textSegmentButton.setPrefWidth(175);
         imageSegmentButton.setPrefWidth(175);
 
@@ -546,6 +551,7 @@ public class SettingsPane extends BorderPane
         //Creating Vertical Box for fullscreen checkbox, authentication checkbox, vertical and start menuElements
         VBox leftControlVb = new VBox(leftLabelTextFieldGrid, fullScreenBox, startButton);
         leftControlVb.setSpacing(10);
+        leftControlVb.setAlignment(Pos.CENTER);
         this.setLeft(leftControlVb);
 
         //Creating Tooltip for startButton
@@ -554,11 +560,10 @@ public class SettingsPane extends BorderPane
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
 
-        populate();
+        leftControlVb.setPadding(new Insets(20, 5, 20, 20));
+        rightPanel.setPadding(new Insets(20, 20, 20, 5));
 
-        //Using VisionStyleSheet
-        rightPanel.getStyleClass().add("customGridControl");
-        leftControlVb.getStyleClass().add("customGridControl");
+        populate();
     }
 
     //SettingsPane Constructors return properties
@@ -684,6 +689,7 @@ public class SettingsPane extends BorderPane
         alert.setHeaderText("");
         alert.setContentText(warningText.toString());
         alert.initStyle(StageStyle.UNDECORATED);
+        alert.getDialogPane().setGraphic(new ImageView("img/warning.png"));
         alert.showAndWait();
     }
 
