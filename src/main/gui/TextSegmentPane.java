@@ -15,6 +15,7 @@ import util.BorderEffect;
 import util.MiddleEffect;
 import util.ScrollDirection;
 
+import java.util.Arrays;
 import java.util.StringJoiner;
 
 import static util.Global.*;
@@ -134,6 +135,12 @@ public class TextSegmentPane extends SegmentPane
         HBox textColorTypes = new HBox(textColorPicker, colorsScroll);
         textLabelElementsGrid.add(textChoicesBox, 1, 2);
         textLabelElementsGrid.add(textColorTypes, 1, 3);
+
+        // Disable the custom text color entry if there are subsegments
+        textColorCustom.disableProperty().bind(Bindings.createBooleanBinding(() ->
+                textTextArea.getText().contains("|"), textTextArea.textProperty()));
+        textColorsPicker.disableProperty().bind(Bindings.createBooleanBinding(() ->
+                textTextArea.getText().contains("|"), textTextArea.textProperty()));
 
         textColorPicker.setOnAction(e -> segment.setTextColors(new Color[]{textColorPicker.getValue()}));
 
@@ -463,7 +470,7 @@ public class TextSegmentPane extends SegmentPane
 
         subDelayTextField.setText(String.valueOf(segment.getSubDelay()));
 
-        Color[] borderColors = segment.getBorderColors();
+        Color[] borderColors = Arrays.copyOf(segment.getBorderColors(), segment.getBorderColors().length);
 
         if (borderColors[0].equals(OFF_COLOR) && borderColors.length == 1)
         {
@@ -486,6 +493,8 @@ public class TextSegmentPane extends SegmentPane
             {
                 borderColorPickers.get(i).setValue(borderColors[i]);
             }
+
+            segment.setBorderColors(borderColors);
         }
 
         if (segment.getPaddingColor().equals(OFF_COLOR))
@@ -494,8 +503,9 @@ public class TextSegmentPane extends SegmentPane
         }
         else // Custom color
         {
+            Color paddingColor = segment.getPaddingColor();
             paddingColorCustom.setSelected(true);
-            paddingColorPicker.setValue(segment.getPaddingColor());
+            paddingColorPicker.setValue(paddingColor);
         }
 
         if (!borderColorNone.isSelected())
@@ -522,6 +532,15 @@ public class TextSegmentPane extends SegmentPane
             // Subsegment highlighting
             if (segment.hasSubsegments())
             {
+                if (textColorCustom.isSelected())
+                {
+                    textTextArea.pseudoClassStateChanged(INVALID, true);
+                    textColorCustom.pseudoClassStateChanged(INVALID, true);
+                    warnings.add(textTextArea);
+                    warnings.add(textColorCustom);
+                    warningText.add("Custom colors cannot be set when subsegments are present");
+                }
+
                 for (TextSegment segment : segment.getSubsegments())
                 {
                     if (segment.getSpeed() < MAX_SPEED)

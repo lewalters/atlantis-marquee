@@ -77,6 +77,7 @@ public class TextColorsPicker extends VBox
         textBox.setPadding(new Insets(5));
         textBox.setSpacing(2);
         this.getChildren().add(textBox);
+        int c = 0;
 
         for(int i = 0; i < text.length(); i++)
         {
@@ -89,7 +90,17 @@ public class TextColorsPicker extends VBox
             {
                 charBox.getChildren().add(new Label(String.valueOf(ch)));
 
-                ColorPicker picker = new ColorPicker(DEFAULT_TEXT_COLOR);
+                ColorPicker picker;
+
+                if (segment.getTextColors().length > 1)
+                {
+                    picker = new ColorPicker(segment.getTextColors()[c++]);
+                }
+                else
+                {
+                    picker = new ColorPicker(DEFAULT_TEXT_COLOR);
+                }
+
                 picker.getStyleClass().add("button");
                 picker.setStyle("-fx-color-label-visible: false;");
                 pickers.add(picker);

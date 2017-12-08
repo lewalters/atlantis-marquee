@@ -395,6 +395,11 @@ public class TextSegment extends Segment
         {
             if (hasSubsegments())
             {
+                if (textColors.length > 1)
+                {
+                    return false;
+                }
+
                 for (TextSegment segment : getSubsegments())
                 {
                     if (!segment.isValid())
