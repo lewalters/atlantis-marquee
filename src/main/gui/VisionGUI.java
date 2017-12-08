@@ -10,6 +10,13 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import util.Global;
 
+/**
+ * The main application class which controls startup and transitioning logic between the main screens
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class VisionGUI extends Application
 {
 

@@ -1,5 +1,12 @@
 package util;
 
+/**
+ * Describes the possible types of special effect scrolling a Segment can be displayed with
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public enum ScrollEffect implements EntranceEffect, ExitEffect
 {
     SPLIT_SCROLL_HORIZONTAL("Split Scroll Horizontal"), SPLIT_SCROLL_VERTICAL("Split Scroll Vertical"),

@@ -3,8 +3,8 @@ package data;
 import javafx.scene.paint.Color;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A Dot is the most basic unit in the marquee data structure,
+ * storing color and intensity information for a single group of pixels
  * <p>
  * <p/> Bugs: None known
  *

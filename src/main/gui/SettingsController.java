@@ -18,6 +18,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * A SettingsController handles the display of a single SettingsPane
+ * and controls the transition to SegmentPanes as needed
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class SettingsController
 {
     private ObjectProperty<Marquee> marquee;

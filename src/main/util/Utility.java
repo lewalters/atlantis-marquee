@@ -15,8 +15,8 @@ import static util.Global.NUM_ROWS;
 import static util.Validation.validImage;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A general-purpose utility class, although it currently only
+ * contains methods related to image conversion
  * <p>
  * <p/> Bugs: None known
  *
@@ -29,7 +29,6 @@ public final class Utility
     public static DotMatrix convertImage(String source) throws IOException
     {
         Image image;
-        DotMatrix matrix;
 
         if (validImage(source))
         {
@@ -54,12 +53,18 @@ public final class Utility
             dotHeight = (int) (1.0 * height / width);
         }
 
-        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
-        matrix = new DotMatrix(dotHeight, dotWidth);
-
         // Calculate the width and height of each dot in terms of pixels in the original image
         double dotHeightPx = (height * 1.0) / dotHeight;
         double dotWidthPx = (width * 1.0) / dotWidth;
+
+        return averageAlgorithm(pixelReader, height, width, dotHeight, dotWidth, dotHeightPx, dotWidthPx);
+    }
+
+    private static DotMatrix averageAlgorithm(PixelReader pixelReader, int imageHeight, int imageWidth,
+                                       int dotHeight, int dotWidth, double dotHeightPx, double dotWidthPx)
+    {
+        RGB[][] rgbs = new RGB[dotHeight][dotWidth];
+        DotMatrix matrix = new DotMatrix(dotHeight, dotWidth);
 
         // Populate the RGB matrix with empty RGB holders
         for (int r = 0; r < dotHeight; r++)
@@ -71,9 +76,9 @@ public final class Utility
         }
 
         // Sum the red, green, blue, and opacity values for all pixels in the "area" of each dot
-        for (int r = 0; r < height; r++)
+        for (int r = 0; r < imageHeight; r++)
         {
-            for (int c = 0; c < width; c++)
+            for (int c = 0; c < imageWidth; c++)
             {
                 int row = (int) (r / dotHeightPx);
                 int col = (int) (c / dotWidthPx);

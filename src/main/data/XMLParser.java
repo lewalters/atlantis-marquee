@@ -25,6 +25,13 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * XML parsing class
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class XMLParser 
 {
   private File XMLFile;

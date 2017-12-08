@@ -10,8 +10,7 @@ import static java.util.Map.entry;
 import static util.Global.OFF_COLOR;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A CharDot is a DotMatrix representation of a specific character
  * <p>
  * <p/> Bugs: None known
  *
@@ -553,6 +552,16 @@ public class CharDot
                                           {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                           {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}};
 
+    private static final int[][] COLON = {{1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1}};
+
+    private static final int[][] SMCOL = {{1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0},
+                                          {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1},
+                                          {0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+                                          {0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}};
+
     public static final Map<Character, int[][]> charMap = Map.ofEntries(
         entry('A', A),
         entry('B', B),
@@ -605,7 +614,9 @@ public class CharDot
         entry('/', SLASH),
         entry(' ', SPACE),
         entry('?', QUEST),
-        entry('\'', APOST)
+        entry('\'', APOST),
+        entry(':', COLON),
+        entry(';', SMCOL)
     );
 }
 

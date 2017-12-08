@@ -1,5 +1,13 @@
 package util;
 
+/**
+ * A representation of the red, green, blue, and opacity values
+ * over an area of pixels within an image
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class RGB
 {
     private double r, g, b, o, area;

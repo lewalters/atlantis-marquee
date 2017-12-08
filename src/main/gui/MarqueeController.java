@@ -23,6 +23,13 @@ import java.util.concurrent.TimeUnit;
 import static util.Global.*;
 import static util.EffectTime.*;
 
+/**
+ * A MarqueeController displays and animates a single instance of a MarqueePane
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class MarqueeController
 {
     private MarqueePane marqueePane;

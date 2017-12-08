@@ -10,8 +10,7 @@ import java.util.Iterator;
 import static util.Global.*;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A Segment that contains a list of CharDots to represent a String on the marquee
  * <p>
  * <p/> Bugs: None known
  *

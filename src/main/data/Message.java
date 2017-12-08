@@ -3,8 +3,7 @@ package data;
 import java.util.LinkedList;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A Message is composed of multiple Segments for sequential display on the marquee
  * <p>
  * <p/> Bugs: None known
  *

@@ -22,6 +22,13 @@ import java.util.StringJoiner;
 import static util.Global.*;
 import static util.Validation.validImage;
 
+/**
+ * A pane to create or edit an ImageSegment
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class ImageSegmentPane extends SegmentPane
 {
     private ImageSegment segment;

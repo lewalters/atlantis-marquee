@@ -9,8 +9,7 @@ import static util.Global.MIN_HEIGHT;
 import static util.Global.MIN_WIDTH;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * The main data class -- contains all information necessary to display a marquee and with a message on it
  * <p>
  * <p/> Bugs: None known
  *

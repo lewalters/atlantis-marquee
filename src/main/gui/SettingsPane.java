@@ -19,7 +19,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -36,8 +35,7 @@ import static util.Global.*;
 
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * The main settings screen of the application
  * <p>
  * <p/> Bugs: None known
  *
@@ -48,7 +46,7 @@ public class SettingsPane extends BorderPane
     private ObjectProperty<Marquee> marquee;
     private MenuItem newMarq, save, load, exit;
     private MenuItem userGuide, about;
-    private RadioButton timeCustom;
+    private RadioButton timeImmediate, timeCustom;
     private Spinner<LocalTime> timeSpinner;
     private CheckBox fullScreenCheckBox, maxSizeCheckBox;
     private Button startButton;
@@ -165,7 +163,7 @@ public class SettingsPane extends BorderPane
 
         // Radio buttons to decide between start time = now or a custom start time
         ToggleGroup timeGroup = new ToggleGroup();
-        RadioButton timeImmediate = new RadioButton("Immediate");
+        timeImmediate = new RadioButton("Immediate");
         timeImmediate.setToggleGroup(timeGroup);
         timeImmediate.setSelected(true);
         timeCustom = new RadioButton("Custom");
@@ -321,15 +319,20 @@ public class SettingsPane extends BorderPane
         startButton.setPrefHeight(80);
         commentsTextArea.setPrefHeight(150);
 
-        //Adding ToolTip Hints for TextSegment Elements
+        //Adding ToolTip Hints for SettingsPane Elements
         widthTextField.setTooltip(new Tooltip("This Sets The Width For A Marquee"));
         heightTextField.setTooltip(new Tooltip("This Sets The Height For A Marquee"));
         ledGapTextField.setTooltip(new Tooltip("This sets the gap between LED elements"));
         delayTextField.setTooltip(new Tooltip("This Sets The Delay Interval For A Marquee"));
         repeatTextField.setTooltip(new Tooltip("This sets the repeat factor for the message"));
         commentsTextArea.setTooltip(new Tooltip("This Assigns A Comment To The Marquee"));
+        screenPosition.setTooltip(new Tooltip("This sets the position on the screen where the marquee will appear"));
+        timeImmediate.setTooltip(new Tooltip("This sets the marquee to start immediately"));
+        timeCustom.setTooltip(new Tooltip("This sets the marquee to start at the user-entered time"));
+        timeSpinner.setTooltip(new Tooltip("This sets the start time of the marquee"));
         startButton.setTooltip(new Tooltip("This Starts Marquee Based On User Requirements"));
         fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
+        maxSizeCheckBox.setTooltip(new Tooltip("This sets the marquee to the maximum size possible on the current screen"));
         textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
         imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
         reorderButton.setTooltip(new Tooltip("This Reorders Segments Created"));
@@ -554,12 +557,6 @@ public class SettingsPane extends BorderPane
         leftControlVb.setAlignment(Pos.CENTER);
         this.setLeft(leftControlVb);
 
-        //Creating Tooltip for startButton
-        startButton.setTooltip(new Tooltip("This Displays Marquee with User Defined Settings"));
-        fullScreenCheckBox.setTooltip(new Tooltip("This Displays Marquee In FullScreen Mode"));
-        textSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Text Marquee Display"));
-        imageSegmentButton.setTooltip(new Tooltip("This Adds Additional Features to Image Marquee Display"));
-
         leftControlVb.setPadding(new Insets(20, 5, 20, 20));
         rightPanel.setPadding(new Insets(20, 20, 20, 5));
 
@@ -637,10 +634,19 @@ public class SettingsPane extends BorderPane
         {
             maxSizeCheckBox.setSelected(marquee.get().isMaxSize());
         }
+        else
+        {
+            maxSizeCheckBox.setSelected(false);
+        }
         if (marquee.get().getStartTime() != null)
         {
             timeCustom.setSelected(true);
             timeSpinner.getValueFactory().setValue(marquee.get().getStartTime());
+        }
+        else
+        {
+            timeImmediate.setSelected(true);
+            timeSpinner.getValueFactory().setValue(null);
         }
         segmentListView.setSegments(marquee.get().getMessage().getContents());
         segmentListView.refresh();

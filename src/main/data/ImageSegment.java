@@ -10,8 +10,7 @@ import static util.Global.NUM_ROWS;
 import static util.Utility.convertImage;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A Segment that contains a DotMatrix representation of an image
  * <p>
  * <p/> Bugs: None known
  *

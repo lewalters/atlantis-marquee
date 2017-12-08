@@ -19,6 +19,13 @@ import java.util.Set;
 import static util.Global.INVALID;
 import static util.Global.TEXT_FONT;
 
+/**
+ * The base for the TextSegmentPane and ImageSegmentPane with the settings that Segments have in common
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public abstract class SegmentPane extends BorderPane
 {
     private Segment segment;
@@ -60,6 +67,7 @@ public abstract class SegmentPane extends BorderPane
         Button previewButton = new Button("Preview");
         previewButton.setFont(new Font(TEXT_FONT, 25));
         previewButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        previewButton.setTooltip(new Tooltip("Preview the segment with the selected settings"));
         previewButton.setOnAction(e ->
         {
             if (segment.isValid())
@@ -218,6 +226,10 @@ public abstract class SegmentPane extends BorderPane
         validateButton.setPrefWidth(200);
         continueButton.setPrefWidth(200);
         cancelButton.setPrefWidth(200);
+
+        validateButton.setTooltip(new Tooltip("Apply the selected settings and confirm their validity"));
+        continueButton.setTooltip(new Tooltip("Confirm the segment and return to the settings screen"));
+        cancelButton.setTooltip(new Tooltip("Cancel the changes to the segment"));
 
         continueButton.visibleProperty().bindBidirectional(continueButton.managedProperty());
         continueButton.visibleProperty().bind(validateButton.visibleProperty().not());

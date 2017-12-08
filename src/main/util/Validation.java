@@ -8,6 +8,14 @@ import java.io.File;
 import static util.Global.MAX_IMAGE_HEIGHT;
 import static util.Global.MAX_IMAGE_WIDTH;
 
+/**
+ * A general-purpose validation class, although it currently only
+ * contains a method for image validation based on existence and size
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public final class Validation
 {
     public static boolean validImage(String path)

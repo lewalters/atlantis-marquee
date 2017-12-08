@@ -6,6 +6,13 @@ import javafx.scene.shape.Circle;
 
 import static util.Global.OFF_COLOR;
 
+/**
+ * An LED is the most basic display unit of the marquee, a graphical representation of a Dot
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class LED extends Circle
 {
     private boolean on;

@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -12,6 +13,13 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A custom list view which organizes and display a list of Segments with preview MarqueePanes
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class SegmentListView extends GridPane
 {
     private List<Segment> segments;
@@ -50,6 +58,7 @@ public class SegmentListView extends GridPane
             TextField rank = new TextField(Integer.toString(i + 1));
             rank.setPrefSize(30, 30);
             rank.setAlignment(Pos.CENTER);
+            rank.setTooltip(new Tooltip("The order that the segments will appear in"));
             this.add(rank, 0, i);
             orderFields.add(rank);
 
@@ -70,12 +79,14 @@ public class SegmentListView extends GridPane
             Button edit = new Button();
             edit.setGraphic(new ImageView("img/pencil.png"));
             edit.getStyleClass().add("icon-button");
+            edit.setTooltip(new Tooltip("Edit this segment"));
             this.add(edit, 2, i);
             editButtons.add(edit);
 
             Button delete = new Button();
             delete.setGraphic(new ImageView("img/trash.png"));
             delete.getStyleClass().add("icon-button");
+            delete.setTooltip(new Tooltip("Delete this segment"));
             this.add(delete, 3, i);
             deleteButtons.add(delete);
         }

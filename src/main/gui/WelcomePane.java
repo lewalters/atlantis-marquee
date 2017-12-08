@@ -1,6 +1,5 @@
 package gui;
 
-import data.ImageSegment;
 import data.Message;
 import data.TextSegment;
 import javafx.geometry.Insets;
@@ -12,12 +11,10 @@ import javafx.scene.text.Font;
 import util.EntranceTransition;
 import util.ExitTransition;
 
-import java.nio.file.Paths;
-
 import static util.Global.TEXT_FONT;
+
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * The first screen the user encounters upon application start
  * <p>
  * <p/> Bugs: None known
  *

@@ -16,8 +16,7 @@ import java.util.*;
 import static util.Global.*;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A MarqueePane is the visual representation of a Marquee object
  * <p>
  * <p/> Bugs: None known
  *

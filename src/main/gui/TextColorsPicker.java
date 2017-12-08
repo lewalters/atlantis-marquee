@@ -15,6 +15,14 @@ import javafx.scene.paint.Color;
 
 import static util.Global.DEFAULT_TEXT_COLOR;
 
+/**
+ * A custom expansion on a color picker which generates one color
+ * picker per character of a String within a ScrollPane
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class TextColorsPicker extends VBox
 {
     private TextSegment segment;

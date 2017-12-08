@@ -7,8 +7,7 @@ import java.util.Iterator;
 import static util.Global.*;
 
 /**
- * (Insert a brief comment that describes
- * the purpose of this class definition.)
+ * A Segment is the basic contiguous unit of display on the marquee -- only one is displayed at any given time
  * <p>
  * <p/> Bugs: None known
  *

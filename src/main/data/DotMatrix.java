@@ -5,6 +5,14 @@ import util.ScrollDirection;
 import java.util.Arrays;
 import java.util.Iterator;
 
+/**
+ * A DotMatrix is a matrix composed of dots and provides
+ * the ability to iterate over them by columns or by rows
+ * <p>
+ * <p/> Bugs: None known
+ *
+ * @author Team Atlantis
+ */
 public class DotMatrix
 {
     private int rows, cols;
