@@ -158,6 +158,9 @@ public class ImageSegmentPane extends SegmentPane
         if (validImage(pathString))
         {
             File imageFile = new File(System.getProperty("user.dir"), "/images/" + Paths.get(pathString).getFileName().toString());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText(imageFile.getAbsolutePath());
+            alert.showAndWait();
 
             try
             {
